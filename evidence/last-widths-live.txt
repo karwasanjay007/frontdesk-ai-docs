@@ -1,0 +1,21 @@
+PASS 375 chat: scrollWidth 375, content right edge 375
+PASS 375 chat: message box and Send in view
+PASS 375 chat: targets 40 px or more 
+PASS 375 staff: scrollWidth 375
+PASS 768 chat: scrollWidth 768, content right edge 768
+PASS 768 chat: message box and Send in view
+PASS 768 chat: targets 40 px or more 
+PASS 768 staff: scrollWidth 768
+PASS 1366 chat: scrollWidth 1366, content right edge 1366
+PASS 1366 chat: message box and Send in view
+PASS 1366 chat: targets 40 px or more 
+PASS 1366 staff: scrollWidth 1366
+PASS 1920 chat: scrollWidth 1920, content right edge 1920
+PASS 1920 chat: message box and Send in view
+PASS 1920 chat: targets 40 px or more 
+PASS 1920 staff: scrollWidth 1920
+PASS 2560 chat: scrollWidth 2560, content right edge 2560
+PASS 2560 chat: message box and Send in view
+PASS 2560 chat: targets 40 px or more 
+PASS 2560 staff: scrollWidth 2560
+ALL PASS (20 checks)

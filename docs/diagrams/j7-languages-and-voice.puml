@@ -1,0 +1,54 @@
+@startuml j7-languages-and-voice
+!include style.iuml
+title J7 Languages and voice
+actor Patient
+participant "Chat page\n(index.html, chat.js)" as Chat
+participant "core.js" as Core
+database "localStorage" as LS
+participant "api/chat\n(Vercel)" as API
+participant "OpenRouter\n(DeepSeek)" as OR
+autonumber
+
+opt Patient picks a language in #lang
+  Patient -> Chat : English, हिंदी or తెలుగు
+  Chat -> Core : FD.setLang(lang)
+  Core -> LS : write frontdesk.lang
+  Chat -> Chat : labels(), render(): placeholder, buttons, greeting\nFD.T[lang].hello(data), quick chips FD.T[lang].quick
+end
+
+alt speaking (SpeechRecognition or webkitSpeechRecognition exists)
+  Patient -> Chat : taps #mic
+  Chat -> Chat : new SpeechRecognition, lang en-IN, hi-IN or te-IN\n(from the chosen language), one final result
+  Patient -> Chat : speaks
+  Chat -> Chat : onresult: transcript, then send(said)
+else typing
+  Patient -> Chat : types in Hindi or Telugu script, or taps a chip
+end
+note right of Chat : without speech recognition #mic stays hidden
+
+Chat -> Core : FD.answer(q, data)
+Core -> Core : langOf(q): Telugu block first, then Devanagari, else English
+note right of Core
+The reply language follows the script of the
+question, not the #lang choice. T.hi and T.te hold
+every template; clinic values stay as written.
+end note
+Core --> Chat : reply text in that language, lang "hi" or "te"
+opt a file answer (modelOk)
+  Chat -> API : POST /api/chat {draft, facts, lang, clinic}
+  API -> OR : "Rewrite ... in Hindi (Devanagari script)" or "Telugu (Telugu script)"
+  OR --> API : reworded text
+  API --> Chat : 200 {text}
+  Chat -> Core : FD.guard(text, ruled, data)
+  note right of Core : Devanagari and Telugu digits are read as 0 to 9; a reply in another script is rejected
+end
+Chat -> Core : FD.addTicket({... lang})
+Core -> LS : write frontdesk.tickets
+Chat --> Patient : .bot-msg with lang="hi" or "te";\nafter-hours note in the same language
+
+opt Patient taps Listen (shown when speechSynthesis exists)
+  Chat -> Core : FD.langOf(reply text)
+  Chat -> Chat : SpeechSynthesisUtterance, lang en-IN, hi-IN or te-IN;\nspeechSynthesis.cancel(), then speak()
+  Chat --> Patient : the reply read aloud
+end
+@enduml

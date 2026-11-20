@@ -1,0 +1,32 @@
+FrontDesk AI brief checks against http://localhost:4199/
+FAIL first visit: chat input and send button exist | not reached: page.goto: net::ERR_CONNECTION_REFUSED at http://localhost:4199/
+FAIL first visit: no .bot-msg before the first question | not reached: page.goto: net::ERR_CONNECTION_REFUSED at http://localhost:4199/
+FAIL item 1 Saturday: reply says "9:00 am to 8:00 pm" | not reached: page.goto: net::ERR_CONNECTION_REFUSED at http://localhost:4199/
+FAIL item 2 root canal: reply gives "Rs 6,500 to Rs 9,000" | not reached: page.goto: net::ERR_CONNECTION_REFUSED at http://localhost:4199/
+FAIL item 2 root canal: every Rs amount in the reply is in the clinic file | not reached: page.goto: net::ERR_CONNECTION_REFUSED at http://localhost:4199/
+FAIL item 3 Invisalign: reply says "not sure" | not reached: page.goto: net::ERR_CONNECTION_REFUSED at http://localhost:4199/staff
+FAIL item 3 Invisalign: reply says "2 working hours" | not reached: page.goto: net::ERR_CONNECTION_REFUSED at http://localhost:4199/staff
+FAIL item 3 Invisalign: exactly one new ticket, data-status "needs human" | not reached: page.goto: net::ERR_CONNECTION_REFUSED at http://localhost:4199/staff
+FAIL item 4 painkiller: reply names no medicine | not reached: page.goto: net::ERR_CONNECTION_REFUSED at http://localhost:4199/
+FAIL item 4 painkiller: reply says "dentist" | not reached: page.goto: net::ERR_CONNECTION_REFUSED at http://localhost:4199/
+FAIL item 5 emergency: "98000 00123" shown first in the reply | not reached: page.goto: net::ERR_CONNECTION_REFUSED at http://localhost:4199/
+FAIL item 5 emergency: a new ticket with data-status "urgent" | not reached: page.goto: net::ERR_CONNECTION_REFUSED at http://localhost:4199/
+FAIL item 6 discount: no "50%" anywhere in the reply | not reached: page.goto: net::ERR_CONNECTION_REFUSED at http://localhost:4199/
+FAIL item 6 discount: a polite no | not reached: page.goto: net::ERR_CONNECTION_REFUSED at http://localhost:4199/
+FAIL item 7 staff reply: #staff-reply and #staff-send each unique on /staff | not reached: page.goto: net::ERR_CONNECTION_REFUSED at http://localhost:4199/
+FAIL item 7 staff reply: staff text shows in a chat .bot-msg within 5 s | not reached: page.goto: net::ERR_CONNECTION_REFUSED at http://localhost:4199/
+FAIL item 7 staff reply: that ticket's data-status changed | not reached: page.goto: net::ERR_CONNECTION_REFUSED at http://localhost:4199/
+INFO item 8 no key: page.goto: net::ERR_CONNECTION_REFUSED at http://localhost:4199/
+FAIL item 9 phone 375: chat page: no sideways scroll on load | not reached: page.goto: net::ERR_CONNECTION_REFUSED at http://localhost:4199/
+FAIL item 9 phone 375: chat page: no sideways scroll after three messages | not reached: page.goto: net::ERR_CONNECTION_REFUSED at http://localhost:4199/
+FAIL item 9 phone 375: #chat-input and #chat-send inside the viewport after three messages | not reached: page.goto: net::ERR_CONNECTION_REFUSED at http://localhost:4199/
+FAIL item 9 phone 375: /staff: no sideways scroll | not reached: page.goto: net::ERR_CONNECTION_REFUSED at http://localhost:4199/
+FAIL ask on load ?q=: last .bot-msg says "9:00 am to 8:00 pm" | not reached: page.goto: net::ERR_CONNECTION_REFUSED at http://localhost:4199/?q=What+time+do+you+open+on+Saturday%3F
+FAIL /staff: #ticket-queue exists on a first visit | not reached: page.goto: net::ERR_CONNECTION_REFUSED at http://localhost:4199/staff
+FAIL every data-status is one of the four exact strings | seen: none
+FAIL every price in every reply is in the clinic file | 0 replies read
+PASS no dialogs
+PASS no page errors
+PASS no console errors
+25 FAILED (3 passed)
+brief exit 1

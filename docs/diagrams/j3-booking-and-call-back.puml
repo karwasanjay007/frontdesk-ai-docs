@@ -1,0 +1,48 @@
+@startuml j3-booking-and-call-back
+!include style.iuml
+title J3 Booking request and call-back
+actor Patient
+participant "Chat page\n(index.html, chat.js)" as Chat
+participant "core.js" as Core
+database "localStorage" as LS
+participant "WhatsApp" as WA
+autonumber
+
+Patient -> Chat : "I want to book a check-up tomorrow at 5 pm"
+Chat -> Core : FD.answer(q, data)
+Core -> Core : bookingWhen(t): day (today, tomorrow, a weekday or "12 Nov")\nand time ("5:00 pm", morning, afternoon, evening)
+note right of Core
+Booking needs a booking word, not a how-to-book,
+cancel or walk-in question, and a time or a wish
+("I want", "please", "need"). Emergency, discount
+and medical are checked first.
+end note
+Core --> Chat : kind "booking", status "needs human",\nT[lang].booking(data, when), bookingTime (or "not given")
+note over Chat : no model call for a booking
+Chat -> Core : FD.openNow(data)
+alt the clinic is closed now
+  Chat -> Core : FD.nextOpening(data)
+  Core --> Chat : "today at 9:00 am", "tomorrow at ..." or "<Day> at ..."
+  Chat -> Chat : afterHoursNote = UI[lang].closedNote(next)
+end
+Chat -> Core : FD.addTicket({... kind "booking", bookingTime, afterHours, callBack: true})
+Core -> LS : write frontdesk.tickets
+Chat --> Patient : reply "passed your request for <time> ... call you back within 2 working hours",\n"Continue on WhatsApp", after-hours note when closed, call-back form
+note right of Chat : the note and the form sit beside the .bot-msg, never inside it
+
+opt Patient leaves a name and phone
+  Patient -> Chat : name (optional) and phone, presses Save
+  Chat -> Chat : keep digits; drop a leading 91 from 12 digits
+  alt not 10 digits
+    Chat --> Patient : "Enter a phone number with 10 digits."
+  else 10 digits
+    Chat -> Core : FD.updateTicket(id, {contactName, contactPhone})
+    Core -> LS : write frontdesk.tickets
+    Chat --> Patient : form replaced by "Thank you, <name>. We will call <phone>."
+  end
+end
+opt Patient taps Continue on WhatsApp
+  Patient -> WA : wa.me/91<whatsapp digits>?text=<the request>
+end
+note over Chat, LS : on /staff the ticket shows "requested <time>", "after hours" and sits in the call list (J4)
+@enduml

@@ -1,0 +1,54 @@
+@startuml j4-staff-reply
+!include style.iuml
+title J4 Staff reply into the patient's chat
+actor Staff
+participant "Staff page\n(staff/index.html, staff.js)" as SP
+participant "core.js" as Core
+database "localStorage" as LS
+participant "Chat page\n(index.html, chat.js)" as Chat
+actor Patient
+autonumber
+
+Staff -> SP : opens /staff in the same browser as the chat
+SP -> Core : FD.loadClinic(), then clinicEditor() and render()
+SP -> Core : FD.tickets().sort(FD.byPriority)
+Core -> LS : read frontdesk.tickets
+note right of Core
+Priority: urgent, needs human, answered, closed;
+newest first within a status.
+end note
+SP -> SP : open ticket = the one chosen, else the first in the list
+note right of SP
+Only the open ticket's [data-ticket] holds #staff-reply
+and #staff-send. "Needs human" older than 2 h shows
+"over 2 h". Call list: needs human, or a booking not
+closed, oldest first. Unknown list: "not sure" questions.
+end note
+opt Staff opens another ticket
+  Staff -> SP : clicks its heading [data-open]
+  SP -> SP : openId = that ticket, draft cleared, render()
+end
+Staff -> SP : types in #staff-reply, presses #staff-send (or Ctrl+Enter)
+alt the box is empty
+  SP --> Staff : "Type a reply first."
+else text entered
+  SP -> Core : FD.replyToTicket(openId, text)
+  Core -> LS : add {text, at} to staffReplies, set status, write frontdesk.tickets
+  note right of Core
+  Status after a reply: urgent and needs human
+  become answered; answered becomes closed;
+  closed stays closed.
+  end note
+  SP -> SP : render()
+  SP --> Staff : "Sent. The patient sees it in their chat."
+  LS -> Chat : storage event, key frontdesk.tickets (another tab)
+  Chat -> Chat : render() when no question is pending
+  Chat --> Patient : .bot-msg marked "From the clinic team" (no Listen button)
+end
+opt Staff closes the ticket
+  Staff -> SP : "Close ticket" [data-close] (shown unless closed)
+  SP -> Core : FD.setStatus(id, "closed")
+  Core -> LS : write frontdesk.tickets
+end
+note over SP, LS : a new patient question raises a storage event that redraws /staff; it also redraws every 30 s unless #staff-reply has focus
+@enduml

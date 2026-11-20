@@ -1,0 +1,51 @@
+@startuml j5-no-key-run
+!include style.iuml
+title J5 No-key run and model failures
+actor Patient
+participant "Chat page\n(index.html, chat.js)" as Chat
+participant "core.js" as Core
+database "localStorage" as LS
+participant "api/chat\n(Vercel)" as API
+participant "OpenRouter\n(DeepSeek)" as OR
+autonumber
+
+Patient -> Chat : sends a question the file can answer
+Chat -> Core : FD.answer(q, data)
+Core --> Chat : kind "answer", modelOk true, text, facts
+Chat -> API : POST /api/chat {draft, facts, lang, clinic} (6 s limit in the browser)
+alt OPENROUTER_API_KEY is not set
+  API --> Chat : 503 {error: "no key"}
+else bad body or no draft
+  API --> Chat : 400 {error: "bad request" or "missing draft"}
+else OpenRouter answers with an error status
+  API -> OR : chat/completions
+  OR --> API : error
+  API --> Chat : 502 {error: "model <status>"}
+else empty text, or cut off (finish_reason "length")
+  API -> OR : chat/completions
+  OR --> API : no usable text
+  API --> Chat : 502 {error: "empty" or "cut off"}
+else OpenRouter takes more than 5 s
+  API -> OR : chat/completions
+  API -> API : AbortController stops the call
+  API --> Chat : 504 {error: "timeout"}
+else the whole call takes more than 6 s, or the network fails
+  Chat -> Chat : AbortController aborts; catch gives null
+else 200 with text
+  API --> Chat : 200 {text}
+  Chat -> Core : FD.guard(text, ruled, data)
+  Core --> Chat : false (rejected)
+  note right of Core
+  Rejected when: empty or over 900 characters; a number
+  not in the draft or the file; a capitalised name not in
+  them; a risky word (ticket, discount, free, refund...)
+  the draft did not use; a medicine; an unknown doctor;
+  a fact from the draft missing; the wrong script.
+  end note
+end
+note over Chat : askModel() resolves to null in every case above
+Chat -> Core : FD.addTicket({reply: ruled.text, source: "file", ...})
+Core -> LS : write frontdesk.tickets
+Chat --> Patient : the rules engine's answer with "Answered from the clinic file"
+note right of Chat : same facts and wording as a run with the key; only the model's rewording is missing
+@enduml

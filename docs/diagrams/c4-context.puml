@@ -1,0 +1,19 @@
+@startuml c4-context
+!include <C4/C4_Context>
+title FrontDesk AI: system context (C4 level 1, as built)
+
+Person(patient, "Patient", "Asks the clinic a question on a phone or desktop browser, by typing or speaking")
+Person(staff, "Front desk staff", "Opens /staff to answer tickets, call back and edit the clinic file")
+System(frontdesk, "FrontDesk AI", "Patient chat at / and staff page at /staff. Answers only from the clinic file, opens tickets, hands hard questions to a human")
+System_Ext(model, "OpenRouter, DeepSeek V4.1 Flash", "Rewords a drafted file answer; optional. Never sees the patient's words")
+System_Ext(whatsapp, "WhatsApp", "Chat with the clinic, opened from a wa.me link")
+System_Ext(phone, "Clinic phone lines", "040 5550 0123 and the emergency line from the clinic file")
+
+Rel(patient, frontdesk, "Asks questions, reads replies", "HTTPS")
+Rel(staff, frontdesk, "Reads tickets, replies, edits the clinic file", "HTTPS")
+Rel(frontdesk, model, "Asks for a reworded draft, 5 s limit", "HTTPS, key on the server only")
+Rel(patient, whatsapp, "Continues the conversation", "wa.me link")
+Rel(patient, phone, "Calls in an emergency", "number shown first")
+
+SHOW_LEGEND()
+@enduml

@@ -1,0 +1,8 @@
+PASS one ticket before clearing
+PASS Clear all tickets empties the queue and says so
+PASS the patient chat in the same browser empties too
+PASS Undo restores the ticket
+PASS the patient chat shows the conversation again
+PASS no confirm or alert dialog
+PASS no Hindi voice: Listen says so instead of reading only the English words
+ALL PASS (7 checks)

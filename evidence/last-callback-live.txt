@@ -1,0 +1,9 @@
+PASS call-back form shown beside a needs-human reply
+PASS a too-short UK number is refused with a message
+PASS UK 07747541875 saved as +447747541875: Thank you, Test Patient. We will call +447747541875.
+PASS the number is not added inside the bot reply
+PASS staff card call link is tel:+447747541875
+PASS staff card WhatsApp link opens WhatsApp Web for 447747541875 on a computer
+PASS patient "Continue on WhatsApp" opens WhatsApp Web for the clinic number on a computer
+PASS call-back list shows the name and number
+ALL PASS (8 checks)

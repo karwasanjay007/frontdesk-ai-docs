@@ -1,0 +1,51 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://frontdesk-ai.local/docs/schema/tickets.schema.json",
+  "title": "FrontDesk AI stored tickets",
+  "description": "The value of localStorage key frontdesk.tickets: a JSON array with one ticket for every message a patient sends, whatever its status. chat.js builds the ticket and addTicket() in core.js adds id, created and staffReplies. replyToTicket() and setStatus() change status and set updated. tickets() returns [] when the key is missing, unreadable or not an array. Nothing deletes a ticket.",
+  "type": "array",
+  "items": { "$ref": "#/$defs/ticket" },
+  "$defs": {
+    "ticket": {
+      "type": "object",
+      "required": ["id", "patient", "q", "reply", "source", "kind", "status", "lang", "bookingTime", "afterHours", "afterHoursNote", "callBack", "created", "staffReplies"],
+      "properties": {
+        "id": {
+          "type": "string",
+          "pattern": "^T[0-9A-Z]+$",
+          "description": "\"T\" + Date.now() in base 36, upper case, + two random base-36 characters, upper case."
+        },
+        "patient": {
+          "type": "string",
+          "description": "The patient session id from frontdesk.patient: \"P\" + random base-36 characters, upper case (normally five). The chat shows only the tickets whose patient is this browser's id."
+        },
+        "q": { "type": "string", "minLength": 1, "description": "The patient's message, trimmed." },
+        "reply": { "type": "string", "description": "The reply shown: the model's text when it passed guard(), otherwise the rules engine's text." },
+        "source": { "enum": ["model", "file"], "description": "model when the model's wording was used; file when the rules engine's own text was used (labelled \"Answered from the clinic file\")." },
+        "kind": { "enum": ["emergency", "refuse", "medical", "booking", "answer", "notsure"] },
+        "status": { "enum": ["urgent", "needs human", "answered", "closed"] },
+        "lang": { "enum": ["en", "hi", "te"], "description": "Worked out from the script of the message (Telugu, Devanagari, else English), not from the language menu." },
+        "bookingTime": { "type": "string", "description": "For a booking: the day and time read from the message (for example \"tomorrow 5:00 pm\"), or \"not given\". Empty string for every other kind." },
+        "afterHours": { "type": "boolean", "description": "true when openNow() said the clinic was closed at the moment the ticket was made." },
+        "afterHoursNote": { "type": "string", "description": "The closed-now note in the reply's language, naming the next opening when one is found; empty string when afterHours is false." },
+        "callBack": { "type": "boolean", "description": "true when the status given by the rules engine was needs human. Not changed later." },
+        "created": { "type": "integer", "description": "Milliseconds since 1970 (Date.now())." },
+        "updated": { "type": "integer", "description": "Milliseconds since 1970. Absent until the first staff reply or Close ticket." },
+        "staffReplies": {
+          "type": "array",
+          "description": "Replies sent from the staff page, oldest first. Starts empty.",
+          "items": {
+            "type": "object",
+            "required": ["text", "at"],
+            "properties": {
+              "text": { "type": "string", "minLength": 1, "description": "The reply, trimmed." },
+              "at": { "type": "integer", "description": "Milliseconds since 1970." }
+            },
+            "additionalProperties": false
+          }
+        }
+      },
+      "additionalProperties": false
+    }
+  }
+}

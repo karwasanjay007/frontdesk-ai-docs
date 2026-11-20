@@ -1,0 +1,32 @@
+@startuml deployment
+!include <C4/C4_Deployment>
+title FrontDesk AI: deployment (as built)
+
+Deployment_Node(dev, "Sanjay's Windows PC", "PowerShell, Vercel CLI") {
+  Container(src, "frontdesk-ai repository", "Git, private", "Static files, api/chat.js, tests/; .vercelignore keeps tests, brief, brand, .md, .env and tool folders off the site")
+}
+
+Deployment_Node(vercel, "Vercel, team elodos", "Hobby") {
+  Deployment_Node(proj, "Project frontdesk-ai", "frontdesk-ai-xi-gray.vercel.app, HTTPS") {
+    Container(static, "Static files", "CDN", "index.html, staff/index.html, core.js, chat.js, staff/staff.js, styles.css, clinic-data.json, icon.svg")
+    Container(fn, "api/chat", "Vercel serverless function, Node.js", "Warm-up GET; POST rewords a draft; 5 s model limit")
+    ContainerDb(env, "Environment", "Production, sensitive", "OPENROUTER_API_KEY (hidden); optional OPENROUTER_MODEL")
+  }
+}
+
+Deployment_Node(device, "Patient's or staff's device", "Any modern browser") {
+  Container(pages, "Chat page and staff page", "HTML, CSS, JavaScript", "Rules engine, guard, tickets")
+  ContainerDb(ls, "localStorage", "Web Storage", "Tickets, edited clinic file, language, theme")
+}
+
+System_Ext(openrouter, "OpenRouter", "deepseek/deepseek-v4.1-flash")
+
+Rel(src, proj, "vercel deploy --prod --yes --scope elodos", "HTTPS")
+Rel(pages, static, "Loads", "HTTPS")
+Rel(pages, fn, "GET warm-up; POST draft", "HTTPS, JSON")
+Rel(fn, env, "Reads the key")
+Rel(fn, openrouter, "Chat completions", "HTTPS")
+Rel(pages, ls, "Reads and writes")
+
+SHOW_LEGEND()
+@enduml

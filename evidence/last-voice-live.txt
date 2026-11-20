@@ -1,0 +1,4 @@
+status messages seen: ["The browser speech service did not answer, so I am recording instead: speak now and I stop when you pause. The recording is sent to the transcription service only to turn it into text.","Recording… speak now. I stop when you pause, or tap the microphone.","Turning your voice into text…"]
+PASS the spoken question arrived as text: What time do you open on Saturday
+PASS and was answered: We're open on Saturday from 9:00 am to 8:00 pm.
+ALL PASS (2 checks)

@@ -1,0 +1,37 @@
+' Shared look for the FrontDesk AI journey diagrams (included by every j*.puml).
+skinparam backgroundColor white
+skinparam defaultFontName "Noto Sans"
+skinparam defaultFontSize 13
+skinparam roundCorner 12
+skinparam shadowing false
+skinparam maxMessageSize 280
+skinparam titleFontSize 17
+skinparam titleFontColor #0B5D63
+skinparam sequenceMessageAlign left
+skinparam responseMessageBelowArrow true
+skinparam sequence {
+  ArrowColor #0B5D63
+  LifeLineBorderColor #7FAAAE
+  LifeLineBackgroundColor #E6F1F2
+  ParticipantBorderColor #0B5D63
+  ParticipantBackgroundColor #E6F1F2
+  ParticipantFontColor #083F43
+  ActorBorderColor #0B5D63
+  ActorBackgroundColor #E6F1F2
+  ActorFontColor #083F43
+  GroupBorderColor #0B5D63
+  GroupHeaderFontColor #0B5D63
+  GroupBackgroundColor #F3F8F8
+  DividerBorderColor #0B5D63
+  DividerBackgroundColor #E6F1F2
+  DividerFontColor #083F43
+}
+skinparam database {
+  BorderColor #0B5D63
+  BackgroundColor #E6F1F2
+}
+skinparam note {
+  BorderColor #C97A1D
+  BackgroundColor #FFF6E8
+  FontSize 12
+}

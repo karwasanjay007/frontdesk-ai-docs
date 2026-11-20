@@ -1,0 +1,52 @@
+@startuml j6-clinic-file-edit
+!include style.iuml
+title J6 Edit the clinic file on /staff
+actor Staff
+participant "Staff page\n(staff/index.html, staff.js)" as SP
+participant "core.js" as Core
+database "localStorage" as LS
+participant "Chat page\n(index.html, chat.js)" as Chat
+actor Patient
+autonumber
+
+Staff -> SP : opens /staff
+SP -> Core : FD.loadClinic(), then clinicEditor()
+Core -> LS : read frontdesk.clinic (else the shipped clinic-data.json)
+SP --> Staff : #clinic-json filled with the file in use, #clinic-name set
+Staff -> SP : edits the JSON, presses #clinic-save
+SP -> SP : JSON.parse()
+alt not valid JSON
+  SP --> Staff : "This is not valid JSON: <parser message>"
+else parsed
+  SP -> Core : FD.validateClinic(obj)
+  alt a check fails
+    Core --> SP : message
+    note right of Core
+    Must be an object with a "clinic" section (name, phone,
+    emergency_phone, whatsapp, address as text) and an "hours"
+    section with at least one text entry; "services" and
+    "doctors", when present, must be lists.
+    end note
+    SP --> Staff : the message
+  else valid
+    SP -> Core : FD.saveClinic(obj)
+    Core -> LS : write frontdesk.clinic
+    SP -> SP : clinicEditor()
+    SP --> Staff : "Saved. The chat now answers from this file."
+    LS -> Chat : storage event, key frontdesk.clinic (another tab)
+    Chat -> Core : FD.clinic()
+    Chat -> Chat : data = the edited file; side(), labels()
+    Patient -> Chat : asks a question
+    Chat -> Core : FD.answer(q, data)
+    note right of Chat : the answer, the guard and the file sent to api/chat all use the edited file
+    Chat --> Patient : reply from the edited file
+  end
+end
+opt Staff presses #clinic-reset
+  SP -> Core : FD.resetClinic()
+  Core -> LS : remove frontdesk.clinic
+  SP --> Staff : "Back to the original clinic file."
+  LS -> Chat : storage event, key frontdesk.clinic
+  Chat -> Core : FD.clinic() returns the shipped file
+end
+@enduml

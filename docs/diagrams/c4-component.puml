@@ -1,0 +1,52 @@
+@startuml c4-component
+!include <C4/C4_Component>
+title FrontDesk AI: components (C4 level 3, as built)
+
+Person(patient, "Patient", "Chat page /")
+Person(staff, "Front desk staff", "Staff page /staff")
+System_Ext(openrouter, "OpenRouter, DeepSeek V4.1 Flash", "deepseek/deepseek-v4.1-flash, reasoning off")
+ContainerDb(ls, "localStorage", "Web Storage, JSON", "frontdesk.clinic, frontdesk.tickets, frontdesk.patient, frontdesk.lang, frontdesk.theme")
+Container(file, "clinic-data.json", "Static JSON", "The shipped clinic file")
+
+Container_Boundary(core, "core.js (window.FD), shared by both pages") {
+  Component(store, "Clinic data store", "JavaScript", "loadClinic, clinic, originalClinic, saveClinic, resetClinic, validateClinic")
+  Component(engine, "Rules engine", "JavaScript", "answer(message, data): emergency, rule change or discount, medical, booking, answer from the file, not sure; returns kind, status, text, lang, facts, bookingTime, modelOk")
+  Component(guard, "Guard", "JavaScript", "guard(modelText, ruled, data): rejects any number, capitalised name, doctor, promise, medicine or language change not in the draft or the file")
+  Component(tickets, "Ticket store", "JavaScript", "patientId, tickets, addTicket, replyToTicket, updateTicket, setStatus, byPriority")
+  Component(hours, "Opening hours", "JavaScript", "openNow, nextOpening; the after-hours note only, never an answer")
+  Component(i18n, "Languages and themes", "JavaScript", "langOf, templates T in en, hi, te; getLang, setLang, applyTheme, toggleTheme, esc, ago")
+}
+
+Container_Boundary(chatjs, "chat.js, the patient chat") {
+  Component(chatui, "Chat UI", "JavaScript", "send, render, botRow, ticketRows, showTyping, ?q= on load; each reply added once as .bot-msg")
+  Component(client, "Model client", "JavaScript", "askModel(q, ruled): answerable replies only; posts the draft, facts, language and clinic file; 6 s limit; warm-up GET on load, body read")
+  Component(extras, "Extras", "JavaScript", "side (Today card: Call, WhatsApp, Directions), waLink, voice, call-back form, open chip")
+}
+
+Container_Boundary(staffjs, "staff/staff.js, the staff page") {
+  Component(staffui, "Staff UI", "JavaScript", "render (queue, counts, To call back, Could not answer), sendReply, clinicEditor; one open ticket holds #staff-reply and #staff-send")
+}
+
+Container_Boundary(api, "api/chat.js, Vercel function") {
+  Component(handler, "handler(req, res)", "Node.js", "GET: ok. POST: reads draft, facts, lang, clinic; 5 s limit; returns { text, model } or { error }")
+}
+
+Rel(patient, chatui, "Types, taps or speaks")
+Rel(staff, staffui, "Reads, replies, closes, edits the file")
+Rel(store, file, "Fetches")
+Rel(store, ls, "Reads and writes the edited file")
+Rel(chatui, engine, "Asks for the file answer")
+Rel(chatui, client, "Asks for a reworded draft")
+Rel(client, handler, "GET warm-up; POST draft", "HTTPS, JSON")
+Rel(handler, openrouter, "Chat completions", "HTTPS, key on the server")
+Rel(client, guard, "Checks the model's text")
+Rel(chatui, tickets, "Adds a ticket per message")
+Rel(chatui, hours, "After-hours note")
+Rel(chatui, extras, "Draws")
+Rel(staffui, tickets, "Lists, replies, sets status")
+Rel(staffui, store, "Saves or resets the file")
+Rel(tickets, ls, "Reads and writes; storage event")
+Rel(engine, i18n, "Templates")
+
+SHOW_LEGEND()
+@enduml

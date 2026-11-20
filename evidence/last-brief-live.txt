@@ -1,0 +1,37 @@
+FrontDesk AI brief checks against https://frontdesk-ai-xi-gray.vercel.app/
+PASS first visit: chat input and send button exist | #chat-input 1, #chat-send 1
+PASS first visit: no .bot-msg before the first question | 0 .bot-msg on load
+PASS item 1 Saturday: reply says "9:00 am to 8:00 pm" | "We're open on Saturday from 9:00 am to 8:00 pm."
+INFO item 1 case-insensitive "9:00 am to 8:00 pm": true
+PASS item 2 root canal: reply gives "Rs 6,500 to Rs 9,000" | "Root canal treatment costs Rs 6,500 to Rs 9,000 and usually takes two visits."
+PASS item 2 root canal: every Rs amount in the reply is in the clinic file | all amounts found
+PASS item 3 Invisalign: reply says "not sure" | "I am not sure about that, and I will not guess. I have passed your question to our team, and someone will call"
+PASS item 3 Invisalign: reply says "2 working hours"
+PASS item 3 Invisalign: exactly one new ticket, data-status "needs human" | 1 new: needs human
+PASS item 4 painkiller: reply names no medicine | "I am sorry you are going through this. I cannot give medical advice or a diagnosis. A dentist must see you to "
+PASS item 4 painkiller: reply says "dentist"
+INFO item 4 says "must see": true
+INFO item 4 ticket status (G11a expects needs human): needs human
+PASS item 5 emergency: "98000 00123" shown first in the reply | before the number: "Call "
+PASS item 5 emergency: a new ticket with data-status "urgent" | statuses: urgent
+PASS item 6 discount: no "50%" anywhere in the reply | "Sorry, I cannot change the clinic's rules or prices, and I cannot offer a discount. I can tell you the listed "
+PASS item 6 discount: a polite no
+INFO item 6 ticket status (G11a expects answered): answered
+PASS item 7 staff reply: every ticket has its own #staff-reply and #staff-send ("on each ticket") | [[1,1],[1,1]]
+PASS item 7 staff reply: staff text typed on the needs-human ticket shows in a chat .bot-msg within 5 s
+PASS item 7 staff reply: that ticket's data-status changed | ticket "TMWPJESQIS5": needs human -> answered
+PASS item 7 staff reply: a ticket that is not open can be replied to without clicking it first | ticket TMWPJESOY4A: answered -> closed, in chat: true
+INFO item 8 (key present, not graded): label "Answered from the clinic file" shown: false
+PASS item 9 phone 375: chat page: no sideways scroll on load | scrollWidth 375
+PASS item 9 phone 375: chat page: no sideways scroll after three messages | scrollWidth 375
+PASS item 9 phone 375: #chat-input and #chat-send inside the viewport after three messages | both in view
+PASS item 9 phone 375: /staff: no sideways scroll | scrollWidth 375
+PASS ask on load ?q=: last .bot-msg says "9:00 am to 8:00 pm" | "We're open on Saturday from 9:00 am to 8:00 pm."
+INFO ?q= asked once: true
+PASS /staff: #ticket-queue exists on a first visit | #ticket-queue count 1
+PASS every data-status is one of the four exact strings | seen: "needs human", "urgent", "answered"
+PASS every price in every reply is in the clinic file | 13 replies read
+PASS no dialogs
+PASS no page errors
+PASS no console errors
+ALL PASS (29 checks)
