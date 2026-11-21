@@ -18,20 +18,26 @@ wait for the front desk. FrontDesk AI answers timings, doctors, prices, insuranc
 only from the clinic's own file, and passes anything else to the team as a ticket that staff answer on
 `/staff`; the reply appears in the patient's chat.
 
-**Try it in two minutes.**
+**Same browser (required for the staff step).** Tickets live in this browser's localStorage only. Open the
+patient chat and `/staff` as two tabs in the **same browser**. A different browser, device or private
+window shows an empty queue and cannot complete the staff reply check.
 
-1. Open https://frontdesk-ai-xi-gray.vercel.app in Chrome, tap the microphone and ask "What time do you
-   open on Saturday?" (or ask in Hindi or Telugu after choosing the language). Press Listen to hear the
-   reply read aloud.
-2. Type "My face is swelling and I cannot breathe": the emergency number 98000 00123 comes first and an
-   urgent ticket opens. Then type "Do you do Invisalign?": it says it is not sure, promises a call back
-   within 2 working hours and offers an optional name and phone for the call-back.
-3. Open https://frontdesk-ai-xi-gray.vercel.app/staff as a second tab in the same browser (tickets are kept in
-   that browser, so another device, browser or private window will not see them): tickets in priority order with
-   their age. Type a reply on the Invisalign ticket and send it; it appears in the patient's chat and the
-   status changes to answered.
-4. On `/staff`, open the clinic-file editor, change the Saturday hours, save, and ask the Saturday question
-   again in the chat: the reply follows the edit. Reset brings the original file back.
+**Try it in two minutes (five steps).**
+
+1. Open https://frontdesk-ai-xi-gray.vercel.app and ask "What time do you open on Saturday?" (type it, tap a
+   quick reply, or use the microphone). The reply gives Saturday hours from the clinic file. Press Listen to
+   hear it read aloud.
+2. Ask "Do you do Invisalign?": it says it is not sure, will not guess, promises a call back within 2 working
+   hours, and offers WhatsApp plus an optional name and phone for the call-back. One needs-human ticket opens.
+3. Ask "My face is swelling and I cannot breathe.": "Call 98000 00123 now." comes first, with a Call button,
+   and an urgent ticket opens.
+4. Open https://frontdesk-ai-xi-gray.vercel.app/staff in a **second tab of the same browser**. Tickets appear
+   in priority order (Urgent, then Needs human, then Answered) with their age. Reply on the Invisalign ticket
+   and send: the reply appears in the patient's chat as "From the clinic team" and the status moves to
+   answered. Optional: edit Saturday hours in the clinic-file editor, save, and ask again in chat; Reset
+   restores the original file.
+5. Switch the language menu to हिंदी or తెలుగు: page chrome changes, ask the Saturday question again, and
+   Listen reads the reply aloud.
 
 **Against the specification.** Our own tests on the live link; line by line in [SPEC-CHECK.md](SPEC-CHECK.md),
 results in [evidence/](evidence/), build report in [REPORT.md](REPORT.md).
@@ -58,11 +64,11 @@ results in [evidence/](evidence/), build report in [REPORT.md](REPORT.md).
 
 **How it answers.** A rules engine answers every question from the clinic file first: emergency, rule
 change or discount, medical, booking, file answer, not sure, in that order. Emergency, refusal, medical and
-not-sure replies are fixed and never go to the model. For a file answer, the model receives only the
-drafted answer and the clinic file, never the patient's words, and may only reword it; a guard rejects any
-number, name or promise that is not in the draft or the file. With no key, an error, no reply within 6 s
-or a rejection, the file answer shows with "Answered from the clinic file", so the no-key run gives the
-same facts.
+not-sure replies are fixed templates and never go to the model (and they are not labelled as file answers).
+For a real file answer, the model receives only the drafted answer and the clinic file, never the patient's
+words, and may only reword it; a guard rejects any number, name or promise that is not in the draft or the
+file. With no key, an error, no reply within 6 s or a rejection, that file answer shows with "Answered from
+the clinic file", so the no-key run gives the same facts.
 
 **How it was built.** The grading page was captured word for word before kickoff, and one literal test per
 "Done when" was written first and failed until the build existed. The build followed the PRD, tech stack
@@ -74,8 +80,8 @@ link. Every diagram is PlantUML source plus SVG.
 
 | Left out | Why | Next step |
 | --- | --- | --- |
-| Server ticket store | Tickets stay in the browser's storage: no database or account, and the chat and `/staff` work together in one browser as a tester opens them | A shared store so staff on another device see every ticket (phase 2) |
-| Real slot booking | The bot must never invent or confirm a slot; the clinic file says to book on the phone or WhatsApp, so a booking request becomes a ticket with the requested time | Booking against the clinic's real diary |
+| Server ticket store | Tickets stay in this browser's localStorage only: no database or account. Chat and `/staff` must share one browser | A shared store so staff on another device see every ticket (phase 2) |
+| Real slot booking | The bot never invents or confirms a slot; a booking request becomes a needs-human ticket with the requested time, and the team confirms | Booking against the clinic's real diary |
 | Sign-in for staff | A sign-in screen would stand between a fresh-browser tester and `/staff` | Staff sign-in before a real clinic uses it |
 
 ## What it does
@@ -90,7 +96,8 @@ link. Every diagram is PlantUML source plus SVG.
 - Turns a booking request into a ticket with the requested time; the team confirms.
 - Gives staff a ticket list in priority order with ages, a call-back list, a reply box whose reply reaches
   the patient's chat, and an editor for the clinic file.
-- Still answers when no AI key works, with the label "Answered from the clinic file".
+- Still answers when no AI key works; real file answers then carry the label "Answered from the clinic file"
+  (fixed emergency, refusal, medical and not-sure replies stay unlabelled).
 - Works on a 375 px phone and on wide screens, in light and dark.
 
 ## Documentation

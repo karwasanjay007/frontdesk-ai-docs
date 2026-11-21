@@ -127,13 +127,14 @@ patient.
 As the clinic owner, I want the chat to keep answering when the model is down so that no patient is left
 without a reply.
 
-**Status:** Built. `last-brief-live-nokey.txt`: "PASS item 8 no key: Saturday answered with the key removed" and "PASS item 8 no key: reply shows "Answered from the clinic file""; "ALL PASS (30 checks)". With the key, model-worded replies carry no label: `last-brief-live.txt` "INFO item 8 (key present, not graded): label "Answered from the clinic file" shown: false".
+**Status:** Built. `last-brief-live-nokey.txt`: "PASS item 8 no key: Saturday answered with the key removed" and "PASS item 8 no key: reply shows "Answered from the clinic file""; "ALL PASS (30 checks)". With the key, model-worded replies carry no label: `last-brief-live.txt` "INFO item 8 (key present, not graded): label "Answered from the clinic file" shown: false". Critique fix (code PR #1): the label is shown only for real file answers (`kind` answer, `modelOk`); emergency, refuse, medical, booking and not-sure templates stay unlabelled.
 
 | ID | Given | When | Then | Trace | Planned check |
 | --- | --- | --- | --- | --- | --- |
 | AC-E2.F4.1 | The key is removed | The patient asks "What time do you open on Saturday?" | The reply says 9:00 am to 8:00 pm and shows the small label "Answered from the clinic file" | S-8, F-10 | `brief.mjs [R8 no key]` |
 | AC-E2.F4.2 | The key is removed | Every sample question is asked | Each meets its must include and must not include, as in the run with the key | S-10 to S-17 | `questions.mjs` (no-key run) |
 | AC-E2.F4.3 | The key is set and the model's text was used | The reply shows | It does not carry the label | G15 | manual |
+| AC-E2.F4.4 | An emergency, refuse, medical or not-sure reply is shown | The reply is read | It does not carry the "Answered from the clinic file" label | critique fix | code PR #1 local probe |
 
 ## E3 Safety
 
@@ -412,7 +413,7 @@ As a patient, I want to carry my question to the clinic's WhatsApp so that I am 
 | ID | Given | When | Then | Trace | Planned check |
 | --- | --- | --- | --- | --- | --- |
 | AC-E9.F3.1 | A needs-human or booking reply | It shows | It offers a link that opens WhatsApp to the clinic's number from the file with the question already written | G28 | manual |
-| AC-E9.F3.2 | The link shows | The reply text is read | The not-sure words, the call-back promise and the label are unchanged | G28 | `brief.mjs [R3 invisalign]` |
+| AC-E9.F3.2 | The link shows | The reply text is read | The not-sure words and the call-back promise are unchanged; the reply has no "Answered from the clinic file" label (that label is only for real file answers on the modelOk path) | G28 | `brief.mjs [R3 invisalign]` |
 
 ### E9.F4 Any booking-based business
 
