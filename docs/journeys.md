@@ -35,7 +35,7 @@ look is in [style.iuml](diagrams/style.iuml).
 To render again, from this folder (`frontdesk-ai-docs`):
 
 ```
-java -jar /c/Projects/2027/Cursor/vmo2-ai-sdlc-pack/src/plantuml.jar -tsvg -charset UTF-8 docs/diagrams/j*.puml
+java -jar plantuml.jar -tsvg -charset UTF-8 docs/diagrams/j*.puml
 ```
 
 Epics (from [epics.md](epics.md)): E1 Patient chat, E2 Answers from the clinic file, E3 Safety, E4 Tickets

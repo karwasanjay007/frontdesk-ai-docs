@@ -8,7 +8,7 @@ started") and is now filled from the live results of 21 Nov 2026, copied into `e
 | | |
 | --- | --- |
 | Source | https://dashboard.freedomwithai.com/redesign/v3/projects (FrontDesk AI section) |
-| Captured | 20 Nov 2026, 9:30 pm IST, Claude in Chrome get_page_text, word for word in `brief/spec-page.md`; `clinic-data.json` and `sample-questions.json` downloaded and checked identical to the live files at the same time |
+| Captured | 20 Nov 2026, 9:30 pm IST, word for word into `brief/spec-page.md`; `clinic-data.json` and `sample-questions.json` downloaded and checked identical to the live files at the same time |
 | Recaptured before submitting | **UNVERIFIED / To do.** Checked 21 Nov 2026: the live dashboard URL returns a sign-in wall ("Sign in to start your hackathon"); without account access a word-for-word re-diff against `brief/spec-page.md` cannot be completed. An earlier capture, `brief/brief.md`, already differs (it said "one submission per member"). Owner with login should recapture and update this row before submit. |
 | Literal test | `tests/brief.mjs` in the code repository (one check per "Done when", fresh browser, in the order given; run twice, with the key and with the key removed) |
 
