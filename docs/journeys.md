@@ -338,7 +338,9 @@ Source: [j6-clinic-file-edit.puml](diagrams/j6-clinic-file-edit.puml)
    sent as the question. A second tap stops it.
 7. **Speech out.** When `speechSynthesis` exists, each bot reply (not staff replies) has a Listen button.
    It reads the reply's text with `SpeechSynthesisUtterance` in en-IN, hi-IN or te-IN, chosen by
-   `FD.langOf()` on that text, after cancelling anything already speaking.
+   `FD.langOf()` on that text, after cancelling anything already speaking. When the browser has no voice
+   for that language, or its voice has not started within 3 s, the page sends the reply text (never the
+   patient's words, at most 700 characters) to `/api/tts` and plays the WAV it returns.
 
 ![J7 Languages and voice](diagrams/j7-languages-and-voice.svg)
 
@@ -347,6 +349,6 @@ Source: [j7-languages-and-voice.puml](diagrams/j7-languages-and-voice.puml)
 **Error and edge paths.**
 - Hindi written in Latin letters ("kam karo") is read as English script, so the reply is in English; some
   such words are still caught by the rules (for example the discount words).
-- Without speech recognition the mic stays hidden; without speech synthesis there is no Listen button.
+- Without speech recognition the mic stays hidden; without speech synthesis there is no Listen button. If the server voice also fails, the button says no voice is available.
 - A recognition error or the end of speech clears the listening state; nothing is sent.
 - The chosen language is kept in `frontdesk.lang` for the next visit.

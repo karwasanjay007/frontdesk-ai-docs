@@ -11,6 +11,7 @@ System_Ext(whatsapp, "WhatsApp", "wa.me link")
 System_Boundary(vercel, "Vercel project frontdesk-ai (team elodos, *.vercel.app)") {
   Container(static, "Static files", "HTML, CSS, JavaScript, JSON", "index.html, staff/index.html, shared scripts, clinic-data.json; no build step")
   Container(fn, "api/chat", "Vercel serverless function, Node.js", "GET: warm-up, returns ok. POST: takes the drafted answer, its facts, the language and the clinic file (never the patient's words); calls the model with the key from the environment; 5 s limit; returns text only")
+  Container(tts, "api/tts", "Vercel serverless function, Node.js", "POST {text, lang}: the bot's reply text only, at most 700 characters; calls openai/gpt-audio-mini for pcm16 audio at 24 kHz, returns audio/wav; 15 s limit")
 }
 
 System_Boundary(browser, "The browser") {
@@ -26,6 +27,8 @@ Rel(static, chat, "Serves", "HTTPS")
 Rel(static, staffui, "Serves", "HTTPS")
 Rel(chat, fn, "GET warm-up on load; POST draft, facts, language, clinic file (6 s limit)", "HTTPS, JSON")
 Rel(fn, openrouter, "POST /api/v1/chat/completions", "HTTPS, OPENROUTER_API_KEY in the Vercel environment")
+Rel(chat, tts, "POST reply text when the browser has no voice for the language or is slow (3 s)", "HTTPS, JSON")
+Rel(tts, openrouter, "Streams audio", "HTTPS, OPENROUTER_API_KEY in the Vercel environment")
 Rel(openrouter, deepseek, "Routes the request")
 Rel(chat, ls, "Writes tickets, reads staff replies and clinic edits")
 Rel(staffui, ls, "Reads tickets, writes replies, status and clinic edits")

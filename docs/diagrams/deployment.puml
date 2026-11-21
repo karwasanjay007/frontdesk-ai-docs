@@ -10,7 +10,8 @@ Deployment_Node(vercel, "Vercel, team elodos", "Hobby") {
   Deployment_Node(proj, "Project frontdesk-ai", "frontdesk-ai-xi-gray.vercel.app, HTTPS") {
     Container(static, "Static files", "CDN", "index.html, staff/index.html, core.js, chat.js, staff/staff.js, styles.css, clinic-data.json, icon.svg")
     Container(fn, "api/chat", "Vercel serverless function, Node.js", "Warm-up GET; POST rewords a draft; 5 s model limit")
-    ContainerDb(env, "Environment", "Production, sensitive", "OPENROUTER_API_KEY (hidden); optional OPENROUTER_MODEL")
+    Container(tts, "api/tts", "Vercel serverless function, Node.js", "POST reply text, returns WAV; 15 s model limit")
+    ContainerDb(env, "Environment", "Production, sensitive", "OPENROUTER_API_KEY (hidden); optional OPENROUTER_MODEL, OPENROUTER_TTS_MODEL")
   }
 }
 
@@ -24,6 +25,9 @@ System_Ext(openrouter, "OpenRouter", "deepseek/deepseek-v4.1-flash")
 Rel(src, proj, "vercel deploy --prod --yes --scope elodos", "HTTPS")
 Rel(pages, static, "Loads", "HTTPS")
 Rel(pages, fn, "GET warm-up; POST draft", "HTTPS, JSON")
+Rel(pages, tts, "POST reply text for Listen", "HTTPS, JSON")
+Rel(tts, env, "Reads the key")
+Rel(tts, openrouter, "Audio", "HTTPS")
 Rel(fn, env, "Reads the key")
 Rel(fn, openrouter, "Chat completions", "HTTPS")
 Rel(pages, ls, "Reads and writes")

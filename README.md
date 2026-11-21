@@ -38,7 +38,7 @@ window shows an empty queue and cannot complete the staff reply check.
    answered. Optional: edit Saturday hours in the clinic-file editor, save, and ask again in chat; Reset
    restores the original file.
 5. Switch the language menu to हिंदी or తెలుగు: page chrome changes, ask the Saturday question again, and
-   Listen reads the reply aloud.
+   Listen reads the reply aloud; where the browser has no voice for the language (Chrome on Windows has no Telugu voice), a server voice plays it instead.
 
 **Against the specification.** Our own tests on the live link; line by line in [SPEC-CHECK.md](SPEC-CHECK.md),
 results in [evidence/](evidence/), build report in [REPORT.md](REPORT.md).

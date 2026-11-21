@@ -429,7 +429,7 @@ As a business owner who is not a dentist, I want to use the same product with my
 
 As a patient who would rather speak, I want to ask by voice and hear the reply in English, Hindi or Telugu.
 
-**Status:** Built, checked by hand. The microphone uses the browser's speech recognition (en-IN, hi-IN, te-IN) and is hidden where it is not supported; each reply has a Listen button that reads it aloud in its language. No saved test; at 375 px `last-brief-live.txt` still passes item 9 with the buttons present.
+**Status:** Built, checked by hand. The microphone uses the browser's speech recognition (en-IN, hi-IN, te-IN) and is hidden where it is not supported; each reply has a Listen button that reads it aloud in its language, with a server voice (`api/tts`) as backup when the browser has none for that language or is slow to start (checked 21 Nov 2026: Telugu and Hindi audio transcribed back word for word, and Telugu Listen played to the end in Chrome). No saved test; at 375 px `last-brief-live.txt` still passes item 9 with the buttons present.
 
 | ID | Given | When | Then | Trace | Planned check |
 | --- | --- | --- | --- | --- | --- |

@@ -5,7 +5,7 @@ Written from the code as built and live at https://frontdesk-ai-xi-gray.vercel.a
 
 | | |
 | --- | --- |
-| Code | `frontdesk-ai` (private): `core.js`, `chat.js`, `staff/staff.js`, `api/chat.js`, `styles.css`, `index.html`, `staff/index.html`, `clinic-data.json`, `tests/` |
+| Code | `frontdesk-ai` (private): `core.js`, `chat.js`, `staff/staff.js`, `api/chat.js`, `api/tts.js`, `styles.css`, `index.html`, `staff/index.html`, `clinic-data.json`, `tests/` |
 | Live | https://frontdesk-ai-xi-gray.vercel.app, Vercel project `frontdesk-ai`, team elodos |
 | Last revised | 20 Nov 2026 |
 
@@ -92,9 +92,10 @@ Graded-build records:
 | Languages, theme, helpers | `core.js` | Detects Devanagari and Telugu script; reply templates `T` in en, hi, te; theme; escaping | `langOf(text)`, `getLang()`, `setLang()`, `applyTheme()`, `toggleTheme()`, `esc(s)`, `ago(ms)` | Reads and writes `frontdesk.lang`, `frontdesk.theme` |
 | Chat UI | `chat.js` | `#chat-input`, `#chat-send`, the greeting, the typing indicator, each reply added once as `.bot-msg` with the label when from the file; staff replies as `.bot-msg` "From the clinic team"; `?q=` sent once and removed from the address; quick replies | `send(q)`, `render()`, `botRow()`, `userRow()`, `ticketRows()`, `showTyping()`, `labels()`, `init()` | Reads the clinic and ticket stores; writes tickets |
 | Model client | `chat.js` | For `answer` replies only, posts the draft, facts, language and clinic file to `api/chat`; gives up at 6 s; returns guarded text or nothing; the warm-up GET on load | `askModel(q, ruled)` | Network only |
-| Today card and extras | `chat.js` | Hours, doctors and address beside the chat; Call, WhatsApp and Directions buttons; open or closed chip; WhatsApp link with the question written in; microphone and Listen; the optional call-back form | `side()`, `openChip()`, `waLink(question)`, `voice()`, the `[data-cb]` submit handler | Reads the clinic data; writes `contactName`, `contactPhone` on a ticket |
+| Today card and extras | `chat.js` | Hours, doctors and address (clinic info) in a side panel below the top bar on screens 900 px and wider, with the chat moved left beside it and no dimmed backdrop, and a full-screen panel on a phone; Call, WhatsApp and Directions buttons; open or closed chip; WhatsApp link with the question written in; microphone and Listen (the browser voice, or `api/tts` when the browser has no voice for the reply's language or its voice has not started within 3 s; if that fails the button says no voice is available); the optional call-back form | `side()`, `openChip()`, `waLink(question)`, `voice()`, the `[data-cb]` submit handler | Reads the clinic data; writes `contactName`, `contactPhone` on a ticket |
 | Staff UI | `staff/staff.js` | `#ticket-queue` with one `[data-ticket]` per ticket and its `data-status`; counts; age and "over 2 h"; one open ticket holding `#staff-reply` and `#staff-send`; Close ticket; "To call back" list with the call-back name and phone; "Could not answer" list (not-sure questions, latest 12); the clinic file editor with Save and Reset | `render()`, `sendReply()`, `clinicEditor()`, `init()` | Reads and writes the ticket and clinic stores |
 | `api/chat` function | `api/chat.js` | GET returns `{ ok: true }` (warm-up). POST reads `draft`, `facts`, `lang`, `clinic`; with no key returns 503; calls OpenRouter with a 5 s abort; returns `{ text, model }` or `{ error }` with a short code; a reply cut off by the token limit is refused | `handler(req, res)`, `readBody(req)` (60,000 character limit), `send(res, code, body)` | Reads `OPENROUTER_API_KEY` and `OPENROUTER_MODEL`; no storage |
+| `api/tts` function | `api/tts.js` | POST `{ text, lang }` returns `audio/wav`. The backup voice for Listen: calls OpenRouter with model `openai/gpt-audio-mini`, streams pcm16 at 24 kHz and wraps it as WAV; 15 s abort; the chat page sends only the bot's reply text, never the patient's words, at most 700 characters | `handler(req, res)` | Reads `OPENROUTER_API_KEY` and `OPENROUTER_TTS_MODEL`; no storage |
 
 ## 6. Runtime views
 
@@ -113,11 +114,11 @@ The ticket and clinic file shapes, the localStorage keys and the `api/chat` requ
 ![Deployment](docs/diagrams/deployment.svg)
 
 - Vercel project `frontdesk-ai` in team elodos, on its own address https://frontdesk-ai-xi-gray.vercel.app,
-  never sai4b.com. Static files and one Node.js function (`api/chat.js`); no build step and no
+  never sai4b.com. Static files and two Node.js functions (`api/chat.js`, `api/tts.js`); no build step and no
   `vercel.json`.
 - Deploy from PowerShell in the code folder: `vercel deploy --prod --yes --scope elodos`.
 - `OPENROUTER_API_KEY` is a sensitive Production environment variable: hidden in the dashboard and never in
-  the repository, the page code or a document. `OPENROUTER_MODEL` is optional.
+  the repository, the page code or a document. `OPENROUTER_MODEL` and `OPENROUTER_TTS_MODEL` (default `openai/gpt-audio-mini`) are optional.
 - `.vercelignore` keeps off the site: `.vercel`, `.env*`, `brief`, `brand`, `tests`, every `*.md`,
   `kilo.jsonc`, `.aider.conf.yml` and the agent tool folders (`.clinerules`, `.cursor`, `.github`,
   `.vscode`, `.windsurf`).
@@ -127,7 +128,8 @@ The ticket and clinic file shapes, the localStorage keys and the `api/chat` requ
 - **Security and privacy.** The key lives only in the Vercel environment and is read only by
   `api/chat.js`. The function returns only `{ text, model }` or a short `{ error }` code, never the key or
   the provider's raw response, with `Cache-Control: no-store`. The model never sees the patient's words
-  (AD-5a). Every model reply passes `guard()` and is shown as text. Every patient, staff and file text is
+  (AD-5a); `api/tts.js` receives only the bot's reply text (at most 700 characters), with the key kept in the
+  same server environment. Every model reply passes `guard()` and is shown as text. Every patient, staff and file text is
   escaped with `esc()` before it is put into the page. Tickets stay in the browser; what leaves the device
   is the drafted answer, its facts, the language and the clinic file, only for answerable replies. The
   chat says: "Messages stay in this browser and reach only the clinic team. Please do not type medical

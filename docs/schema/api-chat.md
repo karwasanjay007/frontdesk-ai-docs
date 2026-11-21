@@ -74,3 +74,17 @@ shows the rules engine's text and stores `source: "file"` on the ticket. The UI 
 clinic file" is added to every reply the model did not word. Fixed
 emergency, refuse, medical, booking and not-sure replies never call this function but carry the label
 too.
+
+## POST /api/tts (backup voice for Listen)
+
+`api/tts.js` is a second function. The chat page calls it only when the browser has no voice for the reply's
+language (Chrome on Windows has no Telugu voice) or its voice has not started within 3 s. It sends the bot's
+reply text, never the patient's words, at most 700 characters.
+
+- Request: `{ "text": "...", "lang": "<language>" }`.
+- It calls OpenRouter with the model in `OPENROUTER_TTS_MODEL` (default `openai/gpt-audio-mini`), streams
+  pcm16 audio at 24 kHz and wraps it as WAV. The limit is 15 s.
+- 200 returns `audio/wav`. Any failure returns an error code and the button says no voice is available.
+- The key is read from the server environment, as for `api/chat`, and is never returned.
+- Verified 21 Nov 2026: Telugu and Hindi audio transcribed back word for word; Telugu Listen played to the
+  end in Chrome.
