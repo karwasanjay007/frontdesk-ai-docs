@@ -25,7 +25,7 @@ a guard rejects invented prices or promises. With the key blocked, the same fact
 patient chat and `/staff` as two tabs in the **same browser**. A different browser, device or private
 window shows an empty queue and cannot complete the staff reply check.
 
-**Try it in 60 seconds (then finish the five-step path if you have time).**
+**Try it in two minutes (five steps).**
 
 1. Open https://frontdesk-ai-xi-gray.vercel.app and ask "Are you open on Saturday?" (type it, tap a
    quick reply, or use the microphone).
@@ -33,18 +33,20 @@ window shows an empty queue and cannot complete the staff reply check.
    One needs-human ticket opens.
 3. Ask "My face is swelling and I cannot breathe.": "Call 98000 00123 now." comes first, with a Call button,
    and an urgent ticket opens.
-4. Open https://frontdesk-ai-xi-gray.vercel.app/staff in a **second tab of the same browser**. Reply on the
-   Invisalign ticket: it appears in chat as "From the clinic team".
-5. Optional: switch to हिंदी or తెలుగు; Listen reads the reply (server voice if the browser has none).
-
-Paste-ready dashboard copy lives in [REPORT.md](REPORT.md) (Judges' note).
+4. Open https://frontdesk-ai-xi-gray.vercel.app/staff in a **second tab of the same browser** (also linked from Clinic info, which opens beside the chat). Tickets appear
+   in priority order (Urgent, then Needs human, then Answered) with their age. Every ticket has its own reply box
+   (`#staff-reply`) and Send button (`#staff-send`). Reply on the Invisalign ticket and send: the reply appears in the patient's chat as "From the clinic team" and the status moves to
+   answered. Optional: edit Saturday hours in the clinic-file editor, save, and ask again in chat; Reset
+   restores the original file.
+5. Set the language menu (top right) to HI or TE: the whole page changes, ask the Saturday question again, and
+   Listen reads the reply aloud; where the browser has no voice for the language (Chrome on Windows has no Telugu voice), a server voice plays it instead.
 
 **Against the specification.** Our own tests on the live link; line by line in [SPEC-CHECK.md](SPEC-CHECK.md),
 results in [evidence/](evidence/), build report in [REPORT.md](REPORT.md).
 
 | Part of the scoring | Marks | Status | Evidence |
 | --- | --- | --- | --- |
-| Must do, 9 items | (in the hidden-data test) | All met, with the key and with the model blocked | [last-brief-live.txt](evidence/last-brief-live.txt) ALL PASS (28 checks); [last-brief-live-nokey.txt](evidence/last-brief-live-nokey.txt) ALL PASS (30 checks) |
+| Must do, 9 items | (in the hidden-data test) | All met, with the key and with the model blocked | [last-brief-live.txt](evidence/last-brief-live.txt) ALL PASS (29 checks); [last-brief-nokey-live.txt](evidence/last-brief-nokey-live.txt) ALL PASS (31 checks); [last-audit-ai-live.txt](evidence/last-audit-ai-live.txt) and [last-audit-blocked-live.txt](evidence/last-audit-blocked-live.txt): 30 grader-style questions ALL PASS |
 | How they check: ids, classes, `?q=`, no-key run | (in the hidden-data test) | All met | the same two files; [last-questions-live.txt](evidence/last-questions-live.txt) ALL PASS (16 checks) |
 | Hidden-data test | 60 | Met on our tests; the graders' questions and data are unseen | the files above and [last-engine.txt](evidence/last-engine.txt) ALL PASS (48 checks) |
 | Bonus menu, at most 6 count | 30 | All 6 met, both ways | [last-bonus-live.txt](evidence/last-bonus-live.txt) ALL PASS (15 checks) |
