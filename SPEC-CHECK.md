@@ -9,7 +9,7 @@ started") and is now filled from the live results of 21 Nov 2026, copied into `e
 | --- | --- |
 | Source | https://dashboard.freedomwithai.com/redesign/v3/projects (FrontDesk AI section) |
 | Captured | 20 Nov 2026, 9:30 pm IST, Claude in Chrome get_page_text, word for word in `brief/spec-page.md`; `clinic-data.json` and `sample-questions.json` downloaded and checked identical to the live files at the same time |
-| Recaptured before submitting | To do on 21 Nov 2026 before 2:00 pm IST; compare with `brief/spec-page.md` (an earlier capture, `brief/brief.md`, already differs: it said "one submission per member") |
+| Recaptured before submitting | **UNVERIFIED / To do.** Checked 21 Nov 2026: the live dashboard URL returns a sign-in wall ("Sign in to start your hackathon"); without account access a word-for-word re-diff against `brief/spec-page.md` cannot be completed. An earlier capture, `brief/brief.md`, already differs (it said "one submission per member"). Owner with login should recapture and update this row before submit. |
 | Literal test | `tests/brief.mjs` in the code repository (one check per "Done when", fresh browser, in the order given; run twice, with the key and with the key removed) |
 
 Evidence quotes the PASS line each test printed against the live link https://frontdesk-ai-xi-gray.vercel.app.
@@ -157,13 +157,14 @@ Measured on 21 Nov 2026 with every test above passing. What our tests cannot sho
   roles, symptoms and products not offered are written for a dental clinic. With a gym or salon file,
   "Who is the trainer?" gets "not sure", and fixed replies still say "a dentist must see you" (functional
   review finding 17).
-- **Tickets live on one device.** Tickets are kept in the browser's storage. A tester that opens `/staff`
-  in a separate browser profile or a fresh context sees no tickets, and a staff reply then cannot reach
-  the chat. The spec does not say how the tester opens the two pages; our tests use one browser context
-  for both, as a person would.
+- **Tickets live on one device.** Tickets are kept in this browser's localStorage only. A tester that opens
+  `/staff` in a separate browser, device or private window sees no tickets, and a staff reply then cannot
+  reach the chat. The README and the judges' note say this in plain words. The spec does not say how the
+  tester opens the two pages; our tests use one browser context for both, as a person would.
 - **The model can be slow.** With the key, the server allows the model 5 s and the browser waits at most
-  6 s. If the model is slow or its free limit runs out during grading, the file answer is shown with the
-  label "Answered from the clinic file". The facts are the same (the no-key run passes all 30 checks), but
-  the keyed run then reads like the no-key run.
-- **The spec page changes.** It was captured on 20 Nov 2026; recapture before 2:00 pm IST on 21 Nov and
-  compare.
+  6 s. If the model is slow or its free limit runs out during grading, a real file answer is shown with the
+  label "Answered from the clinic file" (fixed emergency / refuse / medical / not-sure templates stay
+  unlabelled). The facts are the same (the no-key run passes all 30 checks), but the keyed run then reads
+  like the no-key run.
+- **The spec page changes.** Captured 20 Nov 2026. Recapture on 21 Nov is UNVERIFIED: the live dashboard
+  needs sign-in. Still To do for whoever has account access.

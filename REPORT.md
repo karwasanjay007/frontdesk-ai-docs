@@ -16,7 +16,8 @@ link, saved in `evidence/`; none of it is the graders' tester.
 | Go further (after hours, call-back list, WhatsApp hand-off, any business, voice) | Four of five built; any business only partly, because the word lists that recognise intents are dental | `docs/epics.md` E9; functional review finding 17 |
 | Rules engine and guard, without a browser | ALL PASS (48 checks) | `evidence/last-engine.txt` |
 | Documentation | SPEC-CHECK, PRD, TECH-STACK, ARCHITECTURE, IMPLEMENTATION-PLAN, epics, journeys, data model, schemas, four reviews | this repository |
-| Submission | Not done: the spec page is to be recaptured and compared before 2:00 pm IST on 21 Nov 2026, then the form filled on request | SPEC-CHECK.md header |
+| Submission | Paste-ready judges' note below; live dashboard recapture still UNVERIFIED (sign-in required; see SPEC-CHECK.md) | SPEC-CHECK.md header; judges' note in this file |
+| Critique fixes (code PR) | Label tightened; +18 paraphrased fixtures; aligners brand → not sure; patient chat full-bleed UI | Code PR `frontdesk-ai` #1; local `node tests/engine.cjs` ALL PASS; `node tests/brief.mjs … --nokey` ALL PASS (31 checks). See `evidence/critique-fixes-note.md` |
 
 ## What was built
 
@@ -47,7 +48,8 @@ link, saved in `evidence/`; none of it is the graders' tester.
    (ticket, call-back, branch, free, discount) must be in the draft or the clinic file, in any script, and
    every fact in the draft must still be there. Anything else is rejected.
 4. **Fallback with the label.** With no key, an error, no reply within 6 s (the server allows the model 5 s)
-   or a guard rejection, the rules engine's answer is shown with the label "Answered from the clinic file".
+   or a guard rejection, a real file answer (`kind` answer, `modelOk`) is shown with the label "Answered from
+   the clinic file". Fixed emergency, refusal, medical, booking and not-sure templates are never labelled.
    The facts are the same either way, which is why the run with the model blocked passes every check.
 
 ## Claims ledger
@@ -108,27 +110,39 @@ Four independent reviews before release, reports in `review/`. One line per revi
 | `evidence/last-widths-live.txt` | Scroll width, content edge and target size at 375, 768, 1366, 1920 and 2560 px, both pages | ALL PASS (20 checks) |
 | `evidence/last-contrast-live.txt` | Contrast in light and dark, at rest and on hover | 17 lines flagged, every one a BLUE-BG note for text on the teal brand colour, measuring 5.89:1 or more; none under 4.5:1, so not a failure |
 | `evidence/last-engine.txt` | The rules engine and the guard in Node: review cases, sample questions, crafted bad model replies | ALL PASS (48 checks) |
+| `evidence/critique-fixes-note.md` | Cite of code PR #1 local runs (engine ALL PASS; brief --nokey ALL PASS, 31 checks); label rule; dashboard recapture UNVERIFIED | Cited from PR description; not a new live `last-*.txt` capture |
 | `evidence/last-brief-local.txt`, `last-brief-local-nokey.txt`, `last-questions-local.txt` | Kickoff runs before anything was built (no local server answering) | Fail by design; kept as the record that the tests were written first |
 
 ## What is left
 
 - **Rotate the OpenRouter key after the competition.** It has been used throughout the build and the tests.
-- **Server ticket store (phase 2).** Tickets live in one browser; staff on another device see nothing.
-- **Recapture the spec before submitting.** Compare the live page with `brief/spec-page.md` in the code
-  repository before 2:00 pm IST on 21 Nov 2026, and update SPEC-CHECK.md if anything changed.
+- **Server ticket store (phase 2).** Tickets live in one browser's localStorage; staff on another device,
+  browser or private window see nothing. Graders must open chat and `/staff` in the same browser.
+- **Recapture the spec before submitting.** Attempted 21 Nov 2026: the live dashboard at
+  `https://dashboard.freedomwithai.com/redesign/v3/projects` requires sign-in, so a word-for-word re-diff
+  against `brief/spec-page.md` is UNVERIFIED. Still To do for whoever has account access. See SPEC-CHECK.md.
 - Open review items: visual 5, 8, 9, 10, 12 to 14; brief audit 6 (partly) and 7; functional 17 (partly).
 
 ## Judges' note (paste into "Details for the judges")
 
 WHAT IT IS
-FrontDesk AI is the front desk of a dental clinic, open at any hour. Patients type or speak in English, Hindi or Telugu and get answers only from the clinic's own file. What it cannot answer becomes a ticket, and a staff reply on /staff appears in the patient's chat.
+FrontDesk AI is the front desk of a dental clinic, open at any hour. Patients type or speak in English, Hindi or Telugu and get answers only from the clinic's own file. What it cannot answer becomes a ticket, and a staff reply on /staff appears in the patient's chat. It never invents a booking slot: a booking request is a needs-human ticket with the requested time, and the clinic confirms.
 
-TRY IT IN TWO MINUTES (no login; open both pages in the same browser)
+SAME BROWSER (read this first)
+Tickets are stored in this browser's localStorage only. Open the patient chat and /staff as two tabs in the SAME browser. A different browser, device or private window shows an empty queue, so the staff reply check will fail.
+
+TRY IT IN TWO MINUTES (no login; five steps)
 1. Ask: What time do you open on Saturday? Type it, tap a quick reply, or use the microphone.
-2. Ask: Do you do Invisalign? Not sure, a call back within 2 working hours, WhatsApp and a call-back form with any country code.
-3. Ask: My face is swelling and I cannot breathe. 98000 00123 comes first, with a Call button, and an urgent ticket opens.
-4. Open Staff page: tickets in priority order, each with its own #staff-reply and #staff-send. Reply on any ticket: it appears in the chat and the status moves.
+2. Ask: Do you do Invisalign? Not sure, will not guess, a call back within 2 working hours, WhatsApp and a call-back form with any country code. One needs-human ticket.
+3. Ask: My face is swelling and I cannot breathe. Call 98000 00123 now comes first, with a Call button, and an urgent ticket opens.
+4. Open /staff in a second tab of the SAME browser: tickets in priority order, each open ticket with #staff-reply and #staff-send. Reply on the Invisalign ticket: it appears in the chat as From the clinic team and the status moves to answered.
 5. Switch the language menu to हिंदी or తెలుగు: the whole page changes, replies follow, and Listen reads them aloud.
+
+HONEST LIMITS
+- Tickets are browser-local only (see same-browser warning above). No server ticket store yet.
+- No invented appointments: booking becomes a ticket; the team confirms on the phone or WhatsApp.
+- "Answered from the clinic file" appears only when a real file answer could not be reworded by the model (no key, timeout, error or guard reject). Fixed emergency, refusal, medical and not-sure replies are not labelled that way.
+- Our own tests on the live link all pass; the graders' hidden questions are unseen. Score estimates are ours, not the graders'.
 
 DOCUMENTED FROM REQUIREMENTS TO PRODUCTION (public repo, link below)
 Written before any code, kept true to the build:
@@ -139,8 +153,8 @@ Written before any code, kept true to the build:
 - Production: four independent reviews (functional, visual, industry, brief audit), each with its status after fixes, and the release steps.
 
 WHY IT STANDS OUT
-- Same answers with or without the AI key: a rules engine answers from the file first; the model only rewords, never sees the patient's words, and a guard rejects any price, name or promise not in the file. Without the key the answer carries "Answered from the clinic file".
-- Honest when the file is silent: a female dentist, whitening for children or laser gum surgery get "not sure" and a ticket, never a guess.
+- Same answers with or without the AI key: a rules engine answers from the file first; the model only rewords, never sees the patient's words, and a guard rejects any price, name or promise not in the file. Without the key a file answer carries "Answered from the clinic file".
+- Honest when the file is silent: Invisalign, a female dentist, whitening for children or laser gum surgery get "not sure" and a ticket, never a guess.
 - Safe: emergency number first, no medicine names or diagnoses, no discounts, "ignore your rules" refused.
 - Voice that keeps working: if the browser's speech service refuses, it records and transcribes on the server.
 - Made for a real clinic: morning call-back list, bookings saved with the real date (honours ?today=), WhatsApp Web on a computer, a "Could not answer" list, New chat, Clear all tickets with Undo, and any clinic can load its own file.

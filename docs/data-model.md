@@ -48,6 +48,7 @@ Every message a patient sends makes one ticket, whatever the reply. `chat.js` bu
 | `q` | `chat.js` | the message, trimmed |
 | `reply` | `chat.js` | the model's text when it passed the guard, otherwise the rules engine's text |
 | `source` | `chat.js` | `model` or `file` |
+| `modelOk` | rules engine via `chat.js` | `true` when this was a real file answer that may go to the model; the UI shows "Answered from the clinic file" only when `source` is `file`, `kind` is `answer` and `modelOk` is true |
 | `kind` | rules engine | `emergency`, `refuse`, `medical`, `booking`, `answer` or `notsure` |
 | `status` | rules engine, then staff | `urgent`, `needs human`, `answered` or `closed` |
 | `lang` | rules engine | `te` when the message has Telugu script, `hi` for Devanagari, else `en` (the language menu does not set it) |
