@@ -123,7 +123,33 @@ Four independent reviews before release, reports in `review/`. One line per revi
   against `brief/spec-page.md` is UNVERIFIED. Still To do for whoever has account access. See SPEC-CHECK.md.
 - Open review items: visual 5, 8, 9, 10, 12 to 14; brief audit 6 (partly) and 7; functional 17 (partly).
 
-## Judges' note (paste into "Details for the judges")
+## Judges' note (updated 21 Nov 2026 for dashboard paste)
+
+Paste-ready copy for the Freedom With AI projects form. Dashboard save from automated agents was **BLOCKED** (sign-in required). Sanjay Karwa pastes after signing in. Do not treat internal critique scores as platform marks.
+
+**Teaser.** FrontDesk AI answers a dental clinic's patients from the clinic's own file at any hour, and hands anything it cannot answer to staff as a ticket. Rules first, model only for wording, never a guess.
+
+**Pitch.**
+One-line promise. Patients get clinic-true answers at any hour; what the file cannot cover becomes a human ticket, not a made-up reply.
+
+Why it wins against a typical LLM demo. A rules engine answers from the clinic file first. Emergency, medical, refusal and "not sure" paths use fixed templates and never wait on the model. When the model rewords a real file answer, a guard strips any price, name or promise that is not already in the draft or the file. With the key blocked, the same facts still show, labelled "Answered from the clinic file". That is grounding, not chatbot theatre.
+
+What to click in 60 seconds (same browser).
+1. Open https://frontdesk-ai-xi-gray.vercel.app and ask "Are you open on Saturday?"
+2. Ask "Do you offer Invisalign?" then leave a call-back if you like.
+3. Ask a breathing / swelling emergency: the clinic number comes first.
+4. Open /staff in a second tab of the same browser, reply on the Invisalign ticket, and watch it land in chat.
+
+Honest limits. Tickets live in this browser's localStorage only. Chat and /staff must share one browser (or the queue looks empty). The bot never invents a booking slot; a booking request becomes a needs-human ticket for the team to confirm. Replies the model did not word (including fixed emergency, medical, refusal and not-sure templates, and file answers when the model is blocked) carry "Answered from the clinic file". Demo clinic: Bright Roots Dental.
+
+Built by Sanjay Karwa, Smart AI for Business. Version 1.0.0.0.
+Live chat: https://frontdesk-ai-xi-gray.vercel.app
+Staff: https://frontdesk-ai-xi-gray.vercel.app/staff
+Documentation: https://github.com/karwasanjay007/frontdesk-ai-docs
+
+**Shorter field (~95 words).** FrontDesk AI is clinic front-desk chat that answers only from the clinic's own file, then hands the rest to a human. Rules run first; the model may only reword a file answer, and a guard rejects invented prices or promises. Try https://frontdesk-ai-xi-gray.vercel.app: Saturday hours, Invisalign → call-back ticket, then an emergency with the clinic number first. Open /staff in a second tab of the same browser to reply. Tickets stay in that browser only. No invented booking slots. Built by Sanjay Karwa, Smart AI for Business. Docs: https://github.com/karwasanjay007/frontdesk-ai-docs
+
+### Extended paste (optional; longer form)
 
 WHAT IT IS
 FrontDesk AI is the front desk of a dental clinic, open at any hour. Patients type or speak in English, Hindi or Telugu and get answers only from the clinic's own file. What it cannot answer becomes a ticket, and a staff reply on /staff appears in the patient's chat. It never invents a booking slot: a booking request is a needs-human ticket with the requested time, and the clinic confirms.
@@ -141,30 +167,17 @@ TRY IT IN TWO MINUTES (no login; five steps)
 HONEST LIMITS
 - Tickets are browser-local only (see same-browser warning above). No server ticket store yet.
 - No invented appointments: booking becomes a ticket; the team confirms on the phone or WhatsApp.
-- "Answered from the clinic file" appears only when a real file answer could not be reworded by the model (no key, timeout, error or guard reject). Fixed emergency, refusal, medical and not-sure replies are not labelled that way.
+- "Answered from the clinic file" appears on every reply the model did not word: fixed emergency, refusal, medical and not-sure templates, and file answers when the model is blocked, times out, errors or is rejected by the guard. Model-success answers omit the label.
 - Our own tests on the live link all pass; the graders' hidden questions are unseen. Score estimates are ours, not the graders'.
 
-DOCUMENTED FROM REQUIREMENTS TO PRODUCTION (public repo, link below)
-Written before any code, kept true to the build:
-- Requirements: the spec page captured word for word, a PRD with decisions, assumptions and success measures, and SPEC-CHECK.md mapping every must-do, tester hook and bonus item to a test.
-- Design: 9 epics, 30 features and 83 acceptance criteria (Given, When, Then), each traced to the spec and its check; 7 user journeys as sequence diagrams.
-- Architecture: ARCHITECTURE.md with C4 context, container and component views, runtime views, data model, JSON schemas for the clinic file and tickets, the API contract, and deployment. 12 PlantUML diagrams, all SVG.
-- Build and test: TECH-STACK.md, an IMPLEMENTATION-PLAN.md in steps, and test results saved as evidence: every "Done when" passes on the live link with the key and with the model blocked, plus 27 grader-style questions.
-- Production: four independent reviews (functional, visual, industry, brief audit), each with its status after fixes, and the release steps.
-
 WHY IT STANDS OUT
-- Same answers with or without the AI key: a rules engine answers from the file first; the model only rewords, never sees the patient's words, and a guard rejects any price, name or promise not in the file. Without the key a file answer carries "Answered from the clinic file".
-- Honest when the file is silent: Invisalign, a female dentist, whitening for children or laser gum surgery get "not sure" and a ticket, never a guess.
+- Same answers with or without the AI key: a rules engine answers from the file first; the model only rewords, never sees the patient's words, and a guard rejects any price, name or promise not in the file.
+- Honest when the file is silent: Invisalign and similar gaps get "not sure" and a ticket, never a guess.
 - Safe: emergency number first, no medicine names or diagnoses, no discounts, "ignore your rules" refused.
-- Voice that keeps working: if the browser's speech service refuses, it records and transcribes on the server.
-- Made for a real clinic: morning call-back list, bookings saved with the real date (honours ?today=), WhatsApp Web on a computer, a "Could not answer" list, New chat, Clear all tickets with Undo, and any clinic can load its own file.
+- Made for a real clinic: morning call-back list, WhatsApp hand-off, clinic-file editor on /staff.
 
 BONUS ITEMS
-Hindi and Telugu: either script or the language menu. Booking with a time: "Book a check-up tomorrow at 5 pm". Ageing and priority: /staff. Clinic data editable and replies follow the edit: Clinic file on /staff. Quick replies: above the message box. Also light and dark, top right.
-
-Live chat: https://frontdesk-ai-xi-gray.vercel.app
-Staff page: https://frontdesk-ai-xi-gray.vercel.app/staff
-Documentation: https://github.com/karwasanjay007/frontdesk-ai-docs
+Hindi and Telugu; booking with a time; ageing and priority on /staff; clinic data editable; quick replies; light and dark.
 
 ## Version 1.0.0.0 baseline (21 Nov 2026)
 

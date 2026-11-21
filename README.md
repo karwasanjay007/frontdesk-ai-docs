@@ -14,31 +14,30 @@ FrontDesk AI is the front desk chat for a dental clinic: patients get answers fr
 
 ## For the judges: FrontDesk AI in two minutes
 
-**What it is.** A patient with a question for a dental clinic today has to call during opening hours and
-wait for the front desk. FrontDesk AI answers timings, doctors, prices, insurance and location at any hour,
-only from the clinic's own file, and passes anything else to the team as a ticket that staff answer on
-`/staff`; the reply appears in the patient's chat.
+**Promise.** Patients get clinic-true answers at any hour; what the file cannot cover becomes a human
+ticket, not a made-up reply.
+
+**Why not a typical LLM demo.** Rules answer from the clinic file first. Emergency, medical, refusal and
+"not sure" use fixed templates and never wait on the model. The model may only reword a real file answer;
+a guard rejects invented prices or promises. With the key blocked, the same facts still show.
 
 **Same browser (required for the staff step).** Tickets live in this browser's localStorage only. Open the
 patient chat and `/staff` as two tabs in the **same browser**. A different browser, device or private
 window shows an empty queue and cannot complete the staff reply check.
 
-**Try it in two minutes (five steps).**
+**Try it in 60 seconds (then finish the five-step path if you have time).**
 
-1. Open https://frontdesk-ai-xi-gray.vercel.app and ask "What time do you open on Saturday?" (type it, tap a
-   quick reply, or use the microphone). The reply gives Saturday hours from the clinic file. Press Listen to
-   hear it read aloud.
-2. Ask "Do you do Invisalign?": it says it is not sure, will not guess, promises a call back within 2 working
-   hours, and offers WhatsApp plus an optional name and phone for the call-back. One needs-human ticket opens.
+1. Open https://frontdesk-ai-xi-gray.vercel.app and ask "Are you open on Saturday?" (type it, tap a
+   quick reply, or use the microphone).
+2. Ask "Do you offer Invisalign?": not sure, call-back within 2 working hours, optional name and phone.
+   One needs-human ticket opens.
 3. Ask "My face is swelling and I cannot breathe.": "Call 98000 00123 now." comes first, with a Call button,
    and an urgent ticket opens.
-4. Open https://frontdesk-ai-xi-gray.vercel.app/staff in a **second tab of the same browser**. Tickets appear
-   in priority order (Urgent, then Needs human, then Answered) with their age. Reply on the Invisalign ticket
-   and send: the reply appears in the patient's chat as "From the clinic team" and the status moves to
-   answered. Optional: edit Saturday hours in the clinic-file editor, save, and ask again in chat; Reset
-   restores the original file.
-5. Switch the language menu to हिंदी or తెలుగు: page chrome changes, ask the Saturday question again, and
-   Listen reads the reply aloud; where the browser has no voice for the language (Chrome on Windows has no Telugu voice), a server voice plays it instead.
+4. Open https://frontdesk-ai-xi-gray.vercel.app/staff in a **second tab of the same browser**. Reply on the
+   Invisalign ticket: it appears in chat as "From the clinic team".
+5. Optional: switch to हिंदी or తెలుగు; Listen reads the reply (server voice if the browser has none).
+
+Paste-ready dashboard copy lives in [REPORT.md](REPORT.md) (Judges' note).
 
 **Against the specification.** Our own tests on the live link; line by line in [SPEC-CHECK.md](SPEC-CHECK.md),
 results in [evidence/](evidence/), build report in [REPORT.md](REPORT.md).
