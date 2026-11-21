@@ -17,7 +17,7 @@ link, saved in `evidence/`; none of it is the graders' tester.
 | Rules engine and guard, without a browser | ALL PASS (48 checks) | `evidence/last-engine.txt` |
 | Documentation | SPEC-CHECK, PRD, TECH-STACK, ARCHITECTURE, IMPLEMENTATION-PLAN, epics, journeys, data model, schemas, four reviews | this repository |
 | Submission | Paste-ready judges' note below; live dashboard recapture still UNVERIFIED (sign-in required; see SPEC-CHECK.md) | SPEC-CHECK.md header; judges' note in this file |
-| Critique fixes (code PR) | Label tightened; +18 paraphrased fixtures; aligners brand → not sure; patient chat full-bleed UI | Code PR `frontdesk-ai` #1; local `node tests/engine.cjs` ALL PASS; `node tests/brief.mjs … --nokey` ALL PASS (31 checks). See `evidence/critique-fixes-note.md` |
+| Version 1.0.0.0 baseline | Label rule; +18 paraphrased fixtures; aligners brand → not sure; patient chat full-bleed UI | `frontdesk-ai` #1 on main; local `node tests/engine.cjs` ALL PASS; `node tests/brief.mjs … --nokey` ALL PASS (31 checks). See `evidence/release-1-0-0-0.md` and `VERSION` |
 
 ## What was built
 
@@ -110,7 +110,7 @@ Four independent reviews before release, reports in `review/`. One line per revi
 | `evidence/last-widths-live.txt` | Scroll width, content edge and target size at 375, 768, 1366, 1920 and 2560 px, both pages | ALL PASS (20 checks) |
 | `evidence/last-contrast-live.txt` | Contrast in light and dark, at rest and on hover | 17 lines flagged, every one a BLUE-BG note for text on the teal brand colour, measuring 5.89:1 or more; none under 4.5:1, so not a failure |
 | `evidence/last-engine.txt` | The rules engine and the guard in Node: review cases, sample questions, crafted bad model replies | ALL PASS (48 checks) |
-| `evidence/critique-fixes-note.md` | Cite of code PR #1 local runs (engine ALL PASS; brief --nokey ALL PASS, 31 checks); label rule; dashboard recapture UNVERIFIED | Cited from PR description; not a new live `last-*.txt` capture |
+| `evidence/release-1-0-0-0.md` | Version 1.0.0.0 baseline note; cite of code PR #1 local runs (engine ALL PASS; brief --nokey ALL PASS, 31 checks); label rule; dashboard recapture UNVERIFIED | Cited from the merged code PR; not a new live `last-*.txt` capture |
 | `evidence/last-brief-local.txt`, `last-brief-local-nokey.txt`, `last-questions-local.txt` | Kickoff runs before anything was built (no local server answering) | Fail by design; kept as the record that the tests were written first |
 
 ## What is left
@@ -165,3 +165,7 @@ Hindi and Telugu: either script or the language menu. Booking with a time: "Book
 Live chat: https://frontdesk-ai-xi-gray.vercel.app
 Staff page: https://frontdesk-ai-xi-gray.vercel.app/staff
 Documentation: https://github.com/karwasanjay007/frontdesk-ai-docs
+
+## Version 1.0.0.0 baseline (21 Nov 2026)
+
+Released by Sanjay Karwa, Smart AI for Business. See `VERSION` and `evidence/release-1-0-0-0.md`.

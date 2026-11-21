@@ -134,7 +134,7 @@ without a reply.
 | AC-E2.F4.1 | The key is removed | The patient asks "What time do you open on Saturday?" | The reply says 9:00 am to 8:00 pm and shows the small label "Answered from the clinic file" | S-8, F-10 | `brief.mjs [R8 no key]` |
 | AC-E2.F4.2 | The key is removed | Every sample question is asked | Each meets its must include and must not include, as in the run with the key | S-10 to S-17 | `questions.mjs` (no-key run) |
 | AC-E2.F4.3 | The key is set and the model's text was used | The reply shows | It does not carry the label | G15 | manual |
-| AC-E2.F4.4 | An emergency, refuse, medical or not-sure reply is shown | The reply is read | It does not carry the "Answered from the clinic file" label | critique fix | code PR #1 local probe |
+| AC-E2.F4.4 | An emergency, refuse, medical or not-sure reply is shown | The reply is read | It does not carry the "Answered from the clinic file" label | Version 1.0.0.0 | code PR #1 local probe |
 
 ## E3 Safety
 
