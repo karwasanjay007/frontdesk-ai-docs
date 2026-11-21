@@ -48,8 +48,8 @@ link, saved in `evidence/`; none of it is the graders' tester.
    (ticket, call-back, branch, free, discount) must be in the draft or the clinic file, in any script, and
    every fact in the draft must still be there. Anything else is rejected.
 4. **Fallback with the label.** With no key, an error, no reply within 6 s (the server allows the model 5 s)
-   or a guard rejection, a real file answer (`kind` answer, `modelOk`) is shown with the label "Answered from
-   the clinic file". Fixed emergency, refusal, medical, booking and not-sure templates are never labelled.
+   or a guard rejection, the file answer is shown with the label "Answered from
+   the clinic file". Every reply the model did not word carries it, the fixed emergency, refusal, medical, booking and not-sure templates included.
    The facts are the same either way, which is why the run with the model blocked passes every check.
 
 ## Claims ledger

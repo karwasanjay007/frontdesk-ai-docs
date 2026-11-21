@@ -18,9 +18,8 @@ Three things hold in every journey:
 - **The model never sees the patient's words.** `api/chat` sends OpenRouter (model
   `deepseek/deepseek-v4.1-flash`) the rules, the drafted answer and the clinic file. The browser then
   checks the reworded text with `FD.guard()`; anything it rejects, and any failure or delay, falls back to
-  the drafted file answer with the label "Answered from the clinic file". That label is only for real file
-  answers (`kind` is `answer` and `modelOk` is true). Fixed emergency, refuse, medical, booking and
-  not-sure templates are never labelled that way.
+  the drafted file answer with the label "Answered from the clinic file". Every reply the model did not word carries
+  that label, including the fixed emergency, refuse, medical, booking, greeting and not-sure templates.
 - **Everything is stored in this browser.** Tickets (`frontdesk.tickets`), an edited clinic file
   (`frontdesk.clinic`), the patient id (`frontdesk.patient`), the language (`frontdesk.lang`) and the theme
   (`frontdesk.theme`) live in `localStorage`. The staff page reaches the patient's chat through the
@@ -48,7 +47,7 @@ voice).
 | ID | Name | Who | Trigger | Outcome | Epics |
 | --- | --- | --- | --- | --- | --- |
 | J1 | First visit and ask | Patient (or a tester) | Opens the chat, optionally with `?q=`, and asks a question | Greeting shown; one complete reply as the last `.bot-msg`, worded by the model and checked, or from the file with the label when the model path failed or was skipped; a ticket saved | E1, E2, E4, E7, E8 |
-| J2 | Safety replies | Patient | Asks about an emergency, a discount or rule change, a medical problem, or something the file does not cover | Fixed reply with no model call and no "Answered from the clinic file" label; ticket saved as urgent, answered or needs human; emergency call button, or WhatsApp and call-back offers | E3, E4, E9 |
+| J2 | Safety replies | Patient | Asks about an emergency, a discount or rule change, a medical problem, or something the file does not cover | Fixed reply with no model call, shown with the "Answered from the clinic file" label; ticket saved as urgent, answered or needs human; emergency call button, or WhatsApp and call-back offers | E3, E4, E9 |
 | J3 | Booking and call-back | Patient | Asks to book, with or without a day and time | Booking ticket with the requested time, needs human; optional name and phone saved on the ticket; after-hours note when closed | E4, E9 |
 | J4 | Staff reply | Clinic staff | Opens `/staff`, picks a ticket and sends a reply | Reply stored on the ticket, status moved on, the reply appears in the patient's chat as "From the clinic team" | E4, E9 |
 | J5 | No-key run | Patient (or a tester) | Asks a question while the key is missing, the model fails, is slow, or its text is rejected | The same answers from the file, with "Answered from the clinic file" | E2, E8 |
@@ -98,8 +97,8 @@ The clinic file `/clinic-data.json` is served with the app.
     `staffReplies` list, writes the list back and reports whether the write worked (`saved`).
 14. The provisional line is removed, the typing dots go when nothing else is pending, and `ticketRows()`
     adds the user's `.user-msg` and the reply as the last `.bot-msg`. The `.src-label` "Answered from the
-    clinic file" is shown only when `source` is not `model`, `kind` is `answer` and `modelOk` is true
-    (a real file answer whose model path failed or was skipped). Fixed templates never get that label. A
+    clinic file" is shown whenever `source` is not `model`
+    (any reply the model did not word, including the fixed templates). A
     Listen button sits beside the reply when the browser can speak.
 
 ![J1 First visit and ask](diagrams/j1-first-visit-and-ask.svg)
@@ -141,8 +140,8 @@ gets medical advice, and nothing is guessed.
    working hours.
 6. None of these has `modelOk`, so `askModel()` returns at once and `api/chat` is not called.
 7. `FD.addTicket()` stores the ticket; `callBack` is true when the status is `needs human`.
-8. `ticketRows()` shows the fixed reply **without** the "Answered from the clinic file" label (that label
-   is only for real file answers on the `modelOk` path). An emergency gets a `tel:` button "Call
+8. `ticketRows()` shows the fixed reply **with** the "Answered from the clinic file" label (every reply the
+   model did not word carries it). An emergency gets a `tel:` button "Call
    <emergency_phone>" and no after-hours note. Medical and not sure get "Continue on WhatsApp" (a `wa.me`
    link with the question as text), the optional call-back form (J3) and the after-hours note when the
    clinic is closed.
@@ -265,8 +264,8 @@ badly.
    not use; names a medicine (in English, Hindi or Telugu); names an unknown doctor; drops any fact the
    rules engine found; or, for Hindi or Telugu, is in another script.
 5. In every case `askModel()` gives null, the ticket stores the drafted answer with source `file` and
-   `modelOk` true, and the reply shows "Answered from the clinic file". (This journey is for file answers
-   only; safety templates in J2 never take this path and never show that label.)
+   `modelOk` true, and the reply shows "Answered from the clinic file". (Safety templates in J2 never take this
+   path, but they carry the same label because the model did not word them.)
 
 ![J5 No-key run](diagrams/j5-no-key-run.svg)
 

@@ -162,9 +162,9 @@ Measured on 21 Nov 2026 with every test above passing. What our tests cannot sho
   reach the chat. The README and the judges' note say this in plain words. The spec does not say how the
   tester opens the two pages; our tests use one browser context for both, as a person would.
 - **The model can be slow.** With the key, the server allows the model 5 s and the browser waits at most
-  6 s. If the model is slow or its free limit runs out during grading, a real file answer is shown with the
-  label "Answered from the clinic file" (fixed emergency / refuse / medical / not-sure templates stay
-  unlabelled). The facts are the same (the no-key run passes all 30 checks), but the keyed run then reads
+  6 s. If the model is slow or its free limit runs out during grading, the reply is shown with the
+  label "Answered from the clinic file"; any reply not worded by the model, including the fixed
+  emergency / refuse / medical / not-sure templates, shows it. The facts are the same (the no-key run passes all 30 checks), but the keyed run then reads
   like the no-key run.
 - **The spec page changes.** Captured 20 Nov 2026. Recapture on 21 Nov is UNVERIFIED: the live dashboard
   needs sign-in. Still To do for whoever has account access.

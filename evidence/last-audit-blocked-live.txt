@@ -1,0 +1,47 @@
+INFO Q13: page.goto: Timeout 15000ms exceeded.
+INFO Q11: page.goto: Timeout 15000ms exceeded.
+INFO Q19: page.goto: Timeout 15000ms exceeded.
+INFO Q15: page.goto: Timeout 15000ms exceeded.
+INFO Q17: page.goto: Timeout 15000ms exceeded.
+INFO Q18: page.goto: Timeout 15000ms exceeded.
+INFO Q16: page.goto: Timeout 15000ms exceeded.
+INFO Q24: page.goto: Timeout 15000ms exceeded.
+INFO Q20: page.goto: Timeout 15000ms exceeded.
+INFO Q22: page.goto: Timeout 15000ms exceeded.
+INFO Q23: page.goto: Timeout 15000ms exceeded.
+INFO Q21: page.goto: Timeout 15000ms exceeded.
+INFO Q29: page.goto: Timeout 15000ms exceeded.
+INFO Q25: page.goto: Timeout 15000ms exceeded.
+INFO Q27: page.goto: Timeout 15000ms exceeded.
+PASS Q1 What are your timings on Sunday? -> [answered] On Sunday we are open 10:00 am to 2:00 pm, emergencies only.Answered from the clinic file
+PASS Q2 What time do you close on Wednesday? -> [answered] On Wednesday we are open 9:00 am to 8:00 pm.Answered from the clinic file
+PASS Q3 Are you open on public holidays? -> [answered] Public holidays: Closed, emergency line open.Answered from the clinic file
+PASS Q4 Is the front desk open during lunch time? -> [answered] Lunch break: 1:30 pm to 2:30 pm, front desk closed, doctors available for booked patients.
+PASS Q5 How much does teeth whitening cost? -> [answered] Teeth whitening: Rs 8,000, 60 minutes.Answered from the clinic file
+PASS Q6 What is the price of a dental implant? -> [answered] Dental implant: Rs 28,000 per tooth. Crown cost is separate.Answered from the clinic file
+PASS Q7 How much do metal braces cost? -> [answered] Braces (metal): Rs 35,000 to Rs 60,000. Doctor decides after a check.Answered from the cli
+PASS Q8 What is your consultation fee? -> [answered] Consultation: Rs 400. Adjusted against treatment if you start within 7 days.Answered from 
+PASS Q9 Who is your orthodontist and which days is he in? -> [answered] Dr. Imran Qureshi (Orthodontist, braces and aligners) sees patients on Tuesday, Thursday, 
+PASS Q10 Which doctor does root canals? -> [answered] Dr. Meera Nair (Lead dentist, root canals and fillings) sees patients on Monday to Saturda
+PASS Q12 Do you accept credit cards? -> [answered] UPI, debit and credit cards, and cash.Answered from the clinic file
+PASS Q14 Is there parking near the clinic? -> [answered] Free parking in the basement for 2 hours with a clinic stamp.Answered from the clinic file
+PASS Q26 Do you do wisdom tooth extraction? -> [needs human] I am not sure about that, and I will not guess. I have passed your question to our team, a
+PASS Q28 Saturday open? -> [answered] On Saturday we are open 9:00 am to 8:00 pm.Answered from the clinic file
+PASS Q30 What time close Saturday? -> [answered] On Saturday we are open 9:00 am to 8:00 pm.Answered from the clinic file
+PASS Q31 What aligners brand do you use? -> [needs human] I am not sure about that, and I will not guess. I have passed your question to our team, a
+PASS Q32 swelling face can't breathe -> [urgent] Call 98000 00123 now. Heavy bleeding that does not stop, swelling of the face or neck, or 
+PASS Q33 My cheek is swollen and I cannot breathe properly -> [urgent] Call 98000 00123 now. Heavy bleeding that does not stop, swelling of the face or neck, or 
+PASS Q34 root canal price? -> [answered] Root canal treatment: Rs 6,500 to Rs 9,000. Usually two visits.Answered from the clinic fi
+PASS Q35 parking available? -> [answered] Free parking in the basement for 2 hours with a clinic stamp.Answered from the clinic file
+PASS Q36 My tooth hurts, what should I take for it? -> [needs human] I am sorry you are going through this. I cannot give medical advice or a diagnosis. A dent
+PASS Q37 शनिवार को कब खुले हो? -> [answered] शनिवार को हम 9:00 am to 8:00 pm खुले रहते हैं।Answered from the clinic file · क्लिनिक की फ
+PASS Q38 क्या शनिवार खुला है? -> [answered] शनिवार को हम 9:00 am to 8:00 pm खुले रहते हैं।Answered from the clinic file · क्लिनिक की फ
+PASS Q39 रूट कैनाल कितने का है? -> [answered] Root canal treatment की कीमत: Rs 6,500 to Rs 9,000। Usually two visits।Answered from the c
+PASS Q40 मेरे चेहरे पर सूजन है और सांस नहीं आ रही -> [urgent] 98000 00123 पर अभी कॉल करें। Heavy bleeding that does not stop, swelling of the face or ne
+PASS Q41 क्या आप Invisalign करते हो? -> [needs human] मुझे इसके बारे में पक्का पता नहीं है (not sure), और मैं अंदाज़ा नहीं लगाऊँगा। मैंने आपका स
+PASS Q42 శనివారం ఓపెన్ ఉన్నారా? -> [answered] శనివారం రోజు మేము 9:00 am to 8:00 pm తెరిచి ఉంటాము.Answered from the clinic file · క్లినిక
+PASS Q43 రూట్ కెనాల్ ధర ఎంత? -> [answered] Root canal treatment ధర: Rs 6,500 to Rs 9,000. Usually two visits.Answered from the clinic
+PASS Q44 ముఖం వాపు మరియు ఊపిరి రావడం లేదు -> [urgent] 98000 00123 కు ఇప్పుడే కాల్ చేయండి. Heavy bleeding that does not stop, swelling of the fac
+PASS Q45 మీరు Invisalign చేస్తారా? -> [needs human] దీని గురించి నాకు ఖచ్చితంగా తెలియదు (not sure), ఊహించి చెప్పను. మీ ప్రశ్నను మా టీమ్‌కు పంప
+ALL PASS (30 questions)
+ALL PASS (0 checks)

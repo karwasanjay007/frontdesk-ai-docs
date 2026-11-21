@@ -65,7 +65,7 @@ results in [evidence/](evidence/), build report in [REPORT.md](REPORT.md).
 
 **How it answers.** A rules engine answers every question from the clinic file first: emergency, rule
 change or discount, medical, booking, file answer, not sure, in that order. Emergency, refusal, medical and
-not-sure replies are fixed templates and never go to the model (and they are not labelled as file answers).
+not-sure replies are fixed templates and never go to the model (and they carry the file label because the model did not word them).
 For a real file answer, the model receives only the drafted answer and the clinic file, never the patient's
 words, and may only reword it; a guard rejects any number, name or promise that is not in the draft or the
 file. With no key, an error, no reply within 6 s or a rejection, that file answer shows with "Answered from
@@ -97,8 +97,8 @@ link. Every diagram is PlantUML source plus SVG.
 - Turns a booking request into a ticket with the requested time; the team confirms.
 - Gives staff a ticket list in priority order with ages, a call-back list, a reply box whose reply reaches
   the patient's chat, and an editor for the clinic file.
-- Still answers when no AI key works; real file answers then carry the label "Answered from the clinic file"
-  (fixed emergency, refusal, medical and not-sure replies stay unlabelled).
+- Still answers when no AI key works; every reply the model did not word carries the label "Answered from the clinic file"
+  (the fixed emergency, refusal, medical, booking and not-sure replies included).
 - Works on a 375 px phone and on wide screens, in light and dark.
 
 ## Documentation

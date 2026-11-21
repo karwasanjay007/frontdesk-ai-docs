@@ -71,6 +71,6 @@ Every response is JSON with `Content-Type: application/json; charset=utf-8` and 
 
 The chat page treats every response other than a 200 with a `text` that passes `guard()` the same way: it
 shows the rules engine's text and stores `source: "file"` on the ticket. The UI label "Answered from the
-clinic file" is added only for that file-answer path (`kind` is `answer` and `modelOk` is true). Fixed
-emergency, refuse, medical, booking and not-sure replies never call this function and are never labelled
-that way.
+clinic file" is added to every reply the model did not word. Fixed
+emergency, refuse, medical, booking and not-sure replies never call this function but carry the label
+too.
