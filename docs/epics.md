@@ -87,7 +87,7 @@ answer, but never changes a fact, and the product answers fully without it.
 As a patient, I want correct timings, prices, doctors, policies, insurance and location so that I can plan
 my visit.
 
-**Status:** Built. `last-brief-live.txt`: "PASS item 2 root canal: reply gives "Rs 6,500 to Rs 9,000"" and "PASS every price in every reply is in the clinic file | 12 replies read"; `last-engine.txt` covers further questions, ALL PASS (103 checks in all). After 22 Nov 2026 the word lists also cover "what time" in Hindi (कितने बजे), Roman-script Hindi and a Telugu closing-time question: `last-wording-live.txt` and `last-wording-blocked-live.txt`, "ALL PASS (14 checks)" each.
+**Status:** Built. `last-brief-live.txt`: "PASS item 2 root canal: reply gives "Rs 6,500 to Rs 9,000"" and "PASS every price in every reply is in the clinic file | 12 replies read"; `last-engine.txt` covers further questions, ALL PASS (119 checks in all). After 22 Nov 2026 the word lists also cover "what time" in Hindi (कितने बजे), Roman-script Hindi and a Telugu closing-time question: `last-wording-live.txt` and `last-wording-blocked-live.txt`, "ALL PASS (14 checks)" each.
 
 | ID | Given | When | Then | Trace | Planned check |
 | --- | --- | --- | --- | --- | --- |
@@ -268,7 +268,7 @@ Goal: staff keep the clinic's details current, and every answer follows the chan
 
 As front-desk staff, I want to change the clinic's details so that the chat never quotes old ones.
 
-**Status:** Built. `last-bonus-live.txt`: "PASS bonus 4 staff saved an edited clinic file" and "PASS bonus 4 reset brings the original file back"; `last-engine.txt`: "PASS a clinic file missing its phone, address and hours is refused".
+**Status:** Built. `last-bonus-live.txt`: "PASS bonus 4 staff saved an edited clinic file" and "PASS bonus 4 reset brings the original file back"; `last-engine.txt`: "PASS a clinic file of the wrong shape is refused" and "PASS a clinic file missing its phone, address and whatsapp still loads".
 
 | ID | Given | When | Then | Trace | Planned check |
 | --- | --- | --- | --- | --- | --- |

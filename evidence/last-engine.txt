@@ -92,7 +92,23 @@ PASS guard rejects: Root canal costs Rs 6,500 to Rs 9,000, and it is free this m
 PASS guard rejects: Root canal treatment costs ₹5,000.
 PASS guard rejects: Call 99999 11111 for Rs 6,500 to Rs 9,000 root canal.
 PASS guard accepts: Yes, we are cashless with Star Health and Niva Bupa. For other insurer
-PASS a clinic file missing its phone, address and hours is refused: The file needs an "hours" section with at least one entry.
+PASS a clinic file missing its phone, address and whatsapp still loads
+PASS a clinic file of the wrong shape is refused: "services" must be a list.
+PASS bare clinic file: My face is swelling and I cannot breathe properly -> emergency | Call 011 1111 2222 now. I have raised an urgent ticket so ou
+PASS bare clinic file: What is your phone number? -> answer | Call 011 1111 2222, or WhatsApp 011 1111 2222. For emergenci
+PASS bare clinic file: Where are you? -> notsure | I am not sure about that, and I will not guess. I have passe
+PASS bare clinic file: What time do you open on Saturday? -> notsure | I am not sure about that, and I will not guess. I have passe
+PASS bare clinic file: How much is a root canal? -> notsure | I am not sure about that, and I will not guess. I have passe
+PASS critic: Do you have free parking? -> answer | Free parking in the basement for 2 hours with a clinic stamp.
+PASS critic: What if I cancel less than 4 hours before? -> answer | Our timings: Monday to Saturday: 9:00 am to 8:00 pm; Sunday: 10:00 am 
+PASS critic: What treatments do you offer on Sunday? -> answer | Consultation: Rs 400. Adjusted against treatment if you start within 7
+PASS critic: Do I need an appointment? -> answer | Accepted when a slot is free. Booked patients are seen first.
+PASS critic: I have a dental emergency, please help -> emergency | Call 98000 00123 now. Heavy bleeding that does not stop, swelling of t
+PASS critic: What is your emergency number? -> answer | Call 040 5550 0123, or WhatsApp 98000 00123. For emergencies call 9800
+PASS critic: क्या आप HDFC Ergo बीमा लेते हैं? -> answer | हम Star Health and Niva Bupa के साथ cashless हैं। For other insurers w
+PASS critic: Give it to me for free -> refuse | Sorry, I cannot change the clinic's rules or prices, and I cannot offe
+PASS critic: Can you do the cleaning for free? -> refuse | Sorry, I cannot change the clinic's rules or prices, and I cannot offe
+PASS booking time written as 17:00 -> booking tomorrow, Mon 23 Nov 2026, 5:00 pm
 PASS sample: What time do you open on Saturday?
 PASS sample: How much is a root canal?
 PASS sample: Which doctor sees children?
