@@ -8,7 +8,7 @@ Deployment_Node(dev, "Sanjay's Windows PC", "PowerShell, Vercel CLI") {
 
 Deployment_Node(vercel, "Vercel, team elodos", "Hobby") {
   Deployment_Node(proj, "Project frontdesk-ai", "frontdesk-ai-xi-gray.vercel.app, HTTPS") {
-    Container(static, "Static files", "CDN", "index.html, staff/index.html, core.js, chat.js, staff/staff.js, styles.css, clinic-data.json, icon.svg")
+    Container(static, "Static files", "CDN", "index.html, staff/index.html, core.js, chat.js, staff/staff.js, styles.css, clinic-data.json, icon.svg; v1.1: staff/tools.js, staff/tools.css, staff/form.js, staff/form.css")
     Container(fn, "api/chat", "Vercel serverless function, Node.js", "Warm-up GET; POST rewords a draft; 5 s model limit")
     Container(tts, "api/tts", "Vercel serverless function, Node.js", "POST reply text, returns WAV; 15 s model limit")
     ContainerDb(env, "Environment", "Production, sensitive", "OPENROUTER_API_KEY (hidden); optional OPENROUTER_MODEL, OPENROUTER_TTS_MODEL")
@@ -16,8 +16,8 @@ Deployment_Node(vercel, "Vercel, team elodos", "Hobby") {
 }
 
 Deployment_Node(device, "Patient's or staff's device", "Any modern browser") {
-  Container(pages, "Chat page and staff page", "HTML, CSS, JavaScript", "Rules engine, guard, tickets")
-  ContainerDb(ls, "localStorage", "Web Storage", "Tickets, edited clinic file, language, theme")
+  Container(pages, "Chat page and staff page", "HTML, CSS, JavaScript", "Rules engine, guard, tickets; v1.1: answer() wrapper over answerFile(), reply kind human, staff ticket tools and clinic file form on /staff")
+  ContainerDb(ls, "localStorage", "Web Storage", "Tickets, edited clinic file, language, theme; v1.1: frontdesk.alerts when alerts are on")
 }
 
 System_Ext(openrouter, "OpenRouter", "deepseek/deepseek-v4.1-flash")

@@ -5,12 +5,14 @@ title FrontDesk AI: components (C4 level 3, as built)
 Person(patient, "Patient", "Chat page /")
 Person(staff, "Front desk staff", "Staff page /staff")
 System_Ext(openrouter, "OpenRouter, DeepSeek V4.1 Flash", "deepseek/deepseek-v4.1-flash, reasoning off")
-ContainerDb(ls, "localStorage", "Web Storage, JSON", "frontdesk.clinic, frontdesk.tickets, frontdesk.patient, frontdesk.lang, frontdesk.theme")
+ContainerDb(ls, "localStorage", "Web Storage, JSON", "frontdesk.clinic, frontdesk.tickets, frontdesk.patient, frontdesk.lang, frontdesk.theme; v1.1: frontdesk.alerts")
 Container(file, "clinic-data.json", "Static JSON", "The shipped clinic file")
 
 Container_Boundary(core, "core.js (window.FD), shared by both pages") {
   Component(store, "Clinic data store", "JavaScript", "loadClinic, clinic, originalClinic, saveClinic, resetClinic, validateClinic")
-  Component(engine, "Rules engine", "JavaScript", "answer(message, data): emergency, rule change or discount, medical, booking, answer from the file, not sure; returns kind, status, text, lang, facts, bookingTime, modelOk")
+  Component(engine, "Rules engine", "JavaScript", "answer(message, data): emergency, rule change or discount, medical, booking, answer from the file, not sure; returns kind, status, text, lang, facts, bookingTime, modelOk; v1.1: answer() is a wrapper over answerFile(); adds reply kind human (status needs human) for ask for a person, only where the file had no answer")
+  Component(enginefile, "File-only rules engine", "JavaScript", "v1.1: answerFile(message, data), the rules engine of 1.0 unchanged; answer() calls it first")
+  Component(quick, "Quick replies and assistant name", "JavaScript", "v1.1: FD.quick, FD.quickLabels: seven standard quick replies or the clinic's own from the optional assistant section of the clinic file; FD.assistantName")
   Component(guard, "Guard", "JavaScript", "guard(modelText, ruled, data): rejects any number, capitalised name, doctor, promise, medicine or language change not in the draft or the file")
   Component(tickets, "Ticket store", "JavaScript", "patientId, tickets, addTicket, replyToTicket, updateTicket, setStatus, byPriority")
   Component(hours, "Opening hours", "JavaScript", "openNow, nextOpening; the after-hours note only, never an answer")
@@ -25,6 +27,14 @@ Container_Boundary(chatjs, "chat.js, the patient chat") {
 
 Container_Boundary(staffjs, "staff/staff.js, the staff page") {
   Component(staffui, "Staff UI", "JavaScript", "render (queue, counts, To call back, Could not answer), sendReply, clinicEditor; one open ticket holds #staff-reply and #staff-send")
+}
+
+Container_Boundary(stafftoolsjs, "staff/tools.js and staff/tools.css, staff add-on (v1.1)") {
+  Component(stafftools, "Staff ticket tools", "JavaScript", "v1.1: toolbar before #ticket-queue: #queue-search, [data-filter], #queue-sort, #alerts-toggle, #queue-shown; observes the queue, never calls into staff.js; opt-in urgent alerts")
+}
+
+Container_Boundary(staffformjs, "staff/form.js and staff/form.css, staff add-on (v1.1)") {
+  Component(staffform, "Clinic file form", "JavaScript", "v1.1: details #clinic-form before the JSON box; cf- fields generated from the JSON in #clinic-json; writes back into that box; the existing Save stores it")
 }
 
 Container_Boundary(api, "api/chat.js, Vercel function") {
@@ -47,6 +57,14 @@ Rel(staffui, tickets, "Lists, replies, sets status")
 Rel(staffui, store, "Saves or resets the file")
 Rel(tickets, ls, "Reads and writes; storage event")
 Rel(engine, i18n, "Templates")
+Rel(engine, enginefile, "Wraps: asks for the file-only answer first")
+Rel(quick, store, "Reads the optional assistant section")
+Rel(chatui, quick, "Quick replies, assistant name")
+Rel(staff, stafftools, "Searches, filters, sorts, turns alerts on")
+Rel(staff, staffform, "Edits the clinic file as a form")
+Rel(stafftools, staffui, "Observes #ticket-queue")
+Rel(stafftools, ls, "Reads tickets; stores frontdesk.alerts only when alerts are on")
+Rel(staffform, staffui, "Reads and writes the #clinic-json box")
 
 SHOW_LEGEND()
 @enduml
