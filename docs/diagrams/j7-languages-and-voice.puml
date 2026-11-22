@@ -13,7 +13,7 @@ opt Patient picks a language in #lang
   Patient -> Chat : English, हिंदी or తెలుగు
   Chat -> Core : FD.setLang(lang)
   Core -> LS : write frontdesk.lang
-  Chat -> Chat : labels(), render(): placeholder, buttons, greeting\nFD.T[lang].hello(data), quick chips FD.T[lang].quick
+  Chat -> Chat : labels(), render(): placeholder, buttons, greeting\nFD.T[lang].hello(data), quick chips FD.quick(lang, data) with FD.quickLabels (v1.1: seven, or the clinic's own)
 end
 
 alt speaking (SpeechRecognition or webkitSpeechRecognition exists)
