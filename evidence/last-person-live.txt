@@ -1,0 +1,17 @@
+PASS seven quick replies, the last is "Talk to a person" | Timings, Prices, Doctors, Insurance, Location, Book a visit, Talk to a person
+PASS without an assistant section the name and the tab title are the standard ones | FrontDesk AI · Bright Roots Dental
+PASS no sideways scroll at 375 px with seven quick replies
+PASS the reply says the request went to the team and gives the phone number | I am not sure I can settle this myself, so I have passed your request to our tea
+PASS "Can I speak to a human?" gets the same reply, not the languages line
+PASS both requests are "needs human" tickets on the staff page | needs human, needs human
+PASS they are in "To call back" and not in "Could not answer"
+PASS a clinic file with an assistant section saves
+PASS the chat shows the clinic's own quick replies | Braces, Parking
+PASS the assistant carries the name from the file | Asha · Bright Roots Dental
+PASS it introduces itself by that name
+PASS the clinic's own quick reply is asked and answered from the file | Braces (metal): Rs 35,000 to Rs 60,000. Doctor decides after a check.A
+PASS with the original file the standard name and the seven quick replies are back
+PASS the seventh quick reply is in Hindi and Telugu | व्यक्ति से बात | సిబ్బందితో మాట్లాడండి
+PASS no sideways scroll at 375 px in Telugu
+PASS no page errors 
+ALL PASS (16 checks)

@@ -205,3 +205,13 @@ stricter guard, engine gaps, call-back details, design".
 | 20 Nov 2026 | First draft from the plan: sections 1, 2, 5, 9, 10, 11; context and container diagrams |
 | 20 Nov 2026 | G11 and G11a settled: AD-9 default open ticket, AD-9a status always changes on a staff reply, AD-9b status of each fixed reply; after-hours note outside the `.bot-msg` |
 | 20 Nov 2026 | Finished from the code as built: DRAFT removed; AD-5 now OpenRouter with DeepSeek V4.1 Flash (Sanjay's choice), AD-5a the model never sees the patient's words, AD-5b warm-up with the body read, AD-16 call-back details; components from the code; component and deployment diagrams; context and container diagrams corrected; runtime views and data linked; latest live test results |
+
+## Version 1.1.0.0 additions (22 Nov 2026)
+
+| Part | File | What it holds |
+| --- | --- | --- |
+| Ask for a person | `core.js` | `answer()` is now a wrapper over `answerFile()`, the file-only engine of 1.0.0.0. Reply kind `human`, status `needs human`, templates `T.*.human`. Patterns `RX.human` (used only where the file had no answer), `RX.humanAsk` and `RX.humanKeep` |
+| Quick replies and assistant name | `core.js`, `chat.js` | `FD.quick` and `FD.quickLabels` return seven standard replies, or the clinic's own from `assistant.quick_replies` (at most eight); `FD.assistantName` reads `assistant.name` (at most 40 characters) for the header, the welcome title, the tab title and the greeting |
+| Staff ticket tools | `staff/tools.js`, `staff/tools.css` | A toolbar before `#ticket-queue`: `#queue-search`, `[data-filter]`, `#queue-sort`, `#alerts-toggle`, `#queue-shown`. Works by observing the queue; never calls into `staff.js`. Alerts state in `frontdesk.alerts`, written only when turned on |
+| Clinic file form | `staff/form.js`, `staff/form.css` | `<details id="clinic-form">` before the JSON box; fields with ids starting `cf-`, generated from the JSON; an "Assistant" section for the optional `assistant` key |
+| Tests | `tests/person.cjs`, `tests/person.mjs`, `tests/tools.mjs`, `tests/form.mjs` | 76, 16, 37 and 43 checks |

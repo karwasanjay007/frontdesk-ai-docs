@@ -1,4 +1,4 @@
-PASS bonus 1 Hindi question gets a Hindi reply with the timing: जी, शनिवार को हम 9:00 am to 8:00 pm तक खुले रहते हैं।
+PASS bonus 1 Hindi question gets a Hindi reply with the timing: शनिवार को हम 9:00 am to 8:00 pm खुले रहते हैं।
 PASS bonus 1 Telugu question gets a Telugu reply with the price: రూట్ కెనాల్ చికిత్స ధర Rs 6,500 to Rs 9,000. సాధారణంగా రెండు సందర్శనలు అవసరం.
 PASS bonus 1 Hindi emergency: number first, Hindi text
 PASS bonus 2 booking reply says the team will confirm: Thank you. I have passed your request for tomorrow, Mon 23 Nov 2026, 5:00 pm to 
@@ -10,7 +10,7 @@ PASS bonus 5 quick-reply button asks and gets an answer
 PASS bonus 5 at least five quick-reply buttons
 PASS bonus 4 staff saved an edited clinic file
 PASS bonus 6 timing follows the edit: We're open on Saturday from 9:00 am to 6:30 pm.
-PASS bonus 6 price follows the edit: Root canal treatment is Rs 7,000 to Rs 9,500, and it usually takes two visits.
+PASS bonus 6 price follows the edit: Root canal treatment costs Rs 7,000 to Rs 9,500 and usually takes two visits.
 PASS bonus 4 reset brings the original file back
 PASS no page errors 
 ALL PASS (15 checks)

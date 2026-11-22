@@ -211,3 +211,33 @@ behaviour was changed: two questions sent a fraction of a second apart came out 
 first waited for the model; replies are now released in the order sent (`evidence/last-order-live.txt`, ALL PASS,
 5 checks). Left as it is: the model may lowercase or lightly reword a role or a policy phrase; every figure, day
 and name is kept. Critic scores over the day: 7.5, 7.5, 9.5, 9.5, 9.5.
+
+## Version 1.1.0.0 (22 Nov 2026)
+
+Four additions, made after a comparison with other builds in the batch. Each sits beside the baseline: the ids,
+statuses and replies the tester reads are the same as in 1.0.0.0, and no earlier test was edited.
+
+| Addition | What it does | How the baseline is kept |
+| --- | --- | --- |
+| Ask for a person | "Can I speak to a human?" or "Please call me back" gets its own reply (it keeps "not sure" and "2 working hours") and one needs-human ticket. A seventh quick reply, "Talk to a person". Before, the first got the languages line and the second the phone line, with no ticket | The rule is a wrapper over the file-only engine. It applies only where the clinic file had no answer, or gave only the phone or languages line to a message that asks for a person and names neither a number nor a language |
+| Staff ticket tools | Search, status filter and sort over the queue; urgent alerts (count in the tab title, a tone, a browser notification) that staff turn on themselves | With nothing set, `#ticket-queue` is byte for byte what `staff.js` rendered. Filtered rows are hidden, never removed. Nothing is stored unless alerts are turned on |
+| Form for the clinic file | "Edit with a form": fields generated from whatever JSON is in the box, so a file in another shape gets a form too | Closed by default. It writes into the same `#clinic-json` box and the same Save button stores it; it never writes unless a field was changed |
+| Assistant name and quick replies | An optional `assistant` section in the clinic file: a name, and the clinic's own quick replies | A file without the section (the usual case, and any file a tester pastes) keeps the standard name and the standard quick replies |
+
+**Review.** One independent reviewer read the change before the deploy and scored the first cut 5 out of 10
+for one defect: the ask-for-a-person rule took 29 ordinary questions that the clinic file answers, for example
+"What is the phone number to call back?". It was fixed before anything went live, by moving the rule out of
+the rule chain into the wrapper described above. Twenty-four such questions and the whole 386-question sweep now
+give exactly the reply of the file-only engine (`tests/person.cjs`). The reviewer found no markup injection, no
+change to the queue or the JSON box in the default state, and no slow pattern (5,000-character messages in
+under 2 ms).
+
+**Tests on the live link after the deploy.** New: `evidence/last-person-engine.txt` (76 checks),
+`evidence/last-person-live.txt` (16), `evidence/last-tools-live.txt` (37), `evidence/last-form-live.txt` (43).
+Earlier suites, unedited: brief 29 with the key and 29 with the model blocked, sample questions 16 both ways,
+audit 45 both ways, bonus 15 both ways, emergency 12, call-back 8, staff-clear 7, languages 11 both ways,
+wording 14 both ways, widths 20, order 5; engine 127, sweep 386, other-clinic. All pass.
+
+**Not covered.** The alert tone was not heard and the browser notification was not shown in a test (a test
+browser grants no permission). The form's colours use the page's own tokens; its contrast was not measured
+separately. The assistant name and quick replies apply to every language as written in the file.

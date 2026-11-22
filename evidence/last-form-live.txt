@@ -1,0 +1,44 @@
+PASS with form.js blocked there is no form (baseline page)
+PASS on load the form details is there and closed
+PASS on load the JSON box is identical to the page without form.js
+PASS JSON box, Save and Reset are visible
+PASS opening the form does not change the JSON box
+PASS every input has a label and a unique cf- id (66 inputs, 0 without label, 0 duplicate ids)
+PASS top-level keys become readable headings (Hours, Bot rules)
+PASS the Assistant section is present with its hint
+PASS changing the price field changes that value in the JSON box
+PASS typing in a form field keeps focus in that field
+PASS the key order of the file is kept
+PASS the existing Save button saves it (message "Saved")
+PASS after Save the form still shows the saved value
+PASS the patient chat answers with the new price (Rs 450): "Consultation: Rs 450. Adjusted against treatment if you start within 7 days.Answered from "
+PASS Add puts a new empty item in a list of text values
+PASS the new item can be filled in
+PASS Remove takes the item out again
+PASS Add on a list of objects gives a new item with the keys of the first item
+PASS Remove on a list of objects takes the card out
+PASS a quick reply with an empty question is not written; quick_replies is left out
+PASS assistant name and one quick reply land in the box in the exact shape
+PASS a newly added assistant key goes last
+PASS assistant is not rendered a second time in the generic sections
+PASS length limits 40, 24 and 120 are set
+PASS emptying the name and the replies removes the assistant key
+PASS at most 8 quick replies
+PASS the form closes again
+PASS while the form is closed a pasted file is left exactly as pasted
+PASS a differently shaped file builds fields (number cost, hours as objects, policies as a list, a checkbox)
+PASS text longer than 60 characters gets a textarea, shorter text an input
+PASS opening the form on the pasted file does not change the box
+PASS a field edit writes back the same shape with only that value changed
+PASS a number stays a number
+PASS a checkbox writes true or false
+PASS an empty null field stays null
+PASS a new service has the keys of the first with empty values of the same type
+PASS typing valid JSON in the box rebuilds the form and focus stays in the box
+PASS invalid JSON shows the message and the box is left alone
+PASS Use the original file rebuilds the form from the original file
+PASS the Save button inside the form clicks the existing Save
+PASS no horizontal scroll at 320 px with the form open (scrollWidth 320)
+PASS every control in the form is at least 40 px tall
+PASS no page errors
+ALL PASS (43 checks)

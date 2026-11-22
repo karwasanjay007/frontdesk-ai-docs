@@ -1,13 +1,21 @@
-1.0.0.0
+1.1.0.0
 
-# FrontDesk AI documentation baseline
+# FrontDesk AI release baseline
 #
-# Version:     1.0.0.0
-# Released:    21 November 2026
+# Version:     1.1.0.0
+# Released:    22 November 2026 (baseline 1.0.0.0: 21 November 2026)
 # Owner:       Sanjay Karwa, Smart AI for Business
-# Live app:    https://frontdesk-ai-xi-gray.vercel.app
-# Code:        private repository (frontdesk-ai); this repository holds documents only
+# Live:        https://frontdesk-ai-xi-gray.vercel.app
+# Staff:       https://frontdesk-ai-xi-gray.vercel.app/staff
+# Docs:        https://github.com/karwasanjay007/frontdesk-ai-docs
 #
-# Baseline set for the Freedom With AI Batch 10 submission. Client-facing
-# documents in this repository read Version 1.0.0.0 with Sanjay Karwa's
-# full name. Diagrams are SVG. No invented proof figures.
+# This file marks the first public baseline of the dental front-desk chat
+# submitted for the Freedom With AI Batch 10 build project. Answers come
+# from the clinic file; anything else becomes a staff ticket. The model
+# key stays on the server.
+#
+# Version 1.1.0.0 adds, beside the baseline and without changing what it does:
+# a reply and a ticket when a patient asks for a person, with a seventh quick
+# reply; search, status filter, sort and opt-in urgent alerts on the staff
+# page; a form for the clinic file that writes into the same JSON box; an
+# optional assistant name and the clinic's own quick replies in the file.

@@ -1,0 +1,38 @@
+PASS toolbar exists with tools.js and not without it
+PASS seven seeded tickets are in the queue (7)
+PASS default state: #ticket-queue innerHTML is exactly what staff.js renders without tools.js
+PASS #queue-tools sits immediately before #ticket-queue
+PASS search box has a real label and the status line has role=status
+PASS status line says 7 of 7 tickets shown (7 of 7 tickets shown)
+PASS filter urgent: 2 shown, the rest hidden, none removed (2 of 7 tickets shown)
+PASS filter needs human: 2 shown, the rest hidden, none removed (2 of 7 tickets shown)
+PASS filter answered: 2 shown, the rest hidden, none removed (2 of 7 tickets shown)
+PASS filter closed: 1 shown, the rest hidden, none removed (1 of 7 tickets shown)
+PASS back to All: the queue is exactly the staff.js rendering again
+PASS search by a word in the question, any letter case
+PASS search matches a staff reply
+PASS search matches the contact name
+PASS search matches the phone number
+PASS no match: "No tickets match", nothing removed
+PASS empty search: the queue is exactly the staff.js rendering again
+PASS Newest first reorders the rows (t7,t5,t1,t2,t4,t6,t3)
+PASS Oldest first reorders the rows
+PASS opening a ticket while sorted keeps the sort
+PASS Priority restores the original order
+PASS back to Priority: the queue is exactly the staff.js rendering again
+PASS typing a reply while a filter is on keeps the focus and the text
+PASS a reply sent while a filter is on moves the ticket to answered
+PASS the filter is applied again after the reply (t3:needs human)
+PASS alerts are off by default
+PASS alerts off: a new urgent ticket leaves the title alone (Staff · FrontDesk AI)
+PASS the toggle turns alerts on and stores frontdesk.alerts = 1
+PASS alerts on: a new urgent ticket puts the urgent count in the title ((4) Staff · FrontDesk AI)
+PASS alerts off again: the title is restored
+PASS a reload is back to All, empty search, Priority
+PASS no horizontal scroll at 320 px (scrollWidth 320)
+PASS every toolbar control is at least 40 px tall at 320 px
+PASS light theme: toolbar text contrast is at least 4.5:1
+PASS dark theme: toolbar text contrast is at least 4.5:1
+PASS alerts are left off at the end of the run
+PASS no page errors
+ALL PASS (37 checks)
