@@ -20,7 +20,7 @@ PASS What time do you open on Saturday? -> answer/answered | On Saturday we are 
 PASS Do you do Invisalign? -> notsure/needs human | I am not sure about that, and I will not guess. I have passed your que
 PASS My tooth hurts, should I take a painkiller? -> medical/needs human | I am sorry you are going through this. I cannot give medical advice or
 PASS Do you have numbing gel before injections? -> notsure/needs human | I am not sure about that, and I will not guess. I have passed your que
-PASS I fell asleep, what are your hours? -> answer/answered | Our timings: Monday to saturday: 9:00 am to 8:00 pm; Sunday: 10:00 am 
+PASS I fell asleep, what are your hours? -> answer/answered | Our timings: Monday to Saturday: 9:00 am to 8:00 pm; Sunday: 10:00 am 
 PASS If I cancel my appointment, is there a charge? -> answer/answered | Book on the phone or WhatsApp. Cancel or move at least 4 hours before,
 PASS Can I just walk in without an appointment? -> answer/answered | Accepted when a slot is free. Booked patients are seen first.
 PASS There is a black spot on my tooth, is it a cavity? -> medical/needs human | I am sorry you are going through this. I cannot give medical advice or
@@ -58,7 +58,7 @@ PASS कंसल्टेशन कितने रुपये का है -
 PASS ईएमआई मिलती है क्या -> answer/answered | क्लिनिक का नियम: No-cost EMI for 6 months on braces and implants, subj
 PASS अपॉइंटमेंट कैंसिल करने पर कोई चार्ज है? -> answer/answered | क्लिनिक का नियम: Book on the phone or WhatsApp. Cancel or move at leas
 PASS Shanivar ko kitne baje khulte ho -> answer/answered | On Saturday we are open 9:00 am to 8:00 pm.
-PASS kitne baje band hota hai -> answer/answered | Our timings: Monday to saturday: 9:00 am to 8:00 pm; Sunday: 10:00 am 
+PASS kitne baje band hota hai -> answer/answered | Our timings: Monday to Saturday: 9:00 am to 8:00 pm; Sunday: 10:00 am 
 PASS మీరు ఎన్ని గంటలకు మూసేస్తారు -> answer/answered | మా సమయాలు: సోమవారం నుండి శనివారం: 9:00 am to 8:00 pm; ఆదివారం: 10:00 a
 PASS Do you take Niva Bupa? -> answer/answered | Yes, we are cashless with Star Health and Niva Bupa. For other insurer
 PASS कितने का है -> notsure/needs human | मुझे इसके बारे में पक्का पता नहीं है (not sure), और मैं अंदाज़ा नहीं ल
@@ -82,7 +82,7 @@ PASS My gums bleed when I brush -> medical/needs human | I am sorry you are goin
 PASS Do you treat bleeding gums? -> medical/needs human | I am sorry you are going through this. I cannot give medical advice or
 PASS Is a little bleeding normal after an extraction? -> medical/needs human | I am sorry you are going through this. I cannot give medical advice or
 PASS I can't stop by on Sunday, are you open Monday? -> answer/answered | On Sunday we are open 10:00 am to 2:00 pm, emergencies only. On Monday
-PASS ब्रश करते समय मसूड़ों से खून आता है -> answer/answered | हमारा समय: सोमवार से शनिवार: 9:00 am to 8:00 pm; रविवार: 10:00 am to 2
+PASS ब्रश करते समय मसूड़ों से खून आता है -> medical/needs human | मुझे खेद है कि आपको तकलीफ़ है। मैं दवा की सलाह या जाँच नहीं दे सकता। ए
 PASS guard rejects: We are cashless with Star Health and Niva Bupa. For other insurers we 
 PASS guard rejects: We are at Plot 21, Road No. 12, Banjara Hills, Hyderabad 500034. Our s
 PASS guard rejects: Dr Arjun Rao does root canals.

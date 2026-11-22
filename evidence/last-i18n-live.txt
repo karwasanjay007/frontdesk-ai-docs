@@ -1,5 +1,5 @@
 PASS hi: every page label is in the chosen language
-PASS hi: English question answered in the chosen language: शनिवार को हम 9:00 am to 8:00 pm खुले रहते हैं।
+PASS hi: English question answered in the chosen language: शनिवार को हम 9:00 am to 8:00 pm तक खुले रहते हैं।
 PASS hi: Listen uses hi-IN: ["hi-IN"]
 PASS hi: New chat clears the conversation
 PASS hi: earlier tickets stay on /staff after New chat

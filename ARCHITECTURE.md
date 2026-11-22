@@ -165,6 +165,7 @@ results are from the live link on 20 Nov 2026.
 | `tests/engine.cjs` | The rules engine on the sample questions and reworded variants, the guard on crafted bad and good model replies, and `validateClinic` on a broken file | `last-engine.txt`: ALL PASS (103 checks) |
 | `tests/emergency.mjs` | Bleeding that will not stop, said five other ways in English, Hindi and Telugu, each in a fresh browser: the emergency number comes first and one new ticket is urgent | `last-emergency-live.txt`: ALL PASS (12 checks) |
 | `tests/wording.mjs` | Timings and prices asked other ways in Hindi, Roman-script Hindi and Telugu, each in a fresh browser: the figure from the clinic file is in the reply and no ticket waits for a human | `last-wording-live.txt` and `last-wording-blocked-live.txt`: ALL PASS (14 checks each) |
+| `tests/sweep.cjs` | 386 unseen questions (fixture `tests/fixtures/sweep.json`, written by reviewers who read only the clinic file) through the rules engine in Node: kind of reply, figures from the file, emergency number first | `last-sweep.txt`: ALL PASS (386 questions) |
 
 The independent reviews and their fix lists are in `review/` (`brief-audit.md`, `functional.md`,
 `industry.md`, `visual.md`); the fixes are in the code commit "Review fixes: model cannot be steered,

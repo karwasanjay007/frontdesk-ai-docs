@@ -149,7 +149,8 @@ numbers refer to the decisions in PRD.md section 2.5.
 Measured on 21 Nov 2026 with every test above passing. What our tests cannot show:
 
 - **The tester's 20 hidden questions.** Our tests cover the 8 sample questions, the 9 "Done when" lines,
-  the 27 plus 10 questions of the brief audit and the review cases in `last-engine.txt`. Other phrasings
+  the 27 plus 10 questions of the brief audit, the review cases in `last-engine.txt` and, from 22 Nov 2026,
+  386 unseen questions in five ways of writing (`last-sweep.txt`). Other phrasings
   can still fall to "not sure", which is safe (no invented fact, a needs human ticket) but scores as a
   miss when the file does hold the answer.
 - **A clinic file for a different business.** Every number, name, hour and policy is read from the file,

@@ -19,8 +19,8 @@ PASS item 6 discount: a polite no
 INFO item 6 ticket status (G11a expects answered): answered
 PASS item 7 staff reply: every ticket has its own #staff-reply and #staff-send ("on each ticket") | [[1,1],[1,1]]
 PASS item 7 staff reply: staff text typed on the needs-human ticket shows in a chat .bot-msg within 5 s
-PASS item 7 staff reply: that ticket's data-status changed | ticket "TMWRJUH8JUQ": needs human -> answered
-PASS item 7 staff reply: a ticket that is not open can be replied to without clicking it first | ticket TMWRJUH5YMZ: answered -> closed, in chat: true
+PASS item 7 staff reply: that ticket's data-status changed | ticket "TMWRL70CKB2": needs human -> answered
+PASS item 7 staff reply: a ticket that is not open can be replied to without clicking it first | ticket TMWRL700DCF: answered -> closed, in chat: true
 PASS item 8 no key: Saturday answered with the key removed | "On Saturday we are open 9:00 am to 8:00 pm.Answered from the clinic file"
 PASS item 8 no key: reply shows "Answered from the clinic file"
 PASS item 9 phone 375: chat page: no sideways scroll on load | scrollWidth 375
