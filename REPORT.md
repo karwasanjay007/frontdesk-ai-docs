@@ -144,7 +144,7 @@ Written before any code and kept true to every release:
 - Requirements: the spec page word for word, a PRD with decisions, assumptions and success measures, and SPEC-CHECK.md mapping every must-do, tester hook and bonus item to a test.
 - Design: 9 epics, 30 features and 83 acceptance criteria (Given, When, Then), each traced to the spec and its check; 7 user journeys as sequence diagrams.
 - Architecture: C4 context, container and component views, runtime views, data model, JSON schemas, the API contracts (chat, transcription, voice) and deployment. 12 PlantUML diagrams, all SVG.
-- Build and test: tech stack, a stepped implementation plan, and live test results saved as evidence. Every "Done when" passes on the live link with the key and with the model blocked, plus 30 grader-style questions in three languages.
+- Build and test: tech stack, a stepped implementation plan, and live test results saved as evidence. Every "Done when" passes on the live link with the key and with the model blocked, plus 45 grader-style questions in three languages.
 - Production: independent reviews, each with its status after fixes, and a release baseline.
 
 WHY IT STANDS OUT
