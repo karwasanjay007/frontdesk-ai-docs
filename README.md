@@ -21,9 +21,10 @@ ticket, not a made-up reply.
 "not sure" use fixed templates and never wait on the model. The model may only reword a real file answer;
 a guard rejects invented prices or promises. With the key blocked, the same facts still show.
 
-**Same browser (required for the staff step).** Tickets live in this browser's localStorage only. Open the
+**Same browser for the staff step.** The staff page opens with the tickets of this browser. Open the
 patient chat and `/staff` as two tabs in the **same browser**. A different browser, device or private
-window shows an empty queue and cannot complete the staff reply check.
+window opens with an empty queue. Since version 1.3.0.0 staff can also turn on "Show tickets from all
+devices" there, which needs the clinic's desk code; without the code another device still shows nothing.
 
 **Try it in two minutes (five steps).**
 
@@ -82,7 +83,7 @@ link. Every diagram is PlantUML source plus SVG.
 
 | Left out | Why | Next step |
 | --- | --- | --- |
-| Server ticket store | Tickets stay in this browser's localStorage only: no database or account. Chat and `/staff` must share one browser | A shared store so staff on another device see every ticket (phase 2) |
+| Staff sign-in with accounts | Since version 1.3.0.0 tickets are mirrored to a server store and a staff device can see every device's tickets with the clinic's desk code. One shared code, no named accounts | Named staff accounts and an audit of who replied |
 | Real slot booking | The bot never invents or confirms a slot; a booking request becomes a needs-human ticket with the requested time, and the team confirms | Booking against the clinic's real diary |
 | Sign-in for staff | A sign-in screen would stand between a fresh-browser tester and `/staff` | Staff sign-in before a real clinic uses it |
 
@@ -101,6 +102,56 @@ link. Every diagram is PlantUML source plus SVG.
 - Still answers when no AI key works; every reply the model did not word carries the label "Answered from the clinic file"
   (the fixed emergency, refusal, medical, booking and not-sure replies included).
 - Works on a 375 px phone and on wide screens, in light and dark.
+
+## What FrontDesk AI supports
+
+Every requirement of the brief and every feature beyond it, in one table. The first column names the
+requirement the row belongs to: R1 to R9 are the nine "must do" items, B1 to B6 the bonus menu, M the phone and
+light/dark marks. N/A means the brief does not ask for it. "Pass" means tested on the live link, with the AI and
+with it blocked; "Yes" means the feature is in place. The last column is the version it arrived in.
+
+| Req | Feature | Supported | Since |
+| --- | --- | --- | --- |
+| R1 | Patient chat: type a question, get a reply | Pass | 1.0 |
+| R2 | Answers only from the clinic file: timings, doctors, prices, policies, insurance, location | Pass | 1.0 |
+| R3 | Not in the file: says "not sure", opens a needs-human ticket, promises a call within 2 working hours | Pass | 1.0 |
+| R4 | No medical advice or diagnosis; a dentist must see the patient, with an offer to book | Pass | 1.0 |
+| R5 | Emergency: the emergency number first, and an urgent ticket | Pass | 1.0 |
+| R6 | No discount, and no obeying "ignore your rules" | Pass | 1.0 |
+| R7 | Staff page at `/staff` with every ticket and its status; a staff reply shows in the patient's chat | Pass | 1.0 |
+| R8 | Still answers with no AI key, with the label "Answered from the clinic file" | Pass | 1.0 |
+| R9 | Works on a phone at 375 px | Pass | 1.0 |
+| B1 | Replies in Hindi or Telugu when the patient writes in them | Pass | 1.0 |
+| B2 | A booking request becomes a ticket with a time | Pass | 1.0 |
+| B3 | Ticket ageing and priority | Pass | 1.0 |
+| B4 | Clinic data editable by staff | Pass | 1.0 |
+| B5 | Quick-reply buttons | Pass | 1.0 |
+| B6 | Replies stay correct after a staff edit | Pass | 1.0 |
+| M | Readable in light and dark | Pass | 1.0 |
+| N/A | Voice input, with a recording fallback when the browser has no speech service | Yes | 1.0 |
+| N/A | Read aloud ("Listen" beside each reply) | Yes | 1.0 |
+| N/A | Patient can leave a name and phone for the call back | Yes | 1.0 |
+| N/A | "To call back" and "Could not answer" lists for staff | Yes | 1.0 |
+| N/A | Clear all tickets, with undo | Yes | 1.0 |
+| N/A | Asking for a person gets its own reply and a ticket; a seventh quick reply | Yes | 1.1 |
+| N/A | Named assistant and the clinic's own quick replies, set in the clinic file | Yes | 1.1 |
+| N/A | Ticket search, status filter and sort | Yes | 1.1 |
+| N/A | Urgent alerts for staff (turned on by staff) | Yes | 1.1 |
+| N/A | Form editor for the clinic file, beside the JSON box | Yes | 1.1 |
+| N/A | Queue figures: open, urgent, over 2 hours, answered, average wait, feedback | Yes | 1.2 |
+| N/A | CSV export of tickets | Yes | 1.2 |
+| N/A | Ready-made staff replies | Yes | 1.2 |
+| N/A | Filter by ticket type | Yes | 1.2 |
+| N/A | Private staff note on a ticket | Yes | 1.2 |
+| N/A | Booking reply states the named day's hours | Yes | 1.2 |
+| N/A | Ticket numbers | Yes | 1.3 |
+| N/A | The patient's whole chat thread inside a ticket | Yes | 1.3 |
+| N/A | Patient feedback on a reply ("Helpful" or "Not helpful") | Yes | 1.3 |
+| N/A | Tickets shared across devices: a staff device can see and answer tickets from any phone | Yes, behind the clinic's desk code | 1.3 |
+
+All 16 rows of the brief pass, and all 20 rows beyond it are in place. The same table with three other builds of
+the batch beside it is in [REPORT.md](REPORT.md), section "Requirement and feature map"; what each version added
+and how it was tested is in the sections "Version 1.1.0.0" to "Version 1.3.0.0" there.
 
 ## Documentation
 
@@ -124,12 +175,17 @@ Every diagram is PlantUML source plus SVG. No PNG or JPG anywhere in this reposi
 
 ## Privacy
 
-- Messages and tickets are kept in the browser's localStorage on the device; the staff page reads them from
-  the same browser. Nothing is stored on a server.
+- Messages and tickets are kept in the browser's localStorage on the device, and the staff page opens with
+  the tickets of its own browser. Since version 1.3.0.0 a patient's tickets (the question, the reply, and a name
+  and phone if the patient left them) are also mirrored to the clinic's server store, so staff on another
+  device can answer. They are deleted there after seven days.
+- On the server, a ticket can be read or changed only with the private key of the browser that created it, or
+  by staff with the clinic's desk code. A ticket id or a patient id alone opens nothing. Until the clinic sets a
+  desk code, the list of every device's tickets is closed to everyone.
 - When the model is used, the server function sends it the drafted answer and the clinic file only, never
   the patient's words.
 - A name and phone are asked for only if the patient chooses to leave them for a call-back; they are saved
   on that ticket.
-- The fine print says messages stay in this browser and reach only the clinic team, and asks patients not
-  to type medical records.
+- The fine print says who sees the messages (the clinic's front desk, once a chat is stored on the server; this
+  browser and the clinic team before that), and asks patients not to type medical records.
 - The model key is kept in the Vercel environment and never reaches the page.
