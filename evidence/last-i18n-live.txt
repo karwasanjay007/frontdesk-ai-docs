@@ -1,11 +1,11 @@
 PASS hi: every page label is in the chosen language
-PASS hi: English question answered in the chosen language: जी, शनिवार को हम 9:00 am to 8:00 pm तक खुले रहते हैं।
+PASS hi: English question answered in the chosen language: शनिवार को हम 9:00 am to 8:00 pm खुले रहते हैं।
 PASS hi: Listen uses hi-IN: ["hi-IN"]
 PASS hi: New chat clears the conversation
 PASS hi: earlier tickets stay on /staff after New chat
 PASS te: every page label is in the chosen language
-PASS te: English question answered in the chosen language: శనివారం రోజు మేము 9:00 am to 8:00 pm తెరిచి ఉంటాము. మీకు సౌకర్యమైన సమయంలో రావచ్చ
-PASS te: Listen uses te-IN: ["te-IN","te-IN"]
+PASS te: English question answered in the chosen language: శనివారం రోజు మేము 9:00 am to 8:00 pm తెరిచి ఉంటాము.
+PASS te: Listen uses te-IN: ["te-IN"]
 PASS te: New chat clears the conversation
 PASS te: earlier tickets stay on /staff after New chat
 PASS first visit: English and no .bot-msg

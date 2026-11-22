@@ -1,0 +1,6 @@
+PASS two replies | 2
+PASS replies are in the order the questions were sent | 1: Root canal treatment: Rs 6,500 to Rs 9,000. Usuall | 2: On Saturday we are open 9:00 am to 8:00 pm.Answere
+PASS the last .bot-msg answers the last question
+PASS one ticket for each question | 2
+PASS no page errors 
+ALL PASS (5 checks)

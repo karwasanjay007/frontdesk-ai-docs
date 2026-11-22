@@ -201,3 +201,13 @@ no certain defect against a must-do item. Three behaviours were changed the same
 names no treatment lists every priced treatment; the Doctors quick question follows the file; Hindi and Telugu
 replies translate the word between two days and open the emergency reply with a line in the language. Not
 covered by that round: the same checks with the AI key working.
+
+## Critic round 5, the last (22 Nov 2026, version unchanged)
+
+With the AI key working, a fifth critic saved a new clinic file and asked 32 questions, then the same with the
+model blocked: every fact and every ticket status matched, and the slowest AI reply took 3.5 seconds. The eight
+official sample questions passed three times in fresh browsers. Score 9.5 out of 10 with no certain defect. One
+behaviour was changed: two questions sent a fraction of a second apart came out in reverse order, because the
+first waited for the model; replies are now released in the order sent (`evidence/last-order-live.txt`, ALL PASS,
+5 checks). Left as it is: the model may lowercase or lightly reword a role or a policy phrase; every figure, day
+and name is kept. Critic scores over the day: 7.5, 7.5, 9.5, 9.5, 9.5.
