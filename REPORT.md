@@ -268,3 +268,59 @@ The staff additions live in the staff add-on file; with nothing pressed, `#ticke
 touched: brief 29 with the key and 29 with the model blocked, bonus 15 both ways, sample questions 16 blocked,
 call-back 8, staff-clear 7; engine 127, sweep 386, other-clinic and person 76. All pass. The full regression of
 every suite was last run on version 1.1.0.0 earlier the same day.
+
+## Requirement and feature map (22 Nov 2026)
+
+Every requirement of the brief and every feature, in one table, with three other builds of the batch beside
+it (called A, B and C here). The first column names the requirement the row belongs to: R1 to R9 are the nine
+"must do" items, B1 to B6 the bonus menu, M the phone and light/dark marks. N/A means the feature is not asked
+for in the brief.
+
+How to read the cells. FrontDesk AI: "Pass" means tested on the live link on 22 Nov 2026, with the AI and with
+it blocked; "Yes" and "No" say whether a feature outside the brief exists. Other builds: only their chat and
+staff screens were read and nothing was typed or sent, so "Seen" means it is visible on those screens or in
+their ticket lists, "Seen in part" means part of it is visible, "Not tested" means it cannot be judged without
+using their app, and "No" means it was not on the screens read.
+
+| Req | Feature | FrontDesk AI | Build A | Build B | Build C |
+| --- | --- | --- | --- | --- | --- |
+| R1 | Patient chat answers a typed question | Pass | Seen | Seen | Seen |
+| R2 | Answers only from the clinic file | Pass | Seen | Not tested | Not tested |
+| R3 | Not in the file: "not sure", needs-human ticket, 2 working hours | Pass | Not tested | Seen in part | Seen |
+| R4 | No medical advice or diagnosis | Pass | Not tested | Seen in part | Seen in part |
+| R5 | Emergency: number first, urgent ticket | Pass | Seen | Seen in part | Seen |
+| R6 | No discount, no obeying "ignore your rules" | Pass | Seen | Not tested | Not tested |
+| R7 | Staff page with statuses; a staff reply reaches the chat | Pass | Seen in part | Seen in part | Seen in part |
+| R8 | Still answers with no AI key, with the label | Pass | Seen in part | Not tested | Not tested |
+| R9 | Works at 375 px | Pass | Not tested | Not tested | Not tested |
+| B1 | Replies in Hindi or Telugu | Pass | Seen | Seen in part | Seen in part |
+| B2 | A booking becomes a ticket with a time | Pass | Seen | Not tested | Seen |
+| B3 | Ticket ageing and priority | Pass | Seen | Seen | Seen |
+| B4 | Clinic data editable by staff | Pass | Seen in part | Seen | Seen in part |
+| B5 | Quick-reply buttons | Pass | Seen | Seen | Seen |
+| B6 | Replies stay correct after a staff edit | Pass | Not tested | Not tested | Not tested |
+| M | Readable in light and dark | Pass | Seen in part | Seen in part | No |
+| N/A | Voice input | Yes | Yes | Yes | Yes |
+| N/A | Read aloud | Yes | No | No | Yes |
+| N/A | Named assistant | Yes | Yes | Yes | No |
+| N/A | Asking for a person gets its own reply and ticket | Yes | Not tested | Not tested | Not tested |
+| N/A | Booking reply states the day's hours | Yes | No | Not tested | Yes |
+| N/A | Patient can leave a name and phone for the call back | Yes | Yes | No | No |
+| N/A | Tickets shared across devices (kept on a server) | No | Yes | Yes | Yes |
+| N/A | Status filter with counts | Yes | Yes | Yes | No |
+| N/A | Search, and filter by ticket type | Yes | Yes | No | No |
+| N/A | Sort | Yes | No | No | No |
+| N/A | Queue figures (open, urgent, overdue, answered, average wait) | Yes | Yes | Yes | No |
+| N/A | Urgent alerts for staff | Yes | Yes | Yes | No |
+| N/A | CSV export of tickets | Yes | Yes | No | No |
+| N/A | Ready-made staff replies | Yes | Yes | No | No |
+| N/A | Private staff note on a ticket | Yes | Yes | No | No |
+| N/A | Whole chat thread inside a ticket | No | Yes | Yes | No |
+| N/A | Form editor for the clinic file | Yes | Not tested | Yes | Not tested |
+| N/A | Clear all tickets | Yes | No | No | Yes |
+| N/A | "To call back" and "Could not answer" lists | Yes | No | No | No |
+| N/A | Patient feedback on a reply | No | Yes | No | No |
+| N/A | Ticket numbers | No | No | Yes | No |
+
+FrontDesk AI: all 16 rows of the brief pass, and 17 of the 21 rows outside the brief are in place. The four that
+are not: tickets shared across devices, the whole chat thread inside a ticket, patient feedback, ticket numbers.
