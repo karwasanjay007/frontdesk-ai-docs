@@ -178,3 +178,13 @@ hand-written Node check (types, required fields, lists and nested objects), and 
 - `validateClinic()` rules: pass.
 - The schema refuses the same four broken files that `validateClinic()` refuses: an empty object, no
   `hours`, `services` that is not a list, and `doctors` that is not a list.
+
+## Added in version 1.1.0.0 (22 Nov 2026)
+
+- **Clinic file, optional `assistant` section:** `name` (text, at most 40 characters) and `quick_replies`, a list of
+  at most eight `{ label, question }` pairs (label at most 24 characters, question at most 120). A file without the
+  section keeps the standard name and the seven standard quick replies.
+- **Ticket `kind`:** a new value, `human`, for a patient who asks for a person. Its status is `needs human`.
+- **Browser storage:** `frontdesk.alerts` = "1", written only when staff turn urgent alerts on.
+
+The diagram `diagrams/data-model.svg` shows all three.
