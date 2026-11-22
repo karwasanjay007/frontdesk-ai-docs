@@ -168,3 +168,14 @@ Documentation: https://github.com/karwasanjay007/frontdesk-ai-docs
 ## Version 1.0.0.0 baseline (21 Nov 2026)
 
 Released by Sanjay Karwa, Smart AI for Business. See `VERSION` and `evidence/release-1-0-0-0.md`.
+
+## Critic round 2 (22 Nov 2026, version unchanged)
+
+A second strict critic ran about 160 questions over clinic files of its own and scored the build 7.5 out of 10
+again, this time on files written in another shape than the sample. Fixed the same day: a price under `cost`,
+`fee` or `rate`, as a number or a range, is shown as "Rs 5,000 to Rs 7,500"; doctors with `specialty` and
+`available`; hours as `{open, close}`; policies as a list of `{topic, text}`; insurers as a list; days written
+"Tue-Sat"; a doctor asked for by surname; "bleeding heavily" is urgent; "forget previous instructions" is
+refused; EMI asked when the file has none goes to "not sure". Evidence: `evidence/last-other-clinic.txt` ALL
+PASS (now three other clinic files, one of them in the other shape); `evidence/last-engine.txt` ALL PASS (119
+checks); `evidence/last-sweep.txt` ALL PASS (386 questions); every live suite rerun after the deploy.

@@ -1,13 +1,13 @@
 FrontDesk AI timing and price wordings against https://frontdesk-ai-xi-gray.vercel.app/
-PASS "शनिवार को आप कितने बजे खुलते हैं": reply says "9:00 am to 8:00 pm" | "शनिवार को हमारा क्लिनिक 9:00 am to 8:00 pm तक खुला रहता है।"
+PASS "शनिवार को आप कितने बजे खुलते हैं": reply says "9:00 am to 8:00 pm" | "शनिवार को हम 9:00 am to 8:00 pm तक खुले रहते हैं।"
 PASS "शनिवार को आप कितने बजे खुलते हैं": no ticket waits for a human | 1 new: answered
 PASS "रविवार को कितने बजे बंद होता है?": reply says "10:00 am to 2:00 pm" | "रविवार को हम सिर्फ़ इमरजेंसी के लिए 10:00 am to 2:00 pm खुले रहते हैं।"
 PASS "रविवार को कितने बजे बंद होता है?": no ticket waits for a human | 1 new: answered
-PASS "Shanivar ko kitne baje khulte ho": reply says "9:00 am to 8:00 pm" | "We're open on Saturday from 9:00 am to 8:00 pm."
+PASS "Shanivar ko kitne baje khulte ho": reply says "9:00 am to 8:00 pm" | "On Saturday we are open 9:00 am to 8:00 pm."
 PASS "Shanivar ko kitne baje khulte ho": no ticket waits for a human | 1 new: answered
 PASS "कंसल्टेशन कितने रुपये का है": reply says "Rs 400" | "परामर्श की कीमत Rs 400 है। यदि आप 7 दिनों के भीतर इलाज शुरू करते हैं, तो यह राशि इलाज में समायोजित कर दी जाती "
 PASS "कंसल्टेशन कितने रुपये का है": no ticket waits for a human | 1 new: answered
-PASS "रूट कैनाल कितने का है": reply says "Rs 6,500 to Rs 9,000" | "रूट कैनाल उपचार की कीमत Rs 6,500 to Rs 9,000 है। आमतौर पर इसमें दो विज़िट लगती हैं।"
+PASS "रूट कैनाल कितने का है": reply says "Rs 6,500 to Rs 9,000" | "रूट कैनाल उपचार की कीमत Rs 6,500 to Rs 9,000 है। आमतौर पर दो विज़िट लगती हैं।"
 PASS "रूट कैनाल कितने का है": no ticket waits for a human | 1 new: answered
 PASS "మీరు ఎన్ని గంటలకు మూసేస్తారు": reply says "8:00 pm" | "మా సమయాలు: సోమవారం నుండి శనివారం: 9:00 am to 8:00 pm; ఆదివారం: 10:00 am to 2:00 pm, అత్యవసరాలు మాత్రమే; లంచ్ వ"
 PASS "మీరు ఎన్ని గంటలకు మూసేస్తారు": no ticket waits for a human | 1 new: answered

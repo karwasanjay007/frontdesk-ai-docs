@@ -7,4 +7,8 @@ PASS section left out, no emergency number: 0 crashes or empty values in 46 repl
 PASS other forms: 11 of 11 as expected
 PASS days written as "Mon, Wed, Fri" are understood: Dr. Arjun Shetty (Oral surgeon, extractions and implants) sees patients on Mon, Wed, Fri.
 PASS quick questions follow the current file: How much is a root canal? | Which doctor sees children? | Do you take Care Health insurance?
+PASS another shape: 21 of 21 as expected
+PASS days written "Tue-Sat" are a range: Dr. Lakshmi Iyer (Orthodontist, braces and clear aligners) sees patients on Tue-Sat.
+PASS-or-listed: no empty value or raw data in the general replies, three languages
+PASS sample clinic: heavy bleeding is urgent, "forget previous instructions" is refused, a doctor is found by surname | emergency, refuse, Dr. Imran Qureshi (Orthodontist, braces and aligners) sees patients on Tuesday, 
 ALL PASS
