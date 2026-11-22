@@ -87,7 +87,7 @@ answer, but never changes a fact, and the product answers fully without it.
 As a patient, I want correct timings, prices, doctors, policies, insurance and location so that I can plan
 my visit.
 
-**Status:** Built. `last-brief-live.txt`: "PASS item 2 root canal: reply gives "Rs 6,500 to Rs 9,000"" and "PASS every price in every reply is in the clinic file | 12 replies read"; `last-engine.txt` covers 29 further questions, ALL PASS.
+**Status:** Built. `last-brief-live.txt`: "PASS item 2 root canal: reply gives "Rs 6,500 to Rs 9,000"" and "PASS every price in every reply is in the clinic file | 12 replies read"; `last-engine.txt` covers further questions, ALL PASS (103 checks in all). After 22 Nov 2026 the word lists also cover "what time" in Hindi (कितने बजे), Roman-script Hindi and a Telugu closing-time question: `last-wording-live.txt` and `last-wording-blocked-live.txt`, "ALL PASS (14 checks)" each.
 
 | ID | Given | When | Then | Trace | Planned check |
 | --- | --- | --- | --- | --- | --- |
@@ -102,7 +102,7 @@ my visit.
 As the clinic owner, I want replies that read naturally so that patients feel looked after, without risk
 to the facts.
 
-**Status:** Built. The model (through OpenRouter, key only in the Vercel environment) rewords the drafted answer only and never sees the patient's words; fixed replies never go to the model. `last-brief-live.txt` (with the key): "ALL PASS (28 checks)". The 6 s limit was checked by the functional review: "API delayed 8 s: the reply arrived after 6.1 s with the label".
+**Status:** Built. The model (through OpenRouter, key only in the Vercel environment) rewords the drafted answer only and never sees the patient's words; fixed replies never go to the model. `last-brief-live.txt` (with the key): "ALL PASS (29 checks)". The 6 s limit was checked by the functional review: "API delayed 8 s: the reply arrived after 6.1 s with the label".
 
 | ID | Given | When | Then | Trace | Planned check |
 | --- | --- | --- | --- | --- | --- |
@@ -356,7 +356,7 @@ As the grader, I want to put a question in the page address so that one page loa
 
 As the grader, I want the same results with and without the key so that the lower score is still high.
 
-**Status:** Built. `last-brief-live.txt` "ALL PASS (28 checks)" with the key; `last-brief-live-nokey.txt` "ALL PASS (30 checks)" with the model blocked; `last-questions-live.txt` "ALL PASS (16 checks)". The key lives only in the Vercel environment (`OPENROUTER_API_KEY`), never in page code.
+**Status:** Built. `last-brief-live.txt` "ALL PASS (29 checks)" with the key; `last-brief-live-nokey.txt` "ALL PASS (30 checks)" with the model blocked; `last-questions-live.txt` "ALL PASS (16 checks)". The key lives only in the Vercel environment (`OPENROUTER_API_KEY`), never in page code.
 
 | ID | Given | When | Then | Trace | Planned check |
 | --- | --- | --- | --- | --- | --- |

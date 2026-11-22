@@ -10,7 +10,7 @@ PASS Q2 "How much is a root canal?" (answer): includes "9,000"
 INFO Q2 "6,500" case-insensitive: true
 INFO Q2 "9,000" case-insensitive: true
 INFO Q2 new ticket status: answered
-INFO Q2 label "Answered from the clinic file": true
+INFO Q2 label "Answered from the clinic file": false
 PASS Q3 "Which doctor sees children?" (answer): includes "Sneha Rao"
 PASS Q3 "Which doctor sees children?" (answer): includes "Saturday"
 INFO Q3 "Sneha Rao" case-insensitive: true

@@ -157,13 +157,14 @@ results are from the live link on 20 Nov 2026.
 
 | Test | What it proves | Latest live result |
 | --- | --- | --- |
-| `tests/brief.mjs` | Every "Done when" of spec items 1 to 9, literally, each in a fresh browser, then the "How we check" rules: `?q=`, no `.bot-msg` before the first question, `#ticket-queue`, the four exact statuses, every price in the clinic file, no dialogs, no page or console errors | `last-brief-live.txt`: ALL PASS (28 checks) with the key; `last-brief-live-nokey.txt`: ALL PASS (30 checks) with the model blocked, item 8 graded |
+| `tests/brief.mjs` | Every "Done when" of spec items 1 to 9, literally, each in a fresh browser, then the "How we check" rules: `?q=`, no `.bot-msg` before the first question, `#ticket-queue`, the four exact statuses, every price in the clinic file, no dialogs, no page or console errors | `last-brief-live.txt`: ALL PASS (29 checks) with the key; `last-brief-live-nokey.txt`: ALL PASS (30 checks) with the model blocked, item 8 graded |
 | `tests/questions.mjs` | The eight sample questions: `must_include` as written, `must_not_include` absent, the new ticket's status | `last-questions-live.txt`: ALL PASS (16 checks) |
 | `tests/bonus.mjs` | Bonus items: booking ticket with the requested time, priority order, ticket age, call-back list, quick replies, clinic file edit followed by timing and price, reset | `last-bonus-live.txt`: ALL PASS (15 checks) |
 | `tests/widths.mjs` | No sideways scroll, message box and Send in view, targets of 40 px or more, content to the right edge, at widths up to 2560 px | `last-widths-live.txt`: ALL PASS (20 checks) |
 | `tests/contrast.mjs` | Every visible text against its real background, light and dark, at rest and while hovering every control; flags anything under 4.5:1 (3:1 large) and any blue text or background | `last-contrast-live.txt`: no element under 4.5:1. It prints "17 PROBLEMS": all 17 are BLUE-BG flags on the brand teal (11, 93, 99) and its dark hover (39, 67, 74), at 5.89:1 to 7.87:1, which the scan's blue rule catches; none is a contrast failure |
-| `tests/engine.cjs` | The rules engine on the sample questions and reworded variants, the guard on crafted bad and good model replies, and `validateClinic` on a broken file | `last-engine.txt`: ALL PASS (87 checks) |
+| `tests/engine.cjs` | The rules engine on the sample questions and reworded variants, the guard on crafted bad and good model replies, and `validateClinic` on a broken file | `last-engine.txt`: ALL PASS (103 checks) |
 | `tests/emergency.mjs` | Bleeding that will not stop, said five other ways in English, Hindi and Telugu, each in a fresh browser: the emergency number comes first and one new ticket is urgent | `last-emergency-live.txt`: ALL PASS (12 checks) |
+| `tests/wording.mjs` | Timings and prices asked other ways in Hindi, Roman-script Hindi and Telugu, each in a fresh browser: the figure from the clinic file is in the reply and no ticket waits for a human | `last-wording-live.txt` and `last-wording-blocked-live.txt`: ALL PASS (14 checks each) |
 
 The independent reviews and their fix lists are in `review/` (`brief-audit.md`, `functional.md`,
 `industry.md`, `visual.md`); the fixes are in the code commit "Review fixes: model cannot be steered,

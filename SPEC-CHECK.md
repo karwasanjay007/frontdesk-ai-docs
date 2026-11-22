@@ -13,7 +13,7 @@ started") and is now filled from the live results of 21 Nov 2026, copied into `e
 | Literal test | `tests/brief.mjs` in the code repository (one check per "Done when", fresh browser, in the order given; run twice, with the key and with the key removed) |
 
 Evidence quotes the PASS line each test printed against the live link https://frontdesk-ai-xi-gray.vercel.app.
-Files: `evidence/last-brief-live.txt` (with the key, 28 checks), `evidence/last-brief-live-nokey.txt` (model
+Files: `evidence/last-brief-live.txt` (with the key, 29 checks), `evidence/last-brief-live-nokey.txt` (model
 blocked, 30 checks), `evidence/last-questions-live.txt` (16), `evidence/last-bonus-live.txt` (15, also run
 with the model blocked), `evidence/last-widths-live.txt` (20), `evidence/last-contrast-live.txt` and
 `evidence/last-engine.txt` (the rules engine and the guard, without a browser). These are our own tests,
@@ -51,7 +51,7 @@ reads these exactly; copy them as they are)".
 | Ask on load | `?q=<question>` in the page URL asks that question when the page opens | Met | "PASS ask on load ?q=: last .bot-msg says "9:00 am to 8:00 pm"", "INFO ?q= asked once: true" |
 | Ticket list | `#ticket-queue`, one `[data-ticket]` per ticket with `data-status` set to answered, needs human, urgent or closed | Met | "PASS /staff: #ticket-queue exists on a first visit \| #ticket-queue count 1", "PASS every data-status is one of the four exact strings \| seen: "needs human", "urgent", "answered"" |
 | Staff reply | a text area `#staff-reply` and a button `#staff-send` on each ticket | Met | "PASS item 7 staff reply: #staff-reply and #staff-send each unique on /staff \| #staff-reply 1, #staff-send 1" |
-| No key run | our tester runs your app twice, with your key and with the key removed. The lower score counts | Met | `last-brief-live.txt` "ALL PASS (28 checks)"; `last-brief-live-nokey.txt` "ALL PASS (30 checks)" with every `/api/` request blocked; `last-questions-live.txt` "ALL PASS (16 checks)"; the bonus checks pass both ways |
+| No key run | our tester runs your app twice, with your key and with the key removed. The lower score counts | Met | `last-brief-live.txt` "ALL PASS (29 checks)"; `last-brief-live-nokey.txt` "ALL PASS (30 checks)" with every `/api/` request blocked; `last-questions-live.txt` "ALL PASS (16 checks)"; the bonus checks pass both ways |
 
 ## 3. Bonus menu
 
@@ -97,7 +97,7 @@ must pass.
 | Hidden data (60) | Exact ids and statuses: #chat-input, #chat-send, .bot-msg last, ?q=, #ticket-queue, [data-ticket] with the four statuses, #staff-reply and #staff-send on every ticket | `tests/brief.mjs` | pass | pass |
 | Bonus (30) | All six bonus items | `tests/bonus.mjs` | 15/15 | 15/15 |
 | Phone (5) | No sideways scroll at 375 px; chat box and Send in view; also 768 to 2560 px | `tests/widths.mjs`, brief item 9 | 20/20 | 20/20 |
-| Light and dark (5) | Every text 4.5:1 or better in both themes, at rest, after actions and on hover | `tests/contrast.mjs` | clean | clean |
+| Light and dark (5) | Every text 4.5:1 or better in both themes, at rest, after actions and on hover | `tests/contrast.mjs` | nothing under 4.5:1 (17 notes on the brand colour, none a failure) | the same |
 | Bonus 1, beyond the line | Language menu changes every label; English questions answered in the chosen language; Listen in that language; New chat | `tests/i18n.mjs` | 11/11 | 11/11 |
 | Extras | Voice input with a backup when the browser speech service refuses (fake microphone playing a recorded question: transcribed and answered) | `tests/voice.mjs` | 2/2 | n/a |
 | Extras | Clear all tickets with Undo on /staff (no dialog); Listen with no voice for the language says so | `tests/staffclear.mjs` | n/a | 7/7 |

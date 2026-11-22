@@ -48,6 +48,22 @@ PASS శనివారం ఓపెన్ ఉన్నారా? -> answer/answ
 PASS రూట్ కెనాల్ ధర ఎంత? -> answer/answered | Root canal treatment ధర: Rs 6,500 to Rs 9,000. Usually two visits.
 PASS ముఖం వాపు మరియు ఊపిరి రావడం లేదు -> emergency/urgent | 98000 00123 కు ఇప్పుడే కాల్ చేయండి. Heavy bleeding that does not stop,
 PASS మీరు Invisalign చేస్తారా? -> notsure/needs human | దీని గురించి నాకు ఖచ్చితంగా తెలియదు (not sure), ఊహించి చెప్పను. మీ ప్ర
+PASS शनिवार को आप कितने बजे खुलते हैं -> answer/answered | शनिवार को हम 9:00 am to 8:00 pm खुले रहते हैं।
+PASS आप कितने बजे खुलते हैं? -> answer/answered | हमारा समय: सोमवार से शनिवार: 9:00 am to 8:00 pm; रविवार: 10:00 am to 2
+PASS रविवार को कितने बजे बंद होता है? -> answer/answered | रविवार को हम 10:00 am to 2:00 pm, सिर्फ़ इमरजेंसी खुले रहते हैं।
+PASS आज कितने बजे तक खुला है -> answer/answered | हमारा समय: सोमवार से शनिवार: 9:00 am to 8:00 pm; रविवार: 10:00 am to 2
+PASS कितने डॉक्टर हैं -> answer/answered | Dr. Meera Nair (Lead dentist, root canals and fillings) सोमवार से शनिव
+PASS दांत साफ करने की फीस कितनी है -> answer/answered | Teeth cleaning (scaling and polishing) की कीमत: Rs 1,200, 45 minutes।
+PASS कंसल्टेशन कितने रुपये का है -> answer/answered | Consultation की कीमत: Rs 400। Adjusted against treatment if you start 
+PASS ईएमआई मिलती है क्या -> answer/answered | क्लिनिक का नियम: No-cost EMI for 6 months on braces and implants, subj
+PASS अपॉइंटमेंट कैंसिल करने पर कोई चार्ज है? -> answer/answered | क्लिनिक का नियम: Book on the phone or WhatsApp. Cancel or move at leas
+PASS Shanivar ko kitne baje khulte ho -> answer/answered | On Saturday we are open 9:00 am to 8:00 pm.
+PASS kitne baje band hota hai -> answer/answered | Our timings: Monday to saturday: 9:00 am to 8:00 pm; Sunday: 10:00 am 
+PASS మీరు ఎన్ని గంటలకు మూసేస్తారు -> answer/answered | మా సమయాలు: సోమవారం నుండి శనివారం: 9:00 am to 8:00 pm; ఆదివారం: 10:00 a
+PASS Do you take Niva Bupa? -> answer/answered | Yes, we are cashless with Star Health and Niva Bupa. For other insurer
+PASS कितने का है -> notsure/needs human | मुझे इसके बारे में पक्का पता नहीं है (not sure), और मैं अंदाज़ा नहीं ल
+PASS Invisalign कितने का है -> notsure/needs human | मुझे इसके बारे में पक्का पता नहीं है (not sure), और मैं अंदाज़ा नहीं ल
+PASS मुझे कल शाम 5 बजे का अपॉइंटमेंट चाहिए -> booking/needs human | धन्यवाद। मैंने आपका अनुरोध (tomorrow, Mon 23 Nov 2026, evening) हमारी 
 PASS My gum has been bleeding non stop for an hour -> emergency/urgent | Call 98000 00123 now. Heavy bleeding that does not stop, swelling of t
 PASS I can't stop the bleeding -> emergency/urgent | Call 98000 00123 now. Heavy bleeding that does not stop, swelling of t
 PASS I cannot stop the bleeding from my gums -> emergency/urgent | Call 98000 00123 now. Heavy bleeding that does not stop, swelling of t

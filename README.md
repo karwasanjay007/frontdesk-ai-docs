@@ -10,7 +10,7 @@ FrontDesk AI is the front desk chat for a dental clinic: patients get answers fr
 | Built by | Sanjay Karwa, Smart AI for Business |
 | Stack | Plain HTML, CSS and JavaScript with a rules engine in the browser; one Vercel function calling OpenRouter with DeepSeek V4.1 Flash (`deepseek/deepseek-v4.1-flash`), the key on the server only; localStorage |
 | Version | 1.0.0.0 (baseline, Sanjay Karwa, 21 Nov 2026) |
-| Status | Built and live; every test passes on the live link, with the key and with the model blocked (21 Nov 2026) |
+| Status | Built and live. Every functional test passes on the live link, with the key and with the model blocked (rerun 22 Nov 2026 after two wording fixes, see REPORT.md). The contrast scan finds nothing under 4.5:1; its 17 flagged lines are notes about text on the teal brand colour, not failures |
 
 ## For the judges: FrontDesk AI in two minutes
 
@@ -48,7 +48,7 @@ results in [evidence/](evidence/), build report in [REPORT.md](REPORT.md).
 | --- | --- | --- | --- |
 | Must do, 9 items | (in the hidden-data test) | All met, with the key and with the model blocked | [last-brief-live.txt](evidence/last-brief-live.txt) ALL PASS (29 checks); [last-brief-nokey-live.txt](evidence/last-brief-nokey-live.txt) ALL PASS (31 checks); [last-audit-ai-live.txt](evidence/last-audit-ai-live.txt) and [last-audit-blocked-live.txt](evidence/last-audit-blocked-live.txt): 30 grader-style questions ALL PASS |
 | How they check: ids, classes, `?q=`, no-key run | (in the hidden-data test) | All met | the same two files; [last-questions-live.txt](evidence/last-questions-live.txt) ALL PASS (16 checks) |
-| Hidden-data test | 60 | Met on our tests; the graders' questions and data are unseen | the files above and [last-engine.txt](evidence/last-engine.txt) ALL PASS (87 checks); [last-emergency-live.txt](evidence/last-emergency-live.txt) ALL PASS (12 checks): bleeding that will not stop, said five other ways in English, Hindi and Telugu (22 Nov 2026) |
+| Hidden-data test | 60 | Met on our tests; the graders' questions and data are unseen | the files above and [last-engine.txt](evidence/last-engine.txt) ALL PASS (103 checks); [last-emergency-live.txt](evidence/last-emergency-live.txt) ALL PASS (12 checks): bleeding that will not stop, said five other ways in English, Hindi and Telugu (22 Nov 2026); [last-wording-live.txt](evidence/last-wording-live.txt) and [last-wording-blocked-live.txt](evidence/last-wording-blocked-live.txt) ALL PASS (14 checks each): timings and prices asked other ways in Hindi, Roman-script Hindi and Telugu (22 Nov 2026) |
 | Bonus menu, at most 6 count | 30 | All 6 met, both ways | [last-bonus-live.txt](evidence/last-bonus-live.txt) ALL PASS (15 checks) |
 | Phone and light/dark | 10 | Met | [last-widths-live.txt](evidence/last-widths-live.txt) ALL PASS (20 checks, 375 to 2560 px); [last-contrast-live.txt](evidence/last-contrast-live.txt): nothing under 4.5:1 (its flagged lines are text on the teal brand colour at 5.89:1 or more) |
 
