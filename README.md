@@ -9,7 +9,7 @@ FrontDesk AI is the front desk chat for a dental clinic: patients get answers fr
 | Code | `frontdesk-ai` (private while a competition is open) |
 | Built by | Sanjay Karwa, Smart AI for Business |
 | Stack | Plain HTML, CSS and JavaScript with a rules engine in the browser; one Vercel function calling OpenRouter with DeepSeek V4.1 Flash (`deepseek/deepseek-v4.1-flash`), the key on the server only; localStorage |
-| Version | 1.2.0.0 (22 Nov 2026; baseline 1.0.0.0, Sanjay Karwa, 21 Nov 2026) |
+| Version | 1.3.0.0 (22 Nov 2026; baseline 1.0.0.0, Sanjay Karwa, 21 Nov 2026) |
 | Status | Built and live. Every functional test passes on the live link, with the key and with the model blocked (rerun 22 Nov 2026 after two wording fixes, see REPORT.md). The contrast scan finds nothing under 4.5:1; its flagged lines are notes about text on the teal brand colour, not failures. Version 1.1.0.0 (22 Nov 2026) adds four things beside the baseline: a reply and a ticket when a patient asks for a person, search and filters on the staff page, a form for the clinic file, and an assistant name and quick replies set in that file. Every earlier test passes on the live link after it, unedited |
 
 ## For the judges: FrontDesk AI in two minutes

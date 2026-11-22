@@ -1,0 +1,7 @@
+PASS the chat answers as before
+PASS the ticket is in the real store, readable with this browser's key | {"status":200,"n":1,"st":"needs human","replies":"0"}
+PASS the small print now says the messages go to the front desk
+PASS a staff device has the switch, off, and opens with its own tickets only (none)
+PASS with the switch on and no usable desk code, no other device's ticket is shown | Tickets from other devices need a desk code, and the clinic has not set one on the server 
+PASS no page errors 
+ALL PASS (6 checks)

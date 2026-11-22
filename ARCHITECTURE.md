@@ -215,3 +215,13 @@ stricter guard, engine gaps, call-back details, design".
 | Staff ticket tools | `staff/tools.js`, `staff/tools.css` | A toolbar before `#ticket-queue`: `#queue-search`, `[data-filter]`, `#queue-sort`, `#alerts-toggle`, `#queue-shown`. Works by observing the queue; never calls into `staff.js`. Alerts state in `frontdesk.alerts`, written only when turned on |
 | Clinic file form | `staff/form.js`, `staff/form.css` | `<details id="clinic-form">` before the JSON box; fields with ids starting `cf-`, generated from the JSON; an "Assistant" section for the optional `assistant` key |
 | Tests | `tests/person.cjs`, `tests/person.mjs`, `tests/tools.mjs`, `tests/form.mjs` | 76, 16, 37 and 43 checks |
+
+## Version 1.3.0.0 additions (22 Nov 2026)
+
+| Part | File | What it holds |
+| --- | --- | --- |
+| Ticket store function | `api/tickets.js` | `core(request, db, env)`: the rules (patient key, desk code, clean, merge, rate limit), separate from the store; `redisDb`: Upstash Redis over REST, one key per ticket for seven days, a sorted set for the order, a small set per browser key. Answers 503 when no store is configured |
+| Sync add-on | `sync.js` (loaded on `/` and `/staff`) | Chat: sends this patient's tickets when they change, fetches staff replies; key in `frontdesk.synckey`. Staff: `#sync-bar` with `#all-devices` (state in `frontdesk.alldevices`), `#desk-code` (kept for the session only); tickets from other devices carry `remote: true` in this browser and leave when the switch goes off |
+| Ticket numbers, thread, feedback | `staff/staff.js`, `chat.js`, `staff/tools.js` | `.t-no`, `details.t-thread`, `[data-fb]` buttons in `.msg-tools`, ticket field `feedback`, figure `#kpi-feedback` |
+| Environment | Vercel project | `KV_REST_API_URL`, `KV_REST_API_TOKEN` (added by the store), `FRONTDESK_DESK_CODE` (set by the clinic) |
+| Tests | `tests/extras3.mjs`, `tests/sync.mjs`, `tests/tickets-api-live.mjs`, `tests/sync-live.mjs` | 15, 31, 11 and 6 checks |

@@ -306,7 +306,7 @@ using their app, and "No" means it was not on the screens read.
 | N/A | Asking for a person gets its own reply and ticket | Yes | Not tested | Not tested | Not tested |
 | N/A | Booking reply states the day's hours | Yes | No | Not tested | Yes |
 | N/A | Patient can leave a name and phone for the call back | Yes | Yes | No | No |
-| N/A | Tickets shared across devices (kept on a server) | No | Yes | Yes | Yes |
+| N/A | Tickets shared across devices (kept on a server) | Yes, behind a desk code (1.3) | Yes | Yes | Yes |
 | N/A | Status filter with counts | Yes | Yes | Yes | No |
 | N/A | Search, and filter by ticket type | Yes | Yes | No | No |
 | N/A | Sort | Yes | No | No | No |
@@ -315,12 +315,47 @@ using their app, and "No" means it was not on the screens read.
 | N/A | CSV export of tickets | Yes | Yes | No | No |
 | N/A | Ready-made staff replies | Yes | Yes | No | No |
 | N/A | Private staff note on a ticket | Yes | Yes | No | No |
-| N/A | Whole chat thread inside a ticket | No | Yes | Yes | No |
+| N/A | Whole chat thread inside a ticket | Yes (1.3) | Yes | Yes | No |
 | N/A | Form editor for the clinic file | Yes | Not tested | Yes | Not tested |
 | N/A | Clear all tickets | Yes | No | No | Yes |
 | N/A | "To call back" and "Could not answer" lists | Yes | No | No | No |
-| N/A | Patient feedback on a reply | No | Yes | No | No |
-| N/A | Ticket numbers | No | No | Yes | No |
+| N/A | Patient feedback on a reply | Yes (1.3) | Yes | No | No |
+| N/A | Ticket numbers | Yes (1.3) | No | Yes | No |
 
-FrontDesk AI: all 16 rows of the brief pass, and 17 of the 21 rows outside the brief are in place. The four that
-are not: tickets shared across devices, the whole chat thread inside a ticket, patient feedback, ticket numbers.
+FrontDesk AI: all 16 rows of the brief pass, and all 21 rows outside the brief are in place since version
+1.3.0.0 (the four that were missing in 1.2.0.0 are marked 1.3).
+
+## Version 1.3.0.0 (22 Nov 2026, late evening)
+
+The four features of the map that FrontDesk AI did not have, added the same evening.
+
+| Addition | What it does | How the baseline is kept |
+| --- | --- | --- |
+| Ticket numbers | T-001, T-002 and so on, in the order the tickets were opened, on each ticket | The ticket rows, their `data-ticket` and `data-status`, the reply box and the Send button are unchanged |
+| The chat thread in a ticket | The patient's other questions, the bot's replies and the team's replies, folded under the open ticket as "Chat so far" | Folded by default; each question is still its own ticket |
+| Feedback on a reply | "Helpful" and "Not helpful" beside each reply; it shows on the ticket and as a staff figure | The buttons sit beside the reply, never inside `.bot-msg` |
+| Tickets shared across devices | The chat mirrors a patient's tickets to the clinic's server store, and a staff device can turn on "Show tickets from all devices"; a reply made there shows in the patient's chat on another phone | The staff page opens with this browser's tickets only, as before; the switch is off by default. If the store is missing, blocked or slow, both pages behave as they did |
+
+**Who can read a shared ticket.** Each patient's browser holds a private key; the server keeps only a hash of it
+with the ticket, and only the same key can read or change that ticket. Knowing a ticket id or a patient id is not
+enough. The list of every device's tickets needs the clinic's desk code, and is closed to everyone until the
+clinic has set one on the server. A ticket's question, reply and patient cannot be changed once stored. Requests
+are rate limited. Tickets on the server are deleted after seven days. Once a chat is stored, the chat's small
+print says that the messages go to the clinic's front desk.
+
+**Review.** A read-only review of the first cut of shared tickets said it was safe to deploy with the store
+absent and not safe to turn on: a stranger who knew a ticket id could read the patient's phone number and
+overwrite the ticket, and the full list was open. It was rewritten before any deploy to the rules above, and the
+test now runs the server's own rules.
+
+**Tests.** New: `evidence/last-extras3-live.txt` (15 checks), `evidence/last-sync-live.txt` (two browsers and
+the server's rules over a store kept in memory, 31 checks), `evidence/last-tickets-api-live.txt` (the live
+function against the real store, 11 checks), `evidence/last-sync-real-store-live.txt` (a patient's ticket stored
+and read back in the browser, the staff switch closed without a code, 6 checks). The full regression ran
+locally before each deploy and on the live link after the last one, with the store active; no earlier test was
+edited.
+
+**Not covered.** The staff side of shared tickets on the live link (the list with a desk code, and a reply
+travelling back through the real store) waits for the clinic's desk code; it is covered by the two-browser test
+with the server's rules, not yet against the real store. Test tickets from the release checks stay in the store
+for seven days.

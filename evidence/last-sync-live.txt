@@ -1,0 +1,32 @@
+PASS before the first question the chat page sends nothing to the ticket store | 0 posts, 0 gets
+PASS the patient's ticket reaches the store | 1
+PASS it is stored with its status and question, without browser-only fields, under a hash of the browser's private key
+PASS the chat's small print now says the messages go to the front desk | Your messages go to the clinic's front desk so the team can 
+PASS an unchanged ticket is not sent again | 1 posts
+PASS the staff device opens with its own tickets only (none), the switch off
+PASS with the switch on and no desk code, nothing is shown and the code is asked for
+PASS while the code is missing the staff page does not keep asking the server | 1 requests in 6.5 s
+PASS a wrong desk code shows nothing and asks again
+PASS with the right desk code the patient's ticket appears on the staff device
+PASS it has its status, and the bar says where it came from | 1 from other devices
+PASS the staff reply and the new status reach the store
+PASS the reply shows in the patient's chat on the other device
+PASS the patient's own copy of the ticket is now answered
+PASS the patient's feedback travels to the staff device
+PASS and it does not undo the answered status or double the reply
+PASS switching it off leaves only this browser's own tickets
+PASS a stranger who knows the ticket id and the patient id cannot change or read the ticket by posting to it | 403
+PASS asking for that patient's tickets with another key returns none
+PASS asking with no key is refused | 401
+PASS the list of every device's tickets is refused without the desk code | 401
+PASS with no desk code set on the server the full list is closed to everyone | 403
+PASS staff with the code get the list, without the key hashes
+PASS staff cannot create tickets on the server, only answer ones patients made
+PASS a ticket's question, reply and patient never change once stored
+PASS too many requests from one address are refused | 429
+PASS with no store the chat answers as before, tries the store once and stops, and the small print is unchanged | 1 call
+PASS with no store the staff page has no switch and shows this browser's ticket
+PASS with /api/ blocked the chat still answers from the clinic file
+PASS with /api/ blocked the staff page has no switch and shows the ticket
+PASS no page errors 
+ALL PASS (31 checks)

@@ -1,8 +1,8 @@
-1.2.0.0
+1.3.0.0
 
 # FrontDesk AI release baseline
 #
-# Version:     1.2.0.0
+# Version:     1.3.0.0
 # Released:    22 November 2026 (baseline 1.0.0.0: 21 November 2026)
 # Owner:       Sanjay Karwa, Smart AI for Business
 # Live:        https://frontdesk-ai-xi-gray.vercel.app
@@ -23,3 +23,8 @@
 # Version 1.2.0.0 (22 November 2026, evening) adds to the staff page: the queue
 # at a glance, CSV export, ready-made replies, a filter by ticket type and a
 # private staff note; and a booking reply that states the named day's hours.
+#
+# Version 1.3.0.0 (22 November 2026, late evening) adds ticket numbers, the
+# patient's chat thread inside a ticket, feedback on a reply, and tickets shared
+# across devices through a server store (a private key per browser, a desk code
+# for staff).
