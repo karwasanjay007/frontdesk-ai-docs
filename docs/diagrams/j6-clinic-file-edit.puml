@@ -13,7 +13,21 @@ Staff -> SP : opens /staff
 SP -> Core : FD.loadClinic(), then clinicEditor()
 Core -> LS : read frontdesk.clinic (else the shipped clinic-data.json)
 SP --> Staff : #clinic-json filled with the file in use, #clinic-name set
-Staff -> SP : edits the JSON, presses #clinic-save
+opt v1.1: Staff use "Edit with a form" (#clinic-form, closed by default)
+  Staff -> SP : opens "Edit with a form"
+  SP -> SP : form.js builds the fields (ids cf-...) from the JSON in #clinic-json
+  note right of SP
+  v1.1. The fields follow the file's own shape, so a file
+  in another shape gets a form too. An "Assistant" section
+  holds the optional name (at most 40 characters) and the
+  quick replies (at most 8: label at most 24, question at
+  most 120 characters).
+  end note
+  Staff -> SP : changes a field
+  SP -> SP : the form writes the change into the same #clinic-json box
+  note right of SP : nothing is written unless a field was changed; the same "Save clinic file" button stores it
+end
+Staff -> SP : edits the JSON (or used the form, v1.1), presses #clinic-save ("Save clinic file")
 SP -> SP : JSON.parse()
 alt not valid JSON
   SP --> Staff : "This is not valid JSON: <parser message>"

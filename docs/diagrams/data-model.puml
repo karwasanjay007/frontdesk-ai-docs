@@ -45,6 +45,7 @@ package "Clinic file: /clinic-data.json, or the edited copy in frontdesk.clinic"
     policies : object of strings [optional]
     emergency_rules : string [optional]
     {field} bot_rules : string[]  (sent to the model only)
+    {field} assistant : Assistant [optional]  (v1.1)
   }
   class Clinic {
     name : string
@@ -67,6 +68,14 @@ package "Clinic file: /clinic-data.json, or the edited copy in frontdesk.clinic"
     duration : string [optional]
     note : string [optional]
   }
+  class Assistant <<v1.1>> {
+    {field} name : string [optional]  (at most 40 characters)
+    {field} quick_replies : QuickReply[] [optional]  (at most 8)
+  }
+  class QuickReply <<v1.1>> {
+    {field} label : string  (at most 24 characters)
+    {field} question : string  (at most 120 characters)
+  }
 }
 
 package "localStorage key frontdesk.tickets (JSON array)" {
@@ -76,7 +85,7 @@ package "localStorage key frontdesk.tickets (JSON array)" {
     q : string
     reply : string
     source : model | file
-    kind : emergency | refuse | medical | booking | answer | notsure
+    kind : emergency | refuse | medical | booking | answer | notsure | human (v1.1)
     status : urgent | needs human | answered | closed
     lang : en | hi | te
     {field} bookingTime : string  ("" when not a booking)
@@ -98,12 +107,15 @@ package "Other localStorage keys" {
     {field} frontdesk.patient : string  (P + 5 chars)
     frontdesk.lang : en | hi | te
     frontdesk.theme : light | dark
+    {field} frontdesk.alerts : "1"  (v1.1, only when staff turn urgent alerts on)
   }
 }
 
 ClinicFile "1" *-- "1" Clinic : clinic
 ClinicFile "1" *-- "0..*" Doctor : doctors
 ClinicFile "1" *-- "0..*" Service : services
+ClinicFile "1" *-- "0..1" Assistant : assistant (v1.1)
+Assistant "1" *-- "0..8" QuickReply : quick_replies
 Ticket "1" *-- "0..*" StaffReply : staffReplies
 Browser "1" -- "0..*" Ticket : patient
 ClinicFile ..> Ticket : rules engine answer()\nsets reply, kind, status
@@ -112,6 +124,7 @@ note right of Ticket
   <b>Status from the reply kind</b>
   emergency : urgent
   medical, booking, notsure : needs human
+  human (v1.1, asks for a person) : needs human
   answer, refuse : answered
   <b>A staff reply moves it on</b>
   urgent or needs human : answered
@@ -124,6 +137,14 @@ note bottom of Browser
   <b>After hours</b> (openNow from the hours keys)
   sets afterHours and afterHoursNote only;
   the reply, kind and status never change.
+end note
+
+note bottom of QuickReply
+  <b>v1.1 assistant section</b>
+  Optional. A file without it keeps the
+  standard name and the seven standard
+  quick replies (the seventh is
+  "Talk to a person").
 end note
 
 note left of ClinicFile

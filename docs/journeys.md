@@ -53,8 +53,10 @@ voice).
 | J5 | No-key run | Patient (or a tester) | Asks a question while the key is missing, the model fails, is slow, or its text is rejected | The same answers from the file, with "Answered from the clinic file" | E2, E8 |
 | J6 | Clinic file edit | Clinic staff | Edits the clinic file on `/staff` and saves, or resets it | File checked and stored; the chat answers from the edited file; reset brings back the shipped file | E6 |
 | J7 | Languages and voice | Patient | Picks a language, types in Hindi or Telugu script, speaks, or taps Listen | Labels in the chosen language; replies in the script of the question; speech in and out where the browser supports it | E5, E9 |
+| J8 | Ask for a person (v1.1.0.0) | Patient, then staff | Types "Can I speak to a human?" or taps the quick reply "Talk to a person" | A reply that the request has gone to the team, with "2 working hours", the clinic phone and WhatsApp; one ticket with status `needs human` that staff find, answer and so move to `answered` | v1.1.0.0 |
 
-All seven journeys asked for are supported by the code; none was dropped or merged.
+All seven journeys asked for are supported by the code; none was dropped or merged. J8 was added in
+version 1.1.0.0.
 
 ## J1 First visit and ask
 
@@ -352,3 +354,33 @@ Source: [j7-languages-and-voice.puml](diagrams/j7-languages-and-voice.puml)
 - Without speech recognition the mic stays hidden; without speech synthesis there is no Listen button. If the server voice also fails, the button says no voice is available.
 - A recognition error or the end of speech clears the listening state; nothing is sent.
 - The chosen language is kept in `frontdesk.lang` for the next visit.
+
+## J8 Ask for a person (v1.1.0.0)
+
+**Goal.** Reach a member of the clinic team when the patient asks for a person rather than for a fact in
+the clinic file.
+
+**Preconditions.** As J1. The staff steps need `/staff` open in the same browser (as J4).
+
+**Steps.**
+1. The patient types "Can I speak to a human?" or taps the seventh quick reply, "Talk to a person".
+2. `FD.answer(q, data)` is a wrapper over `answerFile()`, the file-only engine of 1.0.0.0. It first takes
+   the file-only reply.
+3. Where the clinic file had no answer, or gave only the phone or languages line, and the message asks for
+   a person, the reply has kind `human` and status `needs human`: "I am not sure I can settle this myself,
+   so I have passed your request to our team, and someone will call you back within 2 working hours...",
+   with the clinic phone and WhatsApp.
+4. One ticket with status `needs human` is stored in `frontdesk.tickets`.
+5. The patient may leave a name and phone in the existing call-back form (J3).
+6. On `/staff` the ticket shows under "Needs human" and in "To call back". Staff can find it with the
+   search box or the "Needs human" filter.
+7. Staff reply as in J4; the patient sees the reply in the chat and the status becomes `answered`.
+
+![J8 Ask for a person](diagrams/j8-ask-for-a-person.svg)
+
+Source: [j8-ask-for-a-person.puml](diagrams/j8-ask-for-a-person.puml)
+
+**Error and edge paths.**
+- A question the clinic file answers, for example "What is the phone number to call back?", is still
+  answered from the file, with no `human` ticket.
+- The search box and the filter hide rows; they never remove a ticket.
