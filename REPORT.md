@@ -14,10 +14,11 @@ link, saved in `evidence/`; none of it is the graders' tester.
 | Bonus menu (6 count) | All 6 met, both ways | `evidence/last-bonus-live.txt` ALL PASS (15 checks) |
 | Phone and light/dark | No sideways scroll from 375 to 2560 px on both pages; nothing under 4.5:1 in light or dark, at rest or on hover | `evidence/last-widths-live.txt` ALL PASS (20 checks); `evidence/last-contrast-live.txt` (see the note in the evidence table) |
 | Go further (after hours, call-back list, WhatsApp hand-off, any business, voice) | Four of five built; any business only partly, because the word lists that recognise intents are dental | `docs/epics.md` E9; functional review finding 17 |
-| Rules engine and guard, without a browser | ALL PASS (48 checks) | `evidence/last-engine.txt` |
+| Rules engine and guard, without a browser | ALL PASS (87 checks) | `evidence/last-engine.txt` |
 | Documentation | SPEC-CHECK, PRD, TECH-STACK, ARCHITECTURE, IMPLEMENTATION-PLAN, epics, journeys, data model, schemas, four reviews | this repository |
 | Submission | Paste-ready judges' note below; live dashboard recapture still UNVERIFIED (sign-in required; see SPEC-CHECK.md) | SPEC-CHECK.md header; judges' note in this file |
 | Version 1.0.0.0 baseline | Label rule; +18 paraphrased fixtures; aligners brand → not sure; patient chat full-bleed UI | `frontdesk-ai` #1 on main; local `node tests/engine.cjs` ALL PASS; `node tests/brief.mjs … --nokey` ALL PASS (31 checks). See `evidence/release-1-0-0-0.md` and `VERSION` |
+| Emergency wording, 22 Nov 2026 (after the baseline, version unchanged) | Bleeding that will not stop, said other ways ("I can't stop the bleeding", "bleeding non stop for an hour", for a number of hours, keeps bleeding, and the Hindi and Telugu forms), had reached the ordinary medical, not-sure or file reply: 14 phrasings found. The emergency rule now covers them; ordinary questions about bleeding gums stay ordinary | `frontdesk-ai` 9453a0b, deployed the same day; `evidence/last-engine.txt` ALL PASS (87 checks, 19 new cases); `evidence/last-emergency-live.txt` ALL PASS (12 checks, live); `evidence/last-brief-live.txt` rerun ALL PASS (29 checks) |
 
 ## What was built
 
@@ -109,7 +110,8 @@ Four independent reviews before release, reports in `review/`. One line per revi
 | `evidence/last-bonus-live.txt` | The six bonus items, also run with the model blocked | ALL PASS (15 checks) |
 | `evidence/last-widths-live.txt` | Scroll width, content edge and target size at 375, 768, 1366, 1920 and 2560 px, both pages | ALL PASS (20 checks) |
 | `evidence/last-contrast-live.txt` | Contrast in light and dark, at rest and on hover | 17 lines flagged, every one a BLUE-BG note for text on the teal brand colour, measuring 5.89:1 or more; none under 4.5:1, so not a failure |
-| `evidence/last-engine.txt` | The rules engine and the guard in Node: review cases, sample questions, crafted bad model replies | ALL PASS (48 checks) |
+| `evidence/last-engine.txt` | The rules engine and the guard in Node: review cases, sample questions, crafted bad model replies | ALL PASS (87 checks) |
+| `evidence/last-emergency-live.txt` | Five ways of saying the bleeding will not stop (three English, one Hindi, one Telugu), each in a fresh browser on the live link: the emergency number first, one new urgent ticket | ALL PASS (12 checks), 22 Nov 2026 |
 | `evidence/release-1-0-0-0.md` | Version 1.0.0.0 baseline note; cite of code PR #1 local runs (engine ALL PASS; brief --nokey ALL PASS, 31 checks); label rule; dashboard recapture UNVERIFIED | Cited from the merged code PR; not a new live `last-*.txt` capture |
 | `evidence/last-brief-local.txt`, `last-brief-local-nokey.txt`, `last-questions-local.txt` | Kickoff runs before anything was built (no local server answering) | Fail by design; kept as the record that the tests were written first |
 

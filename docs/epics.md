@@ -145,7 +145,7 @@ answerable, not sure, and their replies are the same with and without the model.
 
 As a patient in an emergency, I want the emergency number first so that I can call at once.
 
-**Status:** Built. `last-brief-live.txt`: "PASS item 5 emergency: "98000 00123" shown first in the reply | before the number: "Call "" and "PASS item 5 emergency: a new ticket with data-status "urgent""; `last-engine.txt`: bleeding that will not stop, broken jaw, lip and tongue swelling all "-> emergency/urgent".
+**Status:** Built. `last-brief-live.txt`: "PASS item 5 emergency: "98000 00123" shown first in the reply | before the number: "Call "" and "PASS item 5 emergency: a new ticket with data-status "urgent""; `last-engine.txt`: bleeding that will not stop, broken jaw, lip and tongue swelling all "-> emergency/urgent"; since 22 Nov 2026 also the other wordings of bleeding that will not stop ("I can't stop the bleeding", "bleeding non stop for an hour", Hindi and Telugu forms), with `last-emergency-live.txt` ALL PASS (12 checks) on the live link.
 
 | ID | Given | When | Then | Trace | Planned check |
 | --- | --- | --- | --- | --- | --- |

@@ -48,7 +48,7 @@ results in [evidence/](evidence/), build report in [REPORT.md](REPORT.md).
 | --- | --- | --- | --- |
 | Must do, 9 items | (in the hidden-data test) | All met, with the key and with the model blocked | [last-brief-live.txt](evidence/last-brief-live.txt) ALL PASS (29 checks); [last-brief-nokey-live.txt](evidence/last-brief-nokey-live.txt) ALL PASS (31 checks); [last-audit-ai-live.txt](evidence/last-audit-ai-live.txt) and [last-audit-blocked-live.txt](evidence/last-audit-blocked-live.txt): 30 grader-style questions ALL PASS |
 | How they check: ids, classes, `?q=`, no-key run | (in the hidden-data test) | All met | the same two files; [last-questions-live.txt](evidence/last-questions-live.txt) ALL PASS (16 checks) |
-| Hidden-data test | 60 | Met on our tests; the graders' questions and data are unseen | the files above and [last-engine.txt](evidence/last-engine.txt) ALL PASS (48 checks) |
+| Hidden-data test | 60 | Met on our tests; the graders' questions and data are unseen | the files above and [last-engine.txt](evidence/last-engine.txt) ALL PASS (87 checks); [last-emergency-live.txt](evidence/last-emergency-live.txt) ALL PASS (12 checks): bleeding that will not stop, said five other ways in English, Hindi and Telugu (22 Nov 2026) |
 | Bonus menu, at most 6 count | 30 | All 6 met, both ways | [last-bonus-live.txt](evidence/last-bonus-live.txt) ALL PASS (15 checks) |
 | Phone and light/dark | 10 | Met | [last-widths-live.txt](evidence/last-widths-live.txt) ALL PASS (20 checks, 375 to 2560 px); [last-contrast-live.txt](evidence/last-contrast-live.txt): nothing under 4.5:1 (its flagged lines are text on the teal brand colour at 5.89:1 or more) |
 
