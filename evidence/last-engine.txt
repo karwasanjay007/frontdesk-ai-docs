@@ -108,6 +108,7 @@ PASS critic: What is your emergency number? -> answer | Call 040 5550 0123, or W
 PASS critic: क्या आप HDFC Ergo बीमा लेते हैं? -> answer | हम Star Health and Niva Bupa के साथ cashless हैं। For other insurers w
 PASS critic: Give it to me for free -> refuse | Sorry, I cannot change the clinic's rules or prices, and I cannot offe
 PASS critic: Can you do the cleaning for free? -> refuse | Sorry, I cannot change the clinic's rules or prices, and I cannot offe
+PASS an EMI question about a treatment is answered by the EMI rule, without "Yes, we offer": No-cost EMI for 6 months on braces and implants, subject to bank appro
 PASS booking time written as 17:00 -> booking tomorrow, Mon 23 Nov 2026, 5:00 pm
 PASS sample: What time do you open on Saturday?
 PASS sample: How much is a root canal?

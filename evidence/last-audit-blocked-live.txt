@@ -10,7 +10,7 @@ PASS Q9 Who is your orthodontist and which days is he in? -> [answered] Dr. Imra
 PASS Q10 Which doctor does root canals? -> [answered] Dr. Meera Nair (Lead dentist, root canals and fillings) sees patients on Monday to Saturda
 PASS Q11 If I cancel my appointment, is there a charge? -> [answered] Book on the phone or WhatsApp. Cancel or move at least 4 hours before, there is no charge.
 PASS Q12 Do you accept credit cards? -> [answered] UPI, debit and credit cards, and cash.Answered from the clinic file
-PASS Q13 Can I pay for braces in EMI? -> [answered] Yes, we offer Braces (metal) (Rs 35,000 to Rs 60,000). Doctor decides after a check. No-co
+PASS Q13 Can I pay for braces in EMI? -> [answered] No-cost EMI for 6 months on braces and implants, subject to bank approval.Answered from th
 PASS Q14 Is there parking near the clinic? -> [answered] Free parking in the basement for 2 hours with a clinic stamp.Answered from the clinic file
 PASS Q15 Can I just walk in without an appointment? -> [answered] Accepted when a slot is free. Booked patients are seen first.Answered from the clinic file
 PASS Q16 What should I bring for my first visit? -> [answered] Bring any old X-rays and a list of your medicines.Answered from the clinic file
