@@ -1,26 +1,14 @@
---- light at rest ?q=Do you do Invisalign%3F
-BLUE-BG 7.61 span "FrontDesk AI" fg 255,255,255 bg 11,93,99
-BLUE-BG 5.89 span#clinic-name "Bright Roots Dental" fg 207,231,232 bg 11,93,99
-BLUE-BG 6.44 span#open-chip "Open now" fg 207,245,223 bg 11,93,99
-BLUE-BG 7.61 div "Do you do Invisalign?" fg 255,255,255 bg 11,93,99
-BLUE-BG 7.61 button "Book a visit" fg 255,255,255 bg 11,93,99
-BLUE-BG 7.61 button#chat-send "Send" fg 255,255,255 bg 11,93,99
-BLUE-BG 7.61 a "Call" fg 255,255,255 bg 11,93,99
---- light at rest ?q=My face is swelling and I cannot breathe
-BLUE-BG 7.61 div "My face is swelling and I cannot breathe" fg 255,255,255 bg 11,93,99
---- light at rest staff
-BLUE-BG 7.61 span "Front desk" fg 255,255,255 bg 11,93,99
-BLUE-BG 7.61 a "Patient chat" fg 255,255,255 bg 11,93,99
-BLUE-BG 7.61 button#staff-send "Send reply" fg 255,255,255 bg 11,93,99
-BLUE-BG 7.61 button#clinic-save "Save clinic file" fg 255,255,255 bg 11,93,99
---- dark hover ?q=Do you do Invisalign%3F
-BLUE-BG 7.87 button "Timings" fg 191,230,227 bg 39,67,74
---- dark hover ?q=Do you do Invisalign%3F
-BLUE-BG 7.87 button "Prices" fg 191,230,227 bg 39,67,74
---- dark hover ?q=Do you do Invisalign%3F
-BLUE-BG 7.87 button "Doctors" fg 191,230,227 bg 39,67,74
---- dark hover ?q=Do you do Invisalign%3F
-BLUE-BG 7.87 button "Insurance" fg 191,230,227 bg 39,67,74
---- dark hover ?q=Do you do Invisalign%3F
-BLUE-BG 7.87 button "Location" fg 191,230,227 bg 39,67,74
-17 PROBLEMS
+--- light at rest /
+BLUE-BG 7.61 button "Talk to a person" fg 255,255,255 bg 11,93,99
+BLUE-BG 7.61 span "Send" fg 255,255,255 bg 11,93,99
+2.94 span#fine-text "Messages stay in this browser and reach only the c" fg 74,91,95 bg 1,1,1
+2.74 a#emg-link "98000 00123" fg 11,93,99 bg 1,1,1
+--- light hover /
+BLUE-BG 7.94 button "Talk to a person" fg 255,255,255 bg 11,90,96
+--- light hover /
+BLUE-BG 7.83 span "Send" fg 255,255,255 bg 11,91,97
+--- dark hover /
+BLUE-BG 8.34 button "Doctors" fg 191,230,227 bg 37,63,69
+--- dark hover /
+BLUE-BG 8.34 button "Insurance" fg 191,230,227 bg 37,63,69
+8 PROBLEMS
