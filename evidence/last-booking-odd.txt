@@ -1,0 +1,7 @@
+PASS Hindi booking on a closed day: no contradictory line |  में कॉल करके पक्का करेगा। मैं खुद स्लॉट पक्का नहीं कर सकता।
+PASS Telugu booking on a closed day: no day line | ్ చేసి నిర్ధారిస్తారు. నేనే స్లాట్ నిర్ధారించలేను.
+PASS English booking on a closed day says closed | n that, Rs 200. On Sunday we are closed.
+PASS an empty hours value adds nothing | fore, there is no charge. Later than that, Rs 200.
+PASS a list as hours adds nothing | fore, there is no charge. Later than that, Rs 200.
+PASS the usual file still gets the day line
+ALL PASS (6 checks)
