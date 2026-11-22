@@ -5,9 +5,9 @@ PASS "I can't stop the bleeding": reply starts with the emergency number 98000 0
 PASS "I can't stop the bleeding": one new ticket with data-status "urgent" | 1 new: urgent
 PASS "It has been bleeding for 2 hours after the extraction": reply starts with the emergency number 98000 00123 | "Call 98000 00123 now. Heavy bleeding that does not stop, swelling of the face or neck, or "
 PASS "It has been bleeding for 2 hours after the extraction": one new ticket with data-status "urgent" | 1 new: urgent
-PASS "खून बंद नहीं हो रहा है": reply starts with the emergency number 98000 00123 | "98000 00123 पर अभी कॉल करें। Heavy bleeding that does not stop, swelling of the face or ne"
+PASS "खून बंद नहीं हो रहा है": reply starts with the emergency number 98000 00123 | "98000 00123 पर अभी कॉल करें। यह इमरजेंसी है, देर न करें। Heavy bleeding that does not stop"
 PASS "खून बंद नहीं हो रहा है": one new ticket with data-status "urgent" | 1 new: urgent
-PASS "రక్తస్రావం ఆగట్లేదు": reply starts with the emergency number 98000 00123 | "98000 00123 కు ఇప్పుడే కాల్ చేయండి. Heavy bleeding that does not stop, swelling of the fac"
+PASS "రక్తస్రావం ఆగట్లేదు": reply starts with the emergency number 98000 00123 | "98000 00123 కు ఇప్పుడే కాల్ చేయండి. ఇది అత్యవసర పరిస్థితి, ఆలస్యం చేయకండి. Heavy bleeding "
 PASS "రక్తస్రావం ఆగట్లేదు": one new ticket with data-status "urgent" | 1 new: urgent
 PASS no dialogs
 PASS no page errors
