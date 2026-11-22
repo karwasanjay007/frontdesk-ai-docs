@@ -1,0 +1,7 @@
+21:07:01
+WAITING the question "Desk check 2107" is in the chat; waiting up to 540 s for a reply from the staff page
+PASS a reply sent from another device reached this patient chat after 183 s | Reply to the patient. They see it in their chat.
+PASS the patient's ticket is now answered | answered
+ALL PASS
+
+[exited with code 0]

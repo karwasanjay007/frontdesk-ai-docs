@@ -8,10 +8,11 @@ PASS the figures follow the queue | open 3, answered 3
 PASS the type filter "Booking" shows the booking ticket only and removes none | t2 of 7
 PASS "All types" shows every ticket again
 PASS no note key is stored until a note is saved
+PASS the private note is folded away until staff open it, so it cannot be mistaken for the reply box
 PASS a private note is saved for the open ticket | t7
 PASS the note is not written into the ticket or into the queue
 PASS the note shows again when that ticket is open after a reload
 PASS no sideways scroll at 320 px
 PASS every toolbar button is at least 40 px tall | 
 PASS no page errors 
-ALL PASS (16 checks)
+ALL PASS (17 checks)

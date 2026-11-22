@@ -1,0 +1,10 @@
+PASS a patient stores three tickets | 200
+PASS staff with the desk code get the list from the store, newest first, without key hashes | 200, Question 3, Question 2, Question 1
+PASS the patient reads its own three back through its own small set
+PASS staff answer one of them | 200
+PASS the patient then reads the staff reply and the answered status | answered
+PASS with more than 300 stored, the list holds the newest 300 and the newest ticket is first | 300, first: Desk check: the newest ticket
+PASS the oldest tickets have left the list
+PASS no code: refused | 401
+PASS only the expected Redis commands were sent
+ALL PASS (9 checks)

@@ -355,7 +355,16 @@ and read back in the browser, the staff switch closed without a code, 6 checks).
 locally before each deploy and on the live link after the last one, with the store active; no earlier test was
 edited.
 
-**Not covered.** The staff side of shared tickets on the live link (the list with a desk code, and a reply
-travelling back through the real store) waits for the clinic's desk code; it is covered by the two-browser test
-with the server's rules, not yet against the real store. Test tickets from the release checks stay in the store
-for seven days.
+**The staff side on the real store.** With the clinic's desk code set, a patient chat in one browser asked a
+marked question; on the staff page in another browser the owner turned on "Show tickets from all devices", typed
+the code, opened the ticket and replied. The reply reached the patient chat and the ticket became answered
+(`evidence/last-sync-staff-real-store-live.txt`). The test never held the code. `evidence/last-tickets-redis.txt`
+runs the function with its Redis commands against a store kept in memory (9 checks: the list newest first, the
+newest 300 kept).
+
+**Found in that test.** Twice the reply was typed into the private staff note above the list, which looked like
+the reply box. The note is now folded under a line that says it is not a reply and points to the ticket's own
+reply box.
+
+**Not covered.** Named staff accounts (there is one shared desk code). Test tickets from the release checks stay
+in the store for seven days.
