@@ -241,3 +241,30 @@ wording 14 both ways, widths 20, order 5; engine 127, sweep 386, other-clinic. A
 **Not covered.** The alert tone was not heard and the browser notification was not shown in a test (a test
 browser grants no permission). The form's colours use the page's own tokens; its contrast was not measured
 separately. The assistant name and quick replies apply to every language as written in the file.
+
+## Version 1.2.0.0 (22 Nov 2026, evening)
+
+Made after reading the chat and staff screens of three builds rated top in the batch (nothing was typed or sent
+on them). What they show between them, and where FrontDesk AI stands:
+
+| Feature seen on the other builds | FrontDesk AI |
+| --- | --- |
+| Queue figures (open, urgent, overdue, answered, average wait) | Added in 1.2: "the queue at a glance" above the tickets |
+| Export of tickets as CSV | Added in 1.2; a cell that starts like a formula is written as text |
+| Ready-made staff replies | Added in 1.2: four, each fills the open ticket's reply box; staff still press Send |
+| Filter by ticket type | Added in 1.2 (booking, could not answer, asked for a person, emergency), beside the status filter of 1.1 |
+| Private staff note on a ticket | Added in 1.2, kept under its own key and never shown to the patient |
+| A booking reply that states the day's hours | Added in 1.2: a booking that names one weekday also gives that day's hours from the clinic file |
+| Search, status filter, urgent alerts, form editor for the clinic file, an assistant name | In place since 1.1 |
+| Voice input, read aloud, English, Hindi and Telugu, light and dark, quick replies | In place since 1.0 |
+| Tickets kept on a server and shared across devices | Not added. It needs a database and a key, and an open shared queue shows every visitor's tickets and phone numbers to anyone on the staff page. Tickets stay in the browser, as the "same browser" note says |
+| An Emergency quick reply, ticket numbers, a message thread inside the ticket | Not added: the emergency number is under the chat already, and the other two would change the queue the tester reads |
+
+The staff additions live in the staff add-on file; with nothing pressed, `#ticket-queue` is still exactly what
+`staff.js` renders. The booking change keeps the ticket, its status and the requested time.
+
+**Tests.** Each change was tested as a delta, then on the live link: `evidence/last-tools2-live.txt` (16 checks),
+`evidence/last-tools-live.txt` (37), `evidence/last-booking-day.txt` (10), and the earlier suites on the paths
+touched: brief 29 with the key and 29 with the model blocked, bonus 15 both ways, sample questions 16 blocked,
+call-back 8, staff-clear 7; engine 127, sweep 386, other-clinic and person 76. All pass. The full regression of
+every suite was last run on version 1.1.0.0 earlier the same day.

@@ -1,0 +1,17 @@
+PASS with the new parts loaded, #ticket-queue is still exactly what staff.js renders
+PASS the queue at a glance: 4 open, 2 urgent, 1 over 2 hours, 2 answered, an average wait | 4, 2, 1, 2, 57 min
+PASS Export CSV downloads one row per ticket under a header | tickets-2026-11-22.csv, 8 lines
+PASS a cell that starts like a formula is written as text, quotes are doubled
+PASS a ready-made reply fills the open ticket's reply box | A slot is available. We will call you to confirm t
+PASS sending it answers the ticket through the usual Send button | t7 -> answered
+PASS the figures follow the queue | open 3, answered 3
+PASS the type filter "Booking" shows the booking ticket only and removes none | t2 of 7
+PASS "All types" shows every ticket again
+PASS no note key is stored until a note is saved
+PASS a private note is saved for the open ticket | t7
+PASS the note is not written into the ticket or into the queue
+PASS the note shows again when that ticket is open after a reload
+PASS no sideways scroll at 320 px
+PASS every toolbar button is at least 40 px tall | 
+PASS no page errors 
+ALL PASS (16 checks)

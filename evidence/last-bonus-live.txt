@@ -1,4 +1,4 @@
-PASS bonus 1 Hindi question gets a Hindi reply with the timing: शनिवार को हम 9:00 am to 8:00 pm खुले रहते हैं।
+PASS bonus 1 Hindi question gets a Hindi reply with the timing: शनिवार को हमारा क्लिनिक 9:00 am to 8:00 pm तक खुला रहता है।
 PASS bonus 1 Telugu question gets a Telugu reply with the price: రూట్ కెనాల్ చికిత్స ధర Rs 6,500 to Rs 9,000. సాధారణంగా రెండు సందర్శనలు అవసరం.
 PASS bonus 1 Hindi emergency: number first, Hindi text
 PASS bonus 2 booking reply says the team will confirm: Thank you. I have passed your request for tomorrow, Mon 23 Nov 2026, 5:00 pm to 

@@ -1,0 +1,11 @@
+PASS a booking for a named day keeps its ticket and adds the day's hours: Can I book for Sunday -> booking | ore, there is no charge. Later than that, Rs 200. On Sunday we are open 10:00 am to 2:00 pm, emergencies only.
+PASS a booking for a named day keeps its ticket and adds the day's hours: Book me for Friday at 11 am. -> booking | t least 4 hours before, there is no charge. Later than that, Rs 200. On Friday we are open 9:00 am to 8:00 pm.
+PASS a booking for a named day keeps its ticket and adds the day's hours: I want to book a cleaning on Saturday at 10 am -> booking | least 4 hours before, there is no charge. Later than that, Rs 200. On Saturday we are open 9:00 am to 8:00 pm.
+PASS a booking for a named day keeps its ticket and adds the day's hours: मुझे रविवार को अपॉइंटमेंट बुक करना है -> booking | क्का करेगा। मैं खुद स्लॉट पक्का नहीं कर सकता। रविवार को हम 10:00 am to 2:00 pm, सिर्फ़ इमरजेंसी खुले रहते हैं।
+PASS a booking for a named day keeps its ticket and adds the day's hours: నాకు శనివారం అపాయింట్‌మెంట్ బుక్ చేయాలి -> booking | s లో కాల్ చేసి నిర్ధారిస్తారు. నేనే స్లాట్ నిర్ధారించలేను. శనివారం రోజు మేము 9:00 am to 8:00 pm తెరిచి ఉంటాము.
+PASS no day named, or two days: the reply is as before: I want to book a check-up tomorrow at 5 pm | Thank you. I have passed your request for tomorrow, Mon 23 Nov 2026, 5
+PASS no day named, or two days: the reply is as before: Book a visit at 4 pm please | Thank you. I have passed your request for 4:00 pm to our team, and som
+PASS no day named, or two days: the reply is as before: I want to book a check-up on Saturday or Sunday at 5 pm | Thank you. I have passed your request for Sun 29 Nov 2026, 5:00 pm to 
+PASS the requested time is still on the ticket | tomorrow, Mon 23 Nov 2026, 5:00 pm
+PASS a clinic file without hours still books, with no empty line | Thank you. I have passed your request for Sun 29 Nov 2026 to
+ALL PASS (10 checks)
