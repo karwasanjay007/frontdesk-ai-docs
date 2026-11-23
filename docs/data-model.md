@@ -1,9 +1,11 @@
 # FrontDesk AI data model
 
-FrontDesk AI keeps everything in the browser. The clinic's facts come from one JSON file, and the
+FrontDesk AI keeps its working copy in the browser. The clinic's facts come from one JSON file, and the
 tickets, the staff replies and the edited clinic file live in `localStorage`, shared by the chat page
-(`/`) and the staff page (`/staff`) of the same browser. There is no database. The one server function
-only rewords a reply (see [schema/api-chat.md](schema/api-chat.md)). The source of truth is `core.js`,
+(`/`) and the staff page (`/staff`) of the same browser. Since version 1.3.0.0 a patient's tickets are also
+mirrored to a server store for seven days (see "Added in version 1.3.0.0" below). One server function
+only rewords a reply (see [schema/api-chat.md](schema/api-chat.md)); a second, `api/tickets.js`, keeps the
+shared tickets. The source of truth is `core.js`,
 `chat.js` and `staff/staff.js`; the schemas in [schema/](schema/) give the exact field rules.
 
 ![Data model](diagrams/data-model.svg)
@@ -188,3 +190,53 @@ hand-written Node check (types, required fields, lists and nested objects), and 
 - **Browser storage:** `frontdesk.alerts` = "1", written only when staff turn urgent alerts on.
 
 The diagram `diagrams/data-model.svg` shows all three.
+
+## Added in version 1.2.0.0 (22 Nov 2026)
+
+- **Browser storage:** `frontdesk.notes` = a JSON object that maps a ticket id to that ticket's private staff
+  note. It is written only when a note is saved. The note is never shown to the patient and is not part of the
+  ticket.
+
+Nothing else in the data changed in 1.2.0.0. The queue figures, the CSV export and the filter by ticket type
+are worked out from the tickets when the staff page is drawn.
+
+## Added in version 1.3.0.0 (22 Nov 2026)
+
+**In the browser**
+
+| Item | Where | Value |
+| --- | --- | --- |
+| `feedback` | a ticket field | the patient's "Helpful" or "Not helpful" on that reply |
+| `remote: true` | a ticket in a staff browser | marks a ticket that came from another device; these leave the list when the switch goes off |
+| `frontdesk.synckey` | localStorage, chat browser | this browser's private key for its tickets on the server |
+| `frontdesk.alldevices` | localStorage, staff browser | whether "Show tickets from all devices" is on; off by default |
+| Desk code | staff browser | typed by staff and kept for the session only |
+
+Ticket numbers (T-001, T-002 and so on) are worked out from the order the tickets were opened. The
+ticket `id` is unchanged.
+
+**On the server (the ticket store behind `api/tickets.js`)**
+
+| Record | Key | What it holds | Kept for |
+| --- | --- | --- | --- |
+| Ticket | one record per ticket id | the ticket as mirrored by the chat, plus `owner`, a hash of the browser key that created it | seven days |
+| Order | one ordered list | every ticket id by time, read newest first | the newest 300 ids |
+| Per owner | one small set per `owner` | the ticket ids of that browser key | see `api/tickets.js` |
+
+Rules the function applies:
+
+- A ticket's question, reply and patient never change once stored.
+- The server keeps only the hash of a browser key, never the key.
+- Requests are rate limited.
+- With no store configured the function answers 503 and both pages work from the browser alone.
+
+**Who can read what**
+
+| Who | Can read and change |
+| --- | --- |
+| A patient's browser, with its own key | only the tickets that key created |
+| Anyone who knows a ticket id or a patient id, without the key | nothing |
+| A staff browser with the clinic's desk code | the list of every device's tickets, and it can reply to them |
+| A staff browser without the code, or before the clinic has set a code on the server | only the tickets of its own browser |
+
+On the server every ticket is deleted after seven days.

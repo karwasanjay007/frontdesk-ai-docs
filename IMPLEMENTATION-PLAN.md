@@ -132,3 +132,51 @@ This project's own traps:
 | 20 Nov 2026 | First draft: steps 0 to 22 from decisions G1 to G30, this project's traps |
 | 20 Nov 2026 | G11 and G11a settled: default open ticket by priority, a staff reply always changes the status, the status of each fixed reply; after-hours note outside the `.bot-msg` |
 | 21 Nov 2026 | Step 10 brought in line with the build: the model is OpenRouter with DeepSeek V4.1 Flash (Gemini was the draft choice), it receives only the drafted answer and the clinic file, the server allows it 5 s; the guard checks every number, name and promise |
+
+## Versions 1.1.0.0 to 1.3.0.0, as built (22 Nov 2026)
+
+The steps above built the baseline, version 1.0.0.0. Three versions followed on 22 Nov 2026. This section
+records them as built.
+
+**Method**
+
+- Each addition lives in its own file beside the baseline, or as a wrapper over a baseline function. The ids,
+  statuses and replies the tester reads stay as they were.
+- No earlier test was edited. A new feature gets a new test file.
+- Each change was tested as a delta first: its own test and the earlier suites on the paths it touched.
+- One review round for a change, by a reviewer that did not write it, before the deploy.
+- One full regression before the deploy and one on the live link after it.
+- One deploy per version, with the earlier deployment noted so it can be rolled back to.
+
+**Version 1.1.0.0**
+
+| What was built | File | Test that covers it | What the review changed |
+| --- | --- | --- | --- |
+| Ask for a person: its own reply, one needs-human ticket, a seventh quick reply | `core.js` (`answer()` as a wrapper over `answerFile()`) | `tests/person.cjs` (76 checks), `tests/person.mjs` (16) | The first cut scored 5 out of 10: the rule took 29 ordinary questions that the clinic file answers. It was moved out of the rule chain into the wrapper before anything went live |
+| Assistant name and the clinic's own quick replies | `core.js`, `chat.js` | `tests/person.cjs`, `tests/form.mjs` (the Assistant section of the form) | Nothing |
+| Staff ticket tools: search, status filter, sort, urgent alerts | `staff/tools.js`, `staff/tools.css` | `tests/tools.mjs` (37) | Nothing. The reviewer found no change to the queue in the default state |
+| Form for the clinic file | `staff/form.js`, `staff/form.css` | `tests/form.mjs` (43) | Nothing. The reviewer found no markup injection and no change to the JSON box in the default state |
+
+**Version 1.2.0.0**
+
+| What was built | File | Test that covers it | What the review changed |
+| --- | --- | --- | --- |
+| Queue figures, CSV export, ready-made replies, filter by ticket type, private staff note | the staff add-on, `staff/tools.js` | `evidence/last-tools2-live.txt` (17 checks in the saved file), `evidence/last-tools-live.txt` (37) | No finding is recorded in the report for this version |
+| A booking that names one weekday also gives that day's hours | the rules engine | `evidence/last-booking-day.txt` (10) | No finding is recorded in the report for this version |
+
+**Version 1.3.0.0**
+
+| What was built | File | Test that covers it | What the review changed |
+| --- | --- | --- | --- |
+| Ticket store function | `api/tickets.js` | `tests/tickets-api-live.mjs` (11), `evidence/last-tickets-redis.txt` (9) | The first cut was safe to deploy with the store absent but not safe to turn on: a stranger who knew a ticket id could read the patient's phone number and overwrite the ticket, and the full list was open. It was rewritten before any deploy: a private key per browser with only its hash on the server, a desk code for the full list, no change to a stored question, reply or patient, a rate limit, seven days |
+| Sync add-on on `/` and `/staff` | `sync.js` | `tests/sync.mjs` (31), `tests/sync-live.mjs` (6), `evidence/last-sync-staff-real-store-live.txt` | The same rewrite. The test on the real store also found that a reply was twice typed into the private staff note; the note is now folded under a line that says it is not a reply |
+| Ticket numbers, the chat thread in a ticket, feedback on a reply | `staff/staff.js`, `chat.js`, `staff/tools.js` | `tests/extras3.mjs` (15) | No finding is recorded in the report |
+
+**Left for later**
+
+- Named staff accounts. Today there is one shared desk code.
+- Test tickets from the release checks stay in the store for seven days.
+- The alert tone was not heard and the browser notification was not shown in a test, because a test browser
+  grants no permission.
+- The contrast of the clinic file form was not measured on its own; it uses the page's own colour tokens.
+- The assistant name and the clinic's own quick replies apply to every language as written in the file.

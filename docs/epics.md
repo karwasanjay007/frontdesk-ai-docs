@@ -19,6 +19,7 @@ link, and this document is revised to describe what was built.
 | `questions.mjs [id]` | `tests/questions.mjs`: the eight sample questions with their must include and must not include, plus extra questions in the same style, in both runs |
 | `contrast.mjs` | `tests/contrast.mjs`: acts on each page and measures text contrast in light and dark, every state |
 | manual | No script planned; checked by hand on the live link |
+| `tests/<name>` | Epics E10 to E14 (versions 1.1.0.0 to 1.3.0.0) name the test file of the code repository in full. Each was run on the live link or on the engine on 22 Nov 2026; its saved result is the `last-*.txt` file named in the feature's Status line |
 
 ## Epics at a glance
 
@@ -33,7 +34,12 @@ link, and this document is revised to describe what was built.
 | E7 | Phone, themes, accessibility | 3 | 6 | S-9, G23, G24 | built; accessibility checked by hand only (`last-widths-live.txt`, `last-contrast-live.txt`) |
 | E8 | Grader contract and robustness | 4 | 11 | S-18, S-19, F-12, F-13, G1, G2, G14, G16, G17, G25 | built (both runs ALL PASS) |
 | E9 | Go further: after hours, call list, WhatsApp hand-off, any business, voice | 5 | 12 | S-26, S-27, D-8, G26 to G30, stage 3 | partly built: four of five built; any business only partly (dental word lists) |
-| **Total** | | **30** | **83** | | |
+| E10 | Asking for a person and assistant settings (1.1) | 2 | 9 | V-1, V-4 | built (`last-person-engine.txt`, `last-person-live.txt`) |
+| E11 | Staff queue tools (1.1 and 1.2) | 5 | 18 | V-2, V-5 to V-9 | built; the alert tone and the browser notification not covered by a test (`last-tools-live.txt`, `last-tools2-live.txt`) |
+| E12 | Clinic file form (1.1) | 2 | 9 | V-3, V-4 | built (`last-form-live.txt`) |
+| E13 | Tickets shared across devices (1.3) | 4 | 20 | V-14 | built, behind the clinic's desk code (`last-sync-live.txt`, `last-tickets-api-live.txt`, `last-tickets-redis.txt`) |
+| E14 | Ticket numbers, thread, feedback and the booking day note (1.2 and 1.3) | 4 | 13 | V-10 to V-13 | built (`last-extras3-live.txt`, `last-booking-day.txt`) |
+| **Total** | | **47** | **152** | | |
 
 ---
 
@@ -438,9 +444,271 @@ As a patient who would rather speak, I want to ask by voice and hear the reply i
 | AC-E9.F5.3 | A device without speech support, or no key | The chat page opens | The voice buttons are hidden, and typing works as before | G30 | manual |
 | AC-E9.F5.4 | The voice buttons show | The page is read at 375 px | Nothing scrolls sideways and the chat box and send button stay in view | G30, G23 | `brief.mjs [R9 phone]` |
 
+## E10 Asking for a person and assistant settings
+
+Goal (version 1.1.0.0): a patient who asks for a person gets a reply of its own and a ticket, and a clinic
+can give the assistant a name and its own quick replies. Both sit beside the baseline: a question the clinic
+file answers gets the same reply as in 1.0.0.0, and a file without the `assistant` section changes nothing.
+
+### E10.F1 Ask for a person
+
+As a patient, I want to ask for a person and be told the team will call so that I am not left with a line
+about languages or a phone number.
+
+**Status:** Built. `last-person-engine.txt` (76 checks) and `last-person-live.txt`: "PASS "Can I speak to a human?" gets the same reply, not the languages line"; "PASS both requests are "needs human" tickets on the staff page".
+
+| ID | Given | When | Then | Trace | Planned check |
+| --- | --- | --- | --- | --- | --- |
+| AC-E10.F1.1 | A fresh browser on the chat page | The patient sends "Can I speak to a human?" or "Please call me back" | The reply says the request went to the team and gives the phone number; it keeps "not sure" and "2 working hours" | V-1 | `tests/person.cjs`, `tests/person.mjs` |
+| AC-E10.F1.2 | Both requests have been sent | /staff opens | Each is one needs-human ticket, listed in "To call back" and not in "Could not answer" | V-1 | `tests/person.mjs` |
+| AC-E10.F1.3 | A question the clinic file answers, such as "What is the phone number to call back?" | It is sent | The reply is exactly the reply of the file-only engine; the ask-for-a-person rule does not take it | V-1 | `tests/person.cjs` |
+| AC-E10.F1.4 | The 386 questions of the sweep | Each is answered by the engine | Each reply is exactly the reply of the file-only engine | V-1 | `tests/person.cjs` |
+| AC-E10.F1.5 | The standard clinic file | The chat page opens | There are seven quick replies and the last is "Talk to a person", also in Hindi and Telugu, with no sideways scroll at 375 px | V-1 | `tests/person.mjs` |
+
+### E10.F2 Assistant name and the clinic's own quick replies
+
+As a clinic owner, I want to name the assistant and choose the quick replies so that the chat reads as my
+clinic's own.
+
+**Status:** Built. `last-person-live.txt`: "PASS the assistant carries the name from the file"; "PASS with the original file the standard name and the seven quick replies are back". The name and the quick replies apply to every language as written in the file.
+
+| ID | Given | When | Then | Trace | Planned check |
+| --- | --- | --- | --- | --- | --- |
+| AC-E10.F2.1 | A clinic file without an `assistant` section | The chat page opens | The name and the tab title are the standard ones, and the seven standard quick replies show | V-4 | `tests/person.mjs` |
+| AC-E10.F2.2 | A clinic file with an `assistant` section that holds a name | It is saved and the chat opens | The assistant carries that name and introduces itself by it | V-4 | `tests/person.mjs` |
+| AC-E10.F2.3 | The section also holds the clinic's own quick replies | The chat opens and one is pressed | The chat shows the clinic's own quick replies, and the one pressed is asked and answered from the file | V-4 | `tests/person.mjs` |
+| AC-E10.F2.4 | The clinic's own file was in use | The original file is put back | The standard name and the seven quick replies are back | V-4 | `tests/person.mjs` |
+
+## E11 Staff queue tools
+
+Goal (versions 1.1.0.0 and 1.2.0.0): front-desk staff can find, filter, sort, count, export and answer
+tickets faster. The tools watch the queue and never change it: with nothing set, `#ticket-queue` is exactly
+what the staff page drew, and a filtered ticket is hidden, never removed.
+
+### E11.F1 Search, status filter, type filter and sort
+
+As front-desk staff, I want to search and narrow the queue so that I find one patient's ticket quickly.
+
+**Status:** Built. `last-tools-live.txt`: "PASS default state: #ticket-queue innerHTML is exactly what staff.js renders without tools.js"; `last-tools2-live.txt`: "PASS the type filter "Booking" shows the booking ticket only and removes none".
+
+| ID | Given | When | Then | Trace | Planned check |
+| --- | --- | --- | --- | --- | --- |
+| AC-E11.F1.1 | Tickets in the queue, no search, no filter, the Priority order | /staff is read | The ticket list is exactly what the staff page drew without the tools | V-2 | `tests/tools.mjs`, `tests/tools2.mjs` |
+| AC-E11.F1.2 | Tickets of every status | Staff pick urgent, needs human, answered or closed | Only tickets of that status show; the rest are hidden and none is removed; "All" gives the original list again | V-2 | `tests/tools.mjs` |
+| AC-E11.F1.3 | Tickets with questions, staff replies, contact names and phone numbers | Staff type in the search box | A word in the question (any letter case), a staff reply, a contact name or a phone number finds the ticket; no match says "No tickets match" and removes nothing | V-2 | `tests/tools.mjs` |
+| AC-E11.F1.4 | The queue in Priority order | Staff pick Newest first, Oldest first, then Priority | The rows reorder each time, an open ticket keeps the sort, and Priority restores the original list | V-2 | `tests/tools.mjs` |
+| AC-E11.F1.5 | A filter is on | Staff type a reply and send it | The focus and the text are kept while typing, the ticket becomes answered, and the filter is applied again | V-2 | `tests/tools.mjs` |
+| AC-E11.F1.6 | Tickets of several types | Staff pick the type "Booking", then "All types" | Only the booking ticket shows and none is removed; "All types" shows every ticket again | V-8 | `tests/tools2.mjs` |
+
+### E11.F2 Urgent alerts
+
+As front-desk staff, I want to be told when an urgent ticket arrives so that an emergency is not missed.
+
+**Status:** Built. `last-tools-live.txt`: "PASS alerts on: a new urgent ticket puts the urgent count in the title". Not covered: the tone was not heard and the browser notification was not shown in a test, because a test browser grants no permission.
+
+| ID | Given | When | Then | Trace | Planned check |
+| --- | --- | --- | --- | --- | --- |
+| AC-E11.F2.1 | A fresh browser on /staff | A new urgent ticket arrives | Alerts are off by default and the tab title is left alone | V-2 | `tests/tools.mjs` |
+| AC-E11.F2.2 | Staff turn alerts on | A new urgent ticket arrives | The setting is stored in this browser, and the tab title shows the count of urgent tickets | V-2 | `tests/tools.mjs` |
+| AC-E11.F2.3 | Alerts are on | Staff turn them off | The tab title is restored | V-2 | `tests/tools.mjs` |
+
+### E11.F3 Queue figures
+
+As a clinic owner, I want the state of the queue in one line so that I can see how the desk is doing.
+
+**Status:** Built. `last-tools2-live.txt`: "PASS the queue at a glance: 4 open, 2 urgent, 1 over 2 hours, 2 answered, an average wait".
+
+| ID | Given | When | Then | Trace | Planned check |
+| --- | --- | --- | --- | --- | --- |
+| AC-E11.F3.1 | Tickets in the queue | /staff is read | "The queue at a glance" shows open, urgent, over 2 hours, answered and an average wait, and `#ticket-queue` is still exactly what the staff page drew | V-5 | `tests/tools2.mjs` |
+| AC-E11.F3.2 | The figures show | A ticket is answered | The figures follow the queue | V-5 | `tests/tools2.mjs` |
+
+### E11.F4 CSV export
+
+As a clinic owner, I want the tickets as a file so that I can keep or count them elsewhere.
+
+**Status:** Built. `last-tools2-live.txt`: "PASS Export CSV downloads one row per ticket under a header".
+
+| ID | Given | When | Then | Trace | Planned check |
+| --- | --- | --- | --- | --- | --- |
+| AC-E11.F4.1 | Tickets in the queue | Staff press Export CSV | A file downloads with one row per ticket under a header | V-6 | `tests/tools2.mjs` |
+| AC-E11.F4.2 | A ticket whose text starts like a formula or holds quotes | It is exported | The cell is written as text and the quotes are doubled | V-6 | `tests/tools2.mjs` |
+
+### E11.F5 Ready-made replies and a private note
+
+As front-desk staff, I want common replies ready and a place for my own notes so that I answer faster and
+keep what the patient should not see apart.
+
+**Status:** Built. `last-tools2-live.txt`: "PASS a ready-made reply fills the open ticket's reply box"; "PASS the note is not written into the ticket or into the queue". The note is folded under a line that says it is not a reply, after a test typed a reply into it twice.
+
+| ID | Given | When | Then | Trace | Planned check |
+| --- | --- | --- | --- | --- | --- |
+| AC-E11.F5.1 | A ticket is open | Staff press a ready-made reply | It fills that ticket's reply box and nothing is sent | V-7 | `tests/tools2.mjs` |
+| AC-E11.F5.2 | The reply box is filled | Staff press the usual Send button | The ticket becomes answered | V-7 | `tests/tools2.mjs` |
+| AC-E11.F5.3 | No note has been saved | /staff is read | Nothing is stored for notes, and the note is folded away until staff open it | V-9 | `tests/tools2.mjs` |
+| AC-E11.F5.4 | A ticket is open | Staff save a private note | The note is saved for that ticket and is not written into the ticket or the queue, so the patient never sees it | V-9 | `tests/tools2.mjs` |
+| AC-E11.F5.5 | A note was saved | The page is reloaded and that ticket is opened | The note shows again | V-9 | `tests/tools2.mjs` |
+
+## E12 Clinic file form
+
+Goal (version 1.1.0.0): a clinic owner can change the clinic file without reading JSON. The form is closed
+by default, is built from whatever file is in the box, and writes into the same box that the same Save
+button stores.
+
+### E12.F1 Edit with a form
+
+As a clinic owner, I want fields for my clinic's details so that I can change a price or an hour safely.
+
+**Status:** Built. `last-form-live.txt`: "PASS on load the JSON box is identical to the page without form.js"; "PASS the patient chat answers with the new price (Rs 450)". The form's contrast was not measured separately.
+
+| ID | Given | When | Then | Trace | Planned check |
+| --- | --- | --- | --- | --- | --- |
+| AC-E12.F1.1 | A fresh browser on /staff | The page loads | The form is there and closed, the JSON box is the same as without the form, and the box, Save and Reset are visible | V-3 | `tests/form.mjs` |
+| AC-E12.F1.2 | The form is closed or has just been opened | No field is changed | The JSON box is not changed, and a pasted file is left exactly as pasted | V-3 | `tests/form.mjs` |
+| AC-E12.F1.3 | The form is open | Staff change the price field and press the existing Save | Only that value changes in the JSON box, the key order is kept, the file saves, and the patient chat answers with the new price | V-3 | `tests/form.mjs` |
+| AC-E12.F1.4 | A file in another shape is pasted | The form is opened and a field is edited | Fields are built for that file, and the edit writes back the same shape with only that value changed; a number stays a number and an empty field stays empty | V-3 | `tests/form.mjs` |
+| AC-E12.F1.5 | A list in the file | Staff press Add, then Remove | A new empty item with the keys of the first item is added, then taken out again | V-3 | `tests/form.mjs` |
+| AC-E12.F1.6 | The form is open | Staff type invalid JSON in the box | A message shows and the box is left alone; valid JSON rebuilds the form | V-3 | `tests/form.mjs` |
+
+### E12.F2 Assistant section in the form
+
+As a clinic owner, I want to set the assistant's name and quick replies in the form so that I do not write
+the section by hand.
+
+**Status:** Built. `last-form-live.txt`: "PASS assistant name and one quick reply land in the box in the exact shape"; "PASS at most 8 quick replies".
+
+| ID | Given | When | Then | Trace | Planned check |
+| --- | --- | --- | --- | --- | --- |
+| AC-E12.F2.1 | The form is open | Staff type an assistant name and one quick reply | They land in the JSON box in the shape the chat reads, and a newly added `assistant` key goes last | V-4 | `tests/form.mjs` |
+| AC-E12.F2.2 | The Assistant section is filled | Staff empty the name and the replies | The `assistant` key is removed from the file | V-4 | `tests/form.mjs` |
+| AC-E12.F2.3 | The Assistant section | Staff add quick replies | At most eight are kept, the length limits are set, and a quick reply with an empty question is not written | V-4 | `tests/form.mjs` |
+
+## E13 Tickets shared across devices
+
+Goal (version 1.3.0.0): a staff device can see and answer tickets from any patient's phone. It is off by
+default and behind the clinic's desk code. The staff page still opens with this browser's tickets only, and
+if the store is missing, blocked or slow both pages behave as they did.
+
+### E13.F1 The patient's tickets reach the clinic's store
+
+As a patient, I want my question to reach the front desk wherever they sit so that the reply comes back to
+my phone.
+
+**Status:** Built. `last-sync-live.txt`: "PASS the patient's ticket reaches the store"; `last-sync-real-store-live.txt`: "PASS the ticket is in the real store, readable with this browser's key".
+
+| ID | Given | When | Then | Trace | Planned check |
+| --- | --- | --- | --- | --- | --- |
+| AC-E13.F1.1 | A fresh browser on the chat page | No question has been asked yet | The chat page sends nothing to the ticket store | V-14 | `tests/sync.mjs` |
+| AC-E13.F1.2 | The store is in place | The patient asks a question | The ticket reaches the store with its status and question, without browser-only fields, under a hash of the browser's key | V-14 | `tests/sync.mjs`, `tests/sync-live.mjs` |
+| AC-E13.F1.3 | A ticket has been stored | The chat page is read | The small print says the messages go to the clinic's front desk | V-14 | `tests/sync.mjs`, `tests/sync-live.mjs` |
+| AC-E13.F1.4 | A stored ticket has not changed | The chat checks again | It is not sent again | V-14 | `tests/sync.mjs` |
+
+### E13.F2 Who can read or change a shared ticket
+
+As a patient, I want my question and phone number readable only by me and the clinic so that a stranger
+cannot see or change them.
+
+**Status:** Built. `last-sync-live.txt`: "PASS the list of every device's tickets is refused without the desk code"; `last-tickets-api-live.txt`: "PASS another browser cannot change that ticket, even with its id and patient id".
+
+| ID | Given | When | Then | Trace | Planned check |
+| --- | --- | --- | --- | --- | --- |
+| AC-E13.F2.1 | A ticket stored by one browser | The same browser asks for it with its key | It reads the ticket back; unknown fields were dropped and the key hash is not returned | V-14 | `tests/tickets-api-live.mjs` |
+| AC-E13.F2.2 | A ticket stored by one browser | Another browser that knows the ticket id and the patient id asks for it or posts to it | It gets nothing and cannot change the ticket; a request with no key is refused | V-14 | `tests/sync.mjs`, `tests/tickets-api-live.mjs` |
+| AC-E13.F2.3 | Tickets from several devices are stored | The full list is asked for without the desk code, or with a guessed one | The full list is refused | V-14 | `tests/sync.mjs`, `tests/tickets-api-live.mjs`, `tests/tickets-redis.cjs` |
+| AC-E13.F2.4 | The clinic has set no desk code on the server | Anyone asks for the full list | It is closed to everyone | V-14 | `tests/sync.mjs`, `tests/tickets-api-live.mjs` |
+| AC-E13.F2.5 | A ticket is stored | Staff answer it or the patient adds feedback | The stored question, reply and patient never change once stored, and staff cannot create tickets on the server | V-14 | `tests/sync.mjs`, `tests/tickets-api-live.mjs` |
+| AC-E13.F2.6 | The store is in place | One address sends too many requests, or a malformed ticket | The requests are refused | V-14 | `tests/sync.mjs`, `tests/tickets-api-live.mjs` |
+| AC-E13.F2.7 | More than 300 tickets are stored | Staff with the desk code ask for the list | The list holds the newest 300, newest first, without key hashes | V-14 | `tests/tickets-redis.cjs` |
+
+### E13.F3 Staff see and answer tickets from all devices
+
+As front-desk staff, I want to see every patient's ticket on the desk computer so that I can answer a
+question asked on a phone.
+
+**Status:** Built. `last-sync-live.txt`: "PASS with the right desk code the patient's ticket appears on the staff device"; `last-sync-staff-real-store-live.txt`: "PASS a reply sent from another device reached this patient chat after 183 s". The real-store test never held the desk code; the owner typed it.
+
+| ID | Given | When | Then | Trace | Planned check |
+| --- | --- | --- | --- | --- | --- |
+| AC-E13.F3.1 | A staff device with the store in place | /staff opens | It shows this browser's own tickets only and the "Show tickets from all devices" switch is off | V-14 | `tests/sync.mjs`, `tests/sync-live.mjs` |
+| AC-E13.F3.2 | The switch is turned on | No desk code, or a wrong one, is given | Nothing from other devices is shown, the code is asked for, and the page does not keep asking the server | V-14 | `tests/sync.mjs`, `tests/sync-live.mjs` |
+| AC-E13.F3.3 | The switch is on | The right desk code is given | The patient's ticket appears with its status, and the bar says how many came from other devices | V-14 | `tests/sync.mjs` |
+| AC-E13.F3.4 | A ticket from another device is open | Staff reply | The reply and the new status reach the store, the reply shows in the patient's chat on the other device, and the patient's own copy becomes answered | V-14 | `tests/sync.mjs`, `tests/sync-wait-live.mjs` |
+| AC-E13.F3.5 | A ticket was answered from another device | The patient gives feedback | The feedback reaches the staff device and does not undo the answered status or double the reply | V-14 | `tests/sync.mjs` |
+| AC-E13.F3.6 | Tickets from other devices show | Staff turn the switch off | Only this browser's own tickets are left | V-14 | `tests/sync.mjs` |
+
+### E13.F4 Nothing changes when the store is away
+
+As a tester or a patient, I want the chat and the staff page to work as before when the store cannot be
+reached.
+
+**Status:** Built. `last-sync-live.txt`: "PASS with /api/ blocked the chat still answers from the clinic file"; "PASS with no store the staff page has no switch and shows this browser's ticket".
+
+| ID | Given | When | Then | Trace | Planned check |
+| --- | --- | --- | --- | --- | --- |
+| AC-E13.F4.1 | No store is set up | The patient asks a question | The chat answers as before, tries the store once and stops, and the small print is unchanged | V-14 | `tests/sync.mjs` |
+| AC-E13.F4.2 | No store is set up, or the store's address is blocked | /staff opens | There is no switch and this browser's ticket shows | V-14 | `tests/sync.mjs` |
+| AC-E13.F4.3 | The store's address is blocked | The patient asks a question | The chat still answers from the clinic file | V-14 | `tests/sync.mjs` |
+
+## E14 Ticket numbers, thread, feedback and the booking day note
+
+Goal (versions 1.2.0.0 and 1.3.0.0): staff can name a ticket, read the whole chat behind it and see whether
+a reply helped; a patient who books for a named day is told that day's hours. The ticket rows, their
+statuses, the reply box and the Send button stay as they were.
+
+### E14.F1 Ticket numbers
+
+As front-desk staff, I want a short number on each ticket so that I can refer to it on the phone.
+
+**Status:** Built. `last-extras3-live.txt`: "PASS tickets are numbered in the order they were opened | T-001, T-002".
+
+| ID | Given | When | Then | Trace | Planned check |
+| --- | --- | --- | --- | --- | --- |
+| AC-E14.F1.1 | Two tickets have been opened | /staff is read | They carry T-001 and T-002, in the order they were opened | V-11 | `tests/extras3.mjs` |
+| AC-E14.F1.2 | The numbers show | The queue is read | Both tickets are still listed, each with its status, its reply box and its Send button | V-11 | `tests/extras3.mjs` |
+
+### E14.F2 The chat thread inside a ticket
+
+As front-desk staff, I want the patient's other questions beside the ticket so that I reply knowing the
+whole conversation.
+
+**Status:** Built. `last-extras3-live.txt`: "PASS the open ticket has the rest of the chat, folded | Chat so far with this patient (1 other question)".
+
+| ID | Given | When | Then | Trace | Planned check |
+| --- | --- | --- | --- | --- | --- |
+| AC-E14.F2.1 | A patient has asked two questions | Staff open one of the tickets | "Chat so far" is under it, folded; each question is still its own ticket | V-12 | `tests/extras3.mjs` |
+| AC-E14.F2.2 | The thread is folded | Staff unfold it | It shows the patient's other question and its reply, and stays unfolded after the queue redraws | V-12 | `tests/extras3.mjs` |
+| AC-E14.F2.3 | The thread shows | Staff reply on that ticket | The ticket is answered and the reply reaches the patient's chat | V-12 | `tests/extras3.mjs` |
+
+### E14.F3 Feedback on a reply
+
+As a patient, I want to say whether a reply helped so that the clinic knows.
+
+**Status:** Built. `last-extras3-live.txt`: "PASS the last .bot-msg is still only the reply (the feedback buttons sit beside it)"; "PASS the feedback figure counts it | 1 / 0".
+
+| ID | Given | When | Then | Trace | Planned check |
+| --- | --- | --- | --- | --- | --- |
+| AC-E14.F3.1 | A reply shows in the chat | The page is read | "Helpful" and "Not helpful" sit beside the reply, the last `.bot-msg` is still only the reply, and nothing scrolls sideways at 375 px | V-13 | `tests/extras3.mjs` |
+| AC-E14.F3.2 | The buttons show | The patient presses "Helpful" | It is marked, and the mark is still there after a reload | V-13 | `tests/extras3.mjs` |
+| AC-E14.F3.3 | Feedback was given | /staff is read | The ticket shows the patient's feedback | V-13 | `tests/extras3.mjs` |
+| AC-E14.F3.4 | Feedback was given | The queue figures are read | The feedback figure counts it | V-13, V-5 | `tests/extras3.mjs` |
+
+### E14.F4 Booking reply with the day's hours
+
+As a patient, I want to know the hours of the day I asked for so that I pick a time the clinic is open.
+
+**Status:** Built. `last-booking-day.txt`: "PASS a booking for a named day keeps its ticket and adds the day's hours"; "ALL PASS (10 checks)".
+
+| ID | Given | When | Then | Trace | Planned check |
+| --- | --- | --- | --- | --- | --- |
+| AC-E14.F4.1 | The standard clinic file | The patient asks to book and names one weekday, in English, Hindi or Telugu | The booking keeps its ticket and the reply adds that day's hours from the file | V-10 | `tests/booking-day.cjs` |
+| AC-E14.F4.2 | The standard clinic file | The booking names no weekday, or two | The reply is as before | V-10 | `tests/booking-day.cjs` |
+| AC-E14.F4.3 | A booking names a day and a time | The ticket is read | The requested time is still on the ticket | V-10 | `tests/booking-day.cjs` |
+| AC-E14.F4.4 | A clinic file without hours | The patient asks to book for a named day | The booking still opens, with no empty line in the reply | V-10 | `tests/booking-day.cjs` |
+
 ## Revisions
 
 | Date | Change |
 | --- | --- |
 | 20 Nov 2026 | First version, planned, before any code |
 | 21 Nov 2026 | Revised after the build: a Status line on every feature, with the live test line that proves it; what is not built says why. The "Planned check" column is kept as written before the build |
+| 23 Nov 2026 | Epics E10 to E14 added for versions 1.1.0.0 to 1.3.0.0 (17 features, 69 acceptance criteria), each criterion beside the test file that checks it. Epics E1 to E9 are unchanged. Totals now 47 features and 152 criteria |

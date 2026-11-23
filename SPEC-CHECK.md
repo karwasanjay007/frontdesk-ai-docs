@@ -158,9 +158,11 @@ Measured on 21 Nov 2026 with every test above passing. What our tests cannot sho
   roles, symptoms and products not offered are written for a dental clinic. With a gym or salon file,
   "Who is the trainer?" gets "not sure", and fixed replies still say "a dentist must see you" (functional
   review finding 17).
-- **Tickets live on one device.** Tickets are kept in this browser's localStorage only. A tester that opens
-  `/staff` in a separate browser, device or private window sees no tickets, and a staff reply then cannot
-  reach the chat. The README and the judges' note say this in plain words. The spec does not say how the
+- **The staff page opens with its own browser's tickets.** Tickets are kept in this browser's localStorage
+  and, since version 1.3.0.0, also mirrored to the clinic's server store. The switch "Show tickets from all
+  devices" is off by default and needs the clinic's desk code. So a tester that opens `/staff` in a separate
+  browser, device or private window still sees no tickets, and a staff reply then cannot reach the chat.
+  The README and the judges' note say this in plain words. The spec does not say how the
   tester opens the two pages; our tests use one browser context for both, as a person would.
 - **The model can be slow.** With the key, the server allows the model 5 s and the browser waits at most
   6 s. If the model is slow or its free limit runs out during grading, the reply is shown with the
@@ -169,3 +171,52 @@ Measured on 21 Nov 2026 with every test above passing. What our tests cannot sho
   like the no-key run.
 - **The spec page changes.** Captured 20 Nov 2026. Recapture on 21 Nov is UNVERIFIED: the live dashboard
   needs sign-in. Still To do for whoever has account access.
+
+## After the baseline: versions 1.1.0.0 to 1.3.0.0 (22 Nov 2026)
+
+Sections 1 to 6 rate the baseline, version 1.0.0.0. Three versions followed on 22 Nov 2026. The full regression
+ran on the live link after the last deploy, with the ticket store active, and no earlier test was edited. The
+latest saved results:
+
+| Part of the specification | Latest evidence | Result |
+| --- | --- | --- |
+| The nine must-do items and every "How we check" line, with the key | `evidence/last-brief-live.txt` | ALL PASS (29 checks) |
+| The same with the model blocked | `evidence/last-brief-nokey-live.txt` | ALL PASS (29 checks) |
+| The eight sample questions, with the key and with the model blocked | `evidence/last-questions-live.txt`, `evidence/last-questions-blocked-live.txt` | ALL PASS (16 checks each) |
+| The six bonus items, with the key and with the model blocked | `evidence/last-bonus-live.txt`, `evidence/last-bonus-blocked-live.txt` | ALL PASS (15 checks each) |
+| Phone: no sideways scroll from 375 to 2560 px | `evidence/last-widths-live.txt` | ALL PASS (20 checks) |
+| Light and dark: every text 4.5:1 or better | `evidence/last-contrast-live.txt`, `evidence/last-contrast-measured-live.txt` | Not confirmed by the saved files; see the note below |
+
+So every must-do line, every "How we check" line, every bonus item and the phone mark still hold on the live
+link after the additions.
+
+**Note on light and dark.** The saved scan `last-contrast-live.txt` ends with "8 PROBLEMS". Six are BLUE-BG
+notes for text on the teal brand colour, each above 4.5:1. Two are lines under 4.5:1 in the light theme at rest,
+for `#fine-text` (2.94) and `#emg-link` (2.74), both read against a near-black background. The measured file
+`last-contrast-measured-live.txt` also lists values under 4.5:1 for some elements. The report does not explain
+these lines. They may come from the way the scan reads the background, but that is not shown. Until the scan is
+rerun and read, the light and dark mark is not claimed from these two files.
+
+### Beyond the specification
+
+Features the brief does not ask for. Each is kept apart from what the tester reads.
+
+| Feature | Version | How it is kept apart from what the tester reads | Evidence |
+| --- | --- | --- | --- |
+| Asking for a person gets its own reply and one needs-human ticket; a seventh quick reply | 1.1.0.0 | A wrapper over the file-only engine. It applies only where the clinic file had no answer, or gave only the phone or languages line to a message that asks for a person | `last-person-engine.txt` (76 checks), `last-person-live.txt` (16) |
+| Named assistant and the clinic's own quick replies | 1.1.0.0 | An optional `assistant` section in the clinic file. A file without it, such as any file a tester pastes, keeps the standard name and quick replies | `last-person-engine.txt`, `last-form-live.txt` |
+| Ticket search, status filter and sort | 1.1.0.0 | With nothing set, `#ticket-queue` is byte for byte what `staff.js` rendered. Filtered rows are hidden, never removed | `last-tools-live.txt` (37) |
+| Urgent alerts for staff | 1.1.0.0 | Off until staff turn them on; nothing is stored before that | `last-tools-live.txt` |
+| Form editor for the clinic file | 1.1.0.0 | Closed by default. It writes into the same `#clinic-json` box and the same Save button stores it | `last-form-live.txt` (43) |
+| Queue figures: open, urgent, over 2 hours, answered, average wait, feedback | 1.2.0.0 | Shown above the tickets. With nothing pressed, `#ticket-queue` is still exactly what `staff.js` renders | `last-tools2-live.txt` (17) |
+| CSV export of tickets | 1.2.0.0 | In the staff add-on file; with nothing pressed, `#ticket-queue` is unchanged | `last-tools2-live.txt` |
+| Ready-made staff replies | 1.2.0.0 | Each fills the open ticket's reply box; staff still press Send | `last-tools2-live.txt` |
+| Filter by ticket type | 1.2.0.0 | Beside the status filter; rows are hidden, never removed | `last-tools2-live.txt` |
+| Private staff note on a ticket | 1.2.0.0 | Kept under its own browser key, never shown to the patient, folded under a line that says it is not a reply | `last-tools2-live.txt` |
+| Booking reply states the named day's hours | 1.2.0.0 | The ticket, its status and the requested time are unchanged | `last-booking-day.txt` (10) |
+| Ticket numbers | 1.3.0.0 | The ticket rows, their `data-ticket` and `data-status`, the reply box and the Send button are unchanged | `last-extras3-live.txt` (15) |
+| The patient's chat thread inside a ticket | 1.3.0.0 | Folded by default; each question is still its own ticket | `last-extras3-live.txt` |
+| Patient feedback on a reply | 1.3.0.0 | The buttons sit beside the reply, never inside `.bot-msg` | `last-extras3-live.txt` |
+| Tickets shared across devices, behind the clinic's desk code | 1.3.0.0 | The staff page opens with this browser's tickets only; the switch is off by default. If the store is missing, blocked or slow, both pages behave as before | `last-sync-live.txt` (31), `last-tickets-api-live.txt` (11), `last-sync-real-store-live.txt` (6), `last-sync-staff-real-store-live.txt`, `last-tickets-redis.txt` (9) |
+
+All evidence files are in `evidence/`.

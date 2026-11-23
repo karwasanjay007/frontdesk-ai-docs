@@ -275,3 +275,86 @@ fresh browser on the chat page unless it says otherwise.
 | --- | --- |
 | 20 Nov 2026 | First draft, from `brief/spec-page.md`, the clinic file, the sample-questions file, the decisions G1 to G30 (now PRD.md section 2.5 and stage 3) and the coaching notes of 15 Nov 2026 |
 | 20 Nov 2026 | Q-2 answered by Sanjay (the model is named in the tech stack); PRD approved and built |
+
+## Version 1.1.0.0 to 1.3.0.0: additions (22 Nov 2026)
+
+This section adds to the document. Sections 1 to 8 describe version 1.0.0.0 and are left as written. Where
+this section differs from them (tickets kept on a server, D-4 and section 2.2), this section describes the
+product from version 1.3.0.0.
+
+### Why they were added
+
+After version 1.0.0.0 was built, the chat and staff screens of other builds of the same batch were read
+(nothing was typed or sent on them). They showed features a front desk uses every day that this product
+did not have. Fourteen were added in three versions on 22 Nov 2026. None is asked for by the brief.
+
+### Who each is for
+
+| ID | Addition | Version | Who it is for |
+| --- | --- | --- | --- |
+| V-1 | Ask for a person | 1.1 | Patient |
+| V-2 | Ticket search, status filter, sort and urgent alerts | 1.1 | Front-desk staff |
+| V-3 | Form editor for the clinic file | 1.1 | Clinic owner |
+| V-4 | Assistant name and the clinic's own quick replies | 1.1 | Clinic owner, patient |
+| V-5 | Queue figures | 1.2 | Clinic owner, front-desk staff |
+| V-6 | Export of tickets as a CSV file | 1.2 | Clinic owner |
+| V-7 | Ready-made replies | 1.2 | Front-desk staff |
+| V-8 | Filter by ticket type | 1.2 | Front-desk staff |
+| V-9 | Private staff note | 1.2 | Front-desk staff |
+| V-10 | Booking reply with the day's hours | 1.2 | Patient |
+| V-11 | Ticket numbers | 1.3 | Front-desk staff |
+| V-12 | Chat thread inside a ticket | 1.3 | Front-desk staff |
+| V-13 | Feedback on a reply | 1.3 | Patient, clinic owner |
+| V-14 | Tickets shared across devices behind a desk code | 1.3 | Front-desk staff, patient |
+
+### Requirements
+
+| ID | Requirement |
+| --- | --- |
+| V-1 | A patient who asks to speak to a person, or to be called back, gets a reply of its own that keeps "not sure" and "2 working hours", and one needs-human ticket. A seventh quick reply, "Talk to a person". A question the clinic file answers is never taken by this rule |
+| V-2 | Staff can search the tickets, filter them by status and sort them. A filtered ticket is hidden, never removed. Staff can turn on alerts for urgent tickets: a count in the tab title, a tone and a notification. Alerts are off until staff turn them on |
+| V-3 | The clinic file can be edited through a form built from whatever file is in the box, so a file in another shape gets a form too. The form is closed by default and saves through the same Save button |
+| V-4 | The clinic file may hold an assistant name and the clinic's own quick replies (at most eight). A file without them keeps the standard name and the standard quick replies |
+| V-5 | The staff page shows the queue at a glance: open, urgent, over 2 hours, answered, average wait and patient feedback |
+| V-6 | Staff can download the tickets as a CSV file, one row per ticket. A cell that starts like a formula is written as text |
+| V-7 | Four ready-made replies, each of which fills the open ticket's reply box. Staff still press Send |
+| V-8 | Staff can filter by ticket type: booking, could not answer, asked for a person, emergency |
+| V-9 | Staff can keep a private note on a ticket. It is kept apart from the ticket and is never shown to the patient |
+| V-10 | A booking request that names one weekday also states that day's hours from the clinic file. The ticket, its status and the requested time stay as before |
+| V-11 | Each ticket carries a number (T-001, T-002 and so on) in the order the tickets were opened |
+| V-12 | An open ticket shows the patient's other questions, the replies and the team's replies, folded under it as "Chat so far". Each question is still its own ticket |
+| V-13 | A patient can mark a reply "Helpful" or "Not helpful". The mark shows on the ticket and as a staff figure |
+| V-14 | A staff device can turn on "Show tickets from all devices" and, with the clinic's desk code, see and answer tickets from any patient's phone. The reply shows in that patient's chat. The switch is off by default |
+
+Acceptance criteria for each are in `docs/epics.md`, epics E10 to E14.
+
+### Out of scope
+
+| Item | Why | Where it goes instead |
+| --- | --- | --- |
+| Named staff accounts | There is one shared desk code for the clinic. Accounts for each member of staff are not asked for | Not planned for the competition |
+| A sign-in in front of the staff page | It would stand between the tester and the ticket queue (D-6). The staff page still opens directly with this browser's tickets; only the list from all devices asks for the desk code | Not planned |
+
+### Privacy position for shared tickets
+
+- What is stored on the server: a patient's tickets (the question, the reply, the status, feedback, and
+  the name and phone number if the patient left them). Nothing is sent before the patient's first question.
+- Each patient's browser holds a private key. The server keeps only a hash of it with the ticket.
+- Who can read it: the browser that created the ticket, with its key, and staff who give the clinic's desk
+  code. Knowing a ticket id or a patient id is not enough.
+- The list of every device's tickets is refused without the desk code, and is closed to everyone until the
+  clinic has set a code on the server.
+- A ticket's question, reply and patient cannot be changed once stored. Requests are rate limited.
+- How long: tickets on the server are deleted after seven days.
+- Once a chat is stored, the chat's small print says that the messages go to the clinic's front desk.
+- The private staff note (V-9) stays on the staff device and is not sent to the server store.
+
+### Constraint: every addition sits beside the baseline
+
+- The nine "must do" items and the six bonus items behave as in version 1.0.0.0. The ids, statuses and
+  replies the tester reads are the same, and no earlier test was edited.
+- With no search, filter or sort set, the ticket list is exactly what the staff page drew.
+- A clinic file without the assistant section, and any file a tester pastes, keeps the standard name and
+  quick replies. The form never writes unless a field was changed.
+- Feedback buttons sit beside the reply, never inside it. The chat thread is folded by default.
+- If the server store is missing, blocked or slow, the chat and the staff page behave as they did.

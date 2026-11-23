@@ -29,9 +29,12 @@ written in parallel. Cheapest ready-made option that meets the PRD. Defaults and
 | Front end | Plain HTML, CSS and JavaScript, no framework, no build step. Chat page at `/` (`index.html`); staff page at `/staff` (`staff/index.html`); shared scripts loaded by both | Smallest and fastest; every graded id and class is under direct control; a real `/staff` folder works on Vercel and on any local static server with no rewrite rules | React with Vite: a build step and more weight, no benefit for two screens | $0 |
 | Rules engine | Plain JavaScript in the browser. Reads the clinic file and answers in the fixed order of G4: emergency, ignore-your-rules or discount, symptoms, booking, answerable from the file, otherwise not sure | The file answer is ready at once and is identical with and without the key, so the no-key run scores the same as the keyed run | Model-only answers: the no-key run would fail every question | $0 |
 | Back end | One Vercel serverless function `api/chat` (Node.js). It receives the drafted answer, the facts the rules engine found, the language and the current clinic data, never the patient's words; it calls the model with the key from the Vercel environment; it returns only the model's text. A GET returns `{ ok: true }` so the chat page can wake it on load. Time limit 5 s on the model call, so the browser's 6 s limit (G3) is never the one that trips | One small function is the only place a key can live safely (spec: "never in page code") | A model call from the browser: exposes the key. A separate server: more to run and pay for | $0 (Vercel Hobby) |
+| Ticket store function (since 1.3.0.0) | A second Vercel serverless function, `api/tickets.js` (Node.js). It holds the rules for shared tickets (the patient's browser key, the clinic's desk code, cleaning, merging, a rate limit), kept apart from the store. It answers 503 when no store is configured, and both pages then behave as before | Staff on another device can see and answer a ticket; the rules run on the server, where a browser cannot change them | Reading the store from the browser: the store token would reach the page | $0 (Vercel Hobby) |
+| Ticket store (since 1.3.0.0) | Upstash Redis, added through the Vercel Marketplace on the free plan with automatic upgrade off. Reached over its REST API; no package is installed. One record per ticket for seven days, an ordered list of ticket ids, and a small set of ids per browser key. Environment variables `KV_REST_API_URL` and `KV_REST_API_TOKEN` (added by the store) and `FRONTDESK_DESK_CODE` (set by the clinic); names only, the values live in the Vercel environment | No package and no build step; the free plan costs nothing; a ticket record expires after seven days | A SQL database: tables, a client package and row-level security for one small list | $0 (free plan) |
+| Browser add-ons (since 1.1.0.0) | `staff/tools.js` (search, filters, sort, alerts, queue figures, CSV export, ready-made replies, private note), `staff/form.js` (the form for the clinic file) and `sync.js` (mirrors tickets to the store and fetches staff replies; loaded on `/` and `/staff`). Plain JavaScript, each in its own file | Additions sit beside the baseline scripts, so the ids and statuses the tester reads stay as they were | Editing `staff.js` and `chat.js` in place: every earlier test would need a new look | $0 |
 | AI model | DeepSeek V4.1 Flash through OpenRouter, model `deepseek/deepseek-v4.1-flash` (env `OPENROUTER_API_KEY`, optional `OPENROUTER_MODEL`), reasoning off, temperature 0.2, at most 700 output tokens. Chosen by Sanjay on 20 Nov 2026. See "AI model: evidence" below | Low cost, and quick with reasoning off, which suits the 5 s limit; `OPENROUTER_MODEL` can switch the model without a code change | Google Gemini `gemini-3.5-flash-lite` free tier: the first draft's recommendation, kept as the considered alternative. Z.ai `GLM-4.7-Flash`: free but limits not published | Cents (see "Monthly cost") |
 | AI output guard | Plain JavaScript in the browser (G7, `guard()` in `core.js`). A model reply is shown only if every number and every capitalised name in it is in the draft or the clinic file, it names no doctor outside the file, makes no promise or topic (ticket, call back, discount, offer, free, %, branch, refund) the draft did not, names no medicine, still contains the facts the rules engine found, and is in the patient's language | The model can never put an invented price or a medicine in front of a patient | Trusting the model's instructions alone: one bad reply fails spec items 2, 4 or 6 | $0 |
-| Storage | Browser localStorage on the site's own origin: tickets, staff replies and the edited clinic file. The chat page listens for the `storage` event, so a staff reply sent on `/staff` shows in the chat within a second (G12) | The tester uses one browser; nothing extra to sign up for or fail | A database such as Supabase: needed for a real clinic with staff on other devices; recorded as phase 2 (Q-3) | $0 |
+| Storage | Browser localStorage on the site's own origin: tickets, staff replies and the edited clinic file. The chat page listens for the `storage` event, so a staff reply sent on `/staff` shows in the chat within a second (G12) | The tester uses one browser; nothing extra to sign up for or fail | A database such as Supabase: not used. Since version 1.3.0.0 tickets are also mirrored to a server store for staff on other devices (see the "Ticket store" row) | $0 |
 | Clinic file | `clinic-data.json` shipped with the site as the default. Staff can paste or edit it on `/staff`; the edit is stored in localStorage and used at once by both pages (G18) | Answers follow whatever data is loaded, which is what the hidden-data test needs | Hard-coded answers: work only on the sample file | $0 |
 | Speech | The browser's own Web Speech API: speech recognition for the microphone button and speech synthesis for the speaker button, in en-IN, hi-IN and te-IN; hidden where the browser lacks it (G30) | No key and no cost; typing always works without it | A cloud speech service: a second key, a cost and another call that can fail | $0 |
 | WhatsApp link | A `wa.me` link built in the browser from the clinic file's `whatsapp` number with the question written in (G28) | No account or key | The WhatsApp Business API: an account, approval and cost | $0 |
@@ -44,8 +47,8 @@ written in parallel. Cheapest ready-made option that meets the PRD. Defaults and
 | Documents repository | `frontdesk-ai-docs`, private until shared; one baseline commit when made public | Documents stay out of the code and off the site | | $0 |
 
 **Sign-in.** None (G17). No login on the chat page or on `/staff`. A sign-in screen would stand between
-the grader and a graded element. A real clinic needs staff sign-in and server storage; both are recorded
-as phase 2 (Q-3), not built now.
+the grader and a graded element. Server storage for tickets was added in version 1.3.0.0; the list of every
+device's tickets needs the clinic's desk code. Named staff sign-in is still phase 2 (Q-3), not built now.
 
 **Total a month:** cents for the competition; the cost table below gives the figures.
 
@@ -77,6 +80,7 @@ never the patient's words. The clinic is fictional and no patient data is real d
 | Vercel Hobby: static site and one function | $0 | $0 (well inside the Hobby allowance; a commercial clinic would need Vercel Pro, $20) |
 | OpenRouter `deepseek/deepseek-v4.1-flash` | Cents: two runs of 28 questions, and only answerable questions call the model | About 500 calls of roughly 2,000 input and 150 output tokens at $0.30 and $1.20 per million: about $0.39 |
 | localStorage, Web Speech API, `wa.me` links | $0 | $0 |
+| Upstash Redis through the Vercel Marketplace, free plan, automatic upgrade off (since 1.3.0.0) | $0 | $0 on the free plan; automatic upgrade is off |
 | GitHub private repositories | $0 | $0 |
 | **Total** | **Cents** | **About $0.39 for the model; $0 for the rest** |
 
@@ -94,9 +98,14 @@ The real-clinic token sizes are an estimate from the size of the clinic file, to
   uses the file answer.
 - The model's output passes the guard (G7) before display, and is shown as text, never as HTML.
 - Every text from the clinic file, a staff reply or a patient message is escaped before display.
-- Access control: none in this build; `/staff` is open by design for the grader (G17). Recorded as a known
-  limit, with staff sign-in as phase 2.
-- Database: none; row-level security does not apply in this build.
+- Access control: `/staff` is open by design for the grader (G17) and shows only the tickets of its own
+  browser. Since version 1.3.0.0 the list of every device's tickets needs the clinic's desk code, checked on
+  the server. Named staff sign-in is phase 2.
+- Database: since version 1.3.0.0, Upstash Redis as the ticket store, reached only by `api/tickets.js`. It is
+  not a SQL database, so row-level security does not apply; the function's own rules decide who reads what.
+- Ticket store secrets (since 1.3.0.0): `KV_REST_API_URL`, `KV_REST_API_TOKEN` and `FRONTDESK_DESK_CODE` live
+  only in the Vercel project's environment. The desk code is typed by staff and kept in the browser for the
+  session only. The server keeps a hash of each patient's browser key, never the key itself.
 - Dependencies: none in the page. Playwright is a development dependency only. An audit by a different
   model runs before release (R1).
 
@@ -109,7 +118,8 @@ PlantUML source (SVG only), embedded in ARCHITECTURE.md.
 
 - A framework or build step: nothing it adds is needed for two pages, and it hides the graded ids behind
   generated markup.
-- A database and login: the tester uses one browser; both are phase 2 for a real clinic (Q-3).
+- A SQL database and named staff login: the tester uses one browser. A small ticket store was added in
+  version 1.3.0.0 (see "Choices"); named staff login is phase 2 for a real clinic (Q-3).
 - Streaming the model's reply: a `.bot-msg` filled word by word could be read before it is complete (G2).
 - A cloud speech service: the browser's own speech is free and needs no key.
 - A service worker: no offline install is asked for.
@@ -121,3 +131,4 @@ PlantUML source (SVG only), embedded in ARCHITECTURE.md.
 | --- | --- |
 | 20 Nov 2026 | First draft, from decisions G1 to G30; model limits checked on the web the same day |
 | 20 Nov 2026 | Model changed to DeepSeek V4.1 Flash through OpenRouter (Sanjay's choice), reasoning off; price read from the OpenRouter models list the same day; Gemini kept as the considered alternative; back end, guard, cost, security and diagram rows brought in line with the code |
+| 22 Nov 2026 | Brought up to version 1.3.0.0: the ticket store (Upstash Redis through the Vercel Marketplace, REST, no package), the function `api/tickets.js`, the three environment variable names, the browser add-ons `sync.js`, `staff/tools.js` and `staff/form.js`; storage, sign-in, security and "Not used" lines corrected |
