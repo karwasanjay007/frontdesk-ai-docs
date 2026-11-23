@@ -22,6 +22,9 @@ note right of Core : an edited file with a "clinic" section wins over the shippe
 Core --> Chat : clinic data
 Chat -> Chat : side(), labels(), render()
 note right of Chat
+side() puts the assistant name (assistant.name,
+else "FrontDesk AI") in the header. labels() fills
+the greeting line and the quick chips FD.quick().
 The greeting is #greeting (.bot-greeting in
 .greeting-row), never .bot-msg. render() keeps it
 and redraws this patient's earlier tickets.
@@ -35,7 +38,7 @@ end
 Patient -> Chat : types a question and presses Send, or taps a quick chip
 Chat -> Chat : provisional user line, pending + 1, showTyping(true)
 note right of Chat : the typing dots are .typing-row, never .bot-msg
-Chat -> Core : FD.answer(q, data)
+Chat -> Core : FD.answer(q, data, lang)
 Core --> Chat : {kind, status, text, lang, facts, bookingTime, modelOk}
 
 alt kind "answer" and modelOk (a reply built from the file)
@@ -66,7 +69,13 @@ Chat -> Chat : ticketRows(t): .user-msg, then the reply as the last .bot-msg
 note right of Chat
 .src-label "Answered from the clinic file" when the
 source is not "model". A Listen button sits beside
-the reply when speechSynthesis exists.
+the reply when speechSynthesis exists, with the
+feedback buttons "Helpful" and "Not helpful".
 end note
 Chat --> Patient : one complete reply
+opt Patient taps Helpful or Not helpful
+  Chat -> Core : FD.updateTicket(id, {feedback: "up" or "down"})
+  Core -> LS : write frontdesk.tickets (staff see it on the ticket)
+end
+note over Chat, API : with a ticket store, sync.js also sends the ticket to /api/tickets (J9)
 @enduml

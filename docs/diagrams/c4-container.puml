@@ -13,6 +13,7 @@ System_Boundary(vercel, "Vercel project frontdesk-ai (*.vercel.app)") {
   Container(static, "Static files", "HTML, CSS, JavaScript, JSON", "index.html, staff/index.html, shared scripts, clinic-data.json; no build step; v1.1: staff/tools.js, staff/tools.css, staff/form.js, staff/form.css; v1.3: sync.js")
   Container(fn, "api/chat", "Vercel serverless function, Node.js", "GET: warm-up, returns ok. POST: takes the drafted answer, its facts, the language and the clinic file (never the patient's words); calls the model with the key from the environment; 5 s limit; returns text only")
   Container(tts, "api/tts", "Vercel serverless function, Node.js", "POST {text, lang}: the bot's reply text only, at most 700 characters; calls openai/gpt-audio-mini for pcm16 audio at 24 kHz, returns audio/wav; 15 s limit")
+  Container(transcribe, "api/transcribe", "Vercel serverless function, Node.js", "POST {audio, lang}: a 16 kHz WAV clip recorded when the browser's own recognition fails; calls google/gemini-2.5-flash-lite (OPENROUTER_AUDIO_MODEL) for the text; 12 s limit; the text then goes through the rules engine like typed text")
   Container(ticketsfn, "api/tickets", "Vercel serverless function, Node.js", "v1.3, api/tickets.js, the ticket store function: the rules in core() (patient key, desk code, clean, merge, rate limit), storage through Upstash Redis over REST; answers 503 when no store is configured")
 }
 
@@ -23,7 +24,8 @@ System_Boundary(browser, "The browser") {
   Container(staffform, "Clinic file form", "Plain JavaScript, CSS", "v1.1 add-on, staff/form.js and staff/form.css, loaded after staff.js: a form generated from the JSON in #clinic-json; writes back into that box; the existing Save stores it")
   Container(sync, "Sync add-on", "Plain JavaScript", "v1.3 add-on, sync.js, loaded on both pages. Chat: sends this patient's tickets when they change, with a private browser key, and fetches staff replies. Staff: the switch Show tickets from all devices, off by default, which needs the clinic's desk code. If the store is missing or slow, both pages behave as before")
   ContainerDb(ls, "localStorage", "Web Storage, JSON", "Tickets, staff replies and the edited clinic file, shared by both pages; storage event carries changes; v1.2: frontdesk.notes (private staff notes); v1.3: frontdesk.synckey (this browser's private key), frontdesk.alldevices (the switch)")
-  Container(speech, "Web Speech API", "Built into the browser", "Recognition and synthesis in en-IN, hi-IN, te-IN; hidden where missing")
+  ContainerDb(ss, "sessionStorage", "Web Storage", "v1.3: frontdesk.deskcode, the desk code typed on the staff page, for this tab's session only")
+  Container(speech, "Web Speech API", "Built into the browser", "Recognition and synthesis in en-IN, hi-IN, te-IN; hidden where missing; backup: a microphone recording sent to api/transcribe")
 }
 
 Rel(patient, chat, "Types, taps or speaks")
@@ -34,6 +36,8 @@ Rel(chat, fn, "GET warm-up on load; POST draft, facts, language, clinic file (6 
 Rel(fn, openrouter, "POST /api/v1/chat/completions", "HTTPS, OPENROUTER_API_KEY in the Vercel environment")
 Rel(chat, tts, "POST reply text when the browser has no voice for the language or is slow (3 s)", "HTTPS, JSON")
 Rel(tts, openrouter, "Streams audio", "HTTPS, OPENROUTER_API_KEY in the Vercel environment")
+Rel(chat, transcribe, "POST a recorded clip when browser recognition fails", "HTTPS, JSON")
+Rel(transcribe, openrouter, "Audio to text", "HTTPS, OPENROUTER_API_KEY in the Vercel environment")
 Rel(openrouter, deepseek, "Routes the request")
 Rel(chat, ls, "Writes tickets, reads staff replies and clinic edits")
 Rel(staffui, ls, "Reads tickets, writes replies, status and clinic edits")
@@ -50,6 +54,7 @@ Rel(sync, chat, "v1.3: mirrors this patient's tickets; brings staff replies into
 Rel(sync, staffui, "v1.3: adds tickets from other devices while the switch is on")
 Rel(staff, sync, "v1.3: turns on Show tickets from all devices, types the desk code")
 Rel(sync, ls, "v1.3: reads and writes tickets; keeps frontdesk.synckey and frontdesk.alldevices")
+Rel(sync, ss, "v1.3: keeps frontdesk.deskcode, sent as x-desk-code")
 Rel(sync, ticketsfn, "v1.3: sends this patient's tickets, fetches replies; the full list only with the desk code", "HTTPS, JSON")
 Rel(ticketsfn, upstash, "v1.3: stores and reads tickets", "HTTPS, REST; address and token in the Vercel environment")
 Rel(chat, speech, "Listens and speaks on request")

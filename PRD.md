@@ -44,7 +44,7 @@ Focus:
 | D-1 | Every reply is built from the current clinic file. Nothing about the clinic is written into the product itself | Hidden data and staff edits | Spec item 2; scoring: "A good build works out every number from the data it is given" |
 | D-2 | Fixed rules decide every message before any language model is asked, and only a plain answer from the file may be reworded by the model | Safety is the same with and without the model | Spec items 4, 5, 6, 8; G4 |
 | D-3 | Every patient message opens one ticket with one of four statuses: answered, needs human, urgent, closed | What the staff page lists | Spec "How we check": ticket list; G10 |
-| D-4 | Tickets and the clinic file are kept on the device, shared between the chat page and the staff page of the same site | No accounts or services that can fail during grading | G12; Q-3 |
+| D-4 | Tickets and the clinic file are kept on the device, shared between the chat page and the staff page of the same site. From 1.3.0.0 tickets can also reach the clinic's store (V-14) | No accounts or services that can fail during grading | G12; Q-3 |
 | D-5 | The language model is optional. Without it, or when it fails, is slow or breaks a rule, the answer comes from the file with the label "Answered from the clinic file" | The no-key run | Spec item 8; G3, G15 |
 | D-6 | The staff page has its own address, /staff, with no login | A tester can open it directly | Spec item 7; G13, G17 |
 | D-7 | The chat never confirms an appointment slot. A booking request becomes a ticket and the team confirms | The file says booking is by phone or WhatsApp | Clinic file "appointments"; G20 |
@@ -53,7 +53,7 @@ Focus:
 ### 2.2 Out of scope
 | Item | Why | Where it goes instead |
 | --- | --- | --- |
-| Ticket storage on a server, so staff see tickets from every patient's phone | Not asked by the page; a service that can fail during grading | Phase 2 (Q-3) |
+| Ticket storage on a server, so staff see tickets from every patient's phone | Not asked by the page; a service that can fail during grading | Done in 1.3.0.0 (V-14) |
 | Real booking into a diary, with slots confirmed by the chat | The file says booking is on the phone or WhatsApp; the bot must not invent a slot | Phase 2, with the clinic's own booking system |
 | Patient accounts and logins | Not asked; a login would stand in front of a graded element | Not planned for the competition; phase 3 if a clinic asks |
 | Medical triage beyond the fixed rules (judging how serious a symptom is) | "Never give medical advice or a diagnosis" | Not planned. The fixed emergency and symptom rules stay; a dentist decides |
@@ -88,7 +88,7 @@ exactly. The rows below were settled on 20 Nov 2026 (draft list G1 to G25).
 | G10 | Tickets | Every patient message opens one ticket with the question, the reply, the time and a status written exactly: answered, needs human, urgent or closed (with the space in "needs human") | How we check, Ticket list: one entry "per ticket with" its status "set to answered, needs human, urgent or closed" |
 | G11 | Staff reply | On /staff, the reply box and send button sit inside the open ticket. One ticket is open at a time (the first in priority order by default: urgent, then needs human, newest first; tapping another moves the box), so each name the tester reads exists once. Sending adds the reply to the patient's chat as a bot reply marked "From the clinic team" and always changes the status: needs human or urgent becomes answered; answered becomes closed (Q-4, settled 20 Nov 2026) | "A staff reply typed on a ticket shows up in that patient's chat, and the ticket status changes." |
 | G11a | Statuses of the fixed replies | Emergency: urgent. Medical advice or symptoms: needs human (the team calls back to book). Not sure: needs human. Booking: needs human with the requested time. Discount or rule-change refusal: answered. Answer from the file: answered. After hours never changes an answer or a status | Settles [A-1]; G26 must not weaken a graded item |
-| G12 | Where tickets live | On the device, shared by the chat page and /staff of the same site; the chat page shows a staff reply within a second. A server is the next step | The tester uses one browser; a real clinic needs a server (Q-3) |
+| G12 | Where tickets live | On the device, shared by the chat page and /staff of the same site; the chat page shows a staff reply within a second. From 1.3.0.0 they can also be shared across devices (V-14) | The tester uses one browser; a real clinic needs a server (Q-3) |
 | G13 | The staff address | A real address, /staff, tested on the live link | "A staff page at /staff" |
 | G14 | Ask on load | When the page address carries `?q=`, that question is sent once, exactly as if typed, and its answer is the last bot reply | "?q=<question> in the page URL asks that question when the page opens" |
 | G15 | The label | Whenever the answer comes from the file (model missing, failed, too slow or rejected by the check), the reply shows a small label: "Answered from the clinic file" | Spec item 8, exact words |
@@ -98,13 +98,14 @@ exactly. The rows below were settled on 20 Nov 2026 (draft list G1 to G25).
 | G19 | Languages | A message in Hindi (Devanagari) or Telugu script gets the reply in that language; amounts, times and names stay as the file writes them | Bonus 1 |
 | G20 | Booking | A message with "book", "appointment" or a day or time opens a needs-human ticket with the requested day and time shown; the reply says the team will confirm | Bonus 2; the file says booking is on the phone or WhatsApp |
 | G21 | Ageing and priority | /staff lists urgent first, then needs human, then answered, then closed; each ticket shows its age ("12 min"); old needs-human tickets stand out | Bonus 3 |
-| G22 | Quick replies | Buttons under the chat for timings, prices, doctors, insurance, location and book a visit; each sends its question as if typed | Bonus 5 |
+| G22 | Quick replies | Buttons under the chat for timings, prices, doctors, insurance, location, book a visit and, from 1.1.0.0, talk to a person; each sends its question as if typed | Bonus 5 |
 | G23 | Phone | At 375 px the message box and Send stay in view at the foot of the screen, nothing scrolls sideways, every target is at least 44 px | Spec item 9 |
 | G24 | Look | Light and dark themes; every text 4.5:1 against its background in every state, hover, notices and staff actions included | "Readable in both light and dark (5 marks)" |
 | G25 | Submission | The live link is the chat page. The note to judges names /staff and the documents link. Both projects may be submitted | "You can submit both projects, each on its own, and edit them later" |
 
 The template's other rows: no value in this product has two readings; there are no negative amounts;
-nothing is destructive enough to need undo except closing a ticket, which staff can reopen by replying.
+nothing is destructive enough to need undo except closing a ticket, which staff can reopen by replying,
+and clearing all tickets, which has Undo (V-17).
 Submission rules are copied in `SPEC-CHECK.md` section 4.
 
 ## 3. Open questions
@@ -113,7 +114,7 @@ Submission rules are copied in `SPEC-CHECK.md` section 4.
 | --- | --- | --- | --- | --- | --- |
 | Q-1 | How will the tester run "a different set of data"? | Its own 20 questions on the same clinic; an edited clinic file; both. Recommended: build for both (answers worked out from the file, plus a file editor on /staff) | Hidden-data test, 60 marks | Stage 1 | Sanjay |
 | Q-2 | Which language model, if any? | Answered 20 Nov 2026 by Sanjay: a low-cost paid hosted model (named in the tech stack) called from the product's own server so the key never reaches the page. It rewords a drafted answer and never sees the patient's words. Details and price in the tech stack | Reworded answers; nothing graded depends on it (D-5) | Done | Sanjay |
-| Q-3 | Should tickets be stored on a server, so a real clinic's staff see tickets from every patient's phone? | Now, or phase 2. Recommended: phase 2; for the competition, keeping them on the device is enough and cannot fail | Real clinic use | Phase 2 | Sanjay |
+| Q-3 | Should tickets be stored on a server, so a real clinic's staff see tickets from every patient's phone? | Now, or phase 2. Recommended: phase 2; for the competition, keeping them on the device is enough and cannot fail | Real clinic use | Done in 1.3.0.0 (V-14) | Sanjay |
 | Q-4 | A staff reply on a ticket that is already "answered": what should its status become? | Settled 20 Nov 2026: it becomes closed; needs human or urgent becomes answered (G11) | Spec item 7 | Done | Sanjay to confirm |
 
 ## 4. Who it is for
@@ -173,8 +174,8 @@ Submission rules are copied in `SPEC-CHECK.md` section 4.
   - G29 Any booking-based business: a different file (a gym, a coaching institute) works unchanged
     through the editor on /staff; shown in the note to judges.
   - G30 The one difference: speak or listen in English, Hindi or Telugu. A microphone button for the
-    question and a speaker button that reads the reply aloud, needing no key and hidden where the device
-    cannot do it. Typing always works.
+    question and a speaker button that reads the reply aloud, hidden where the device
+    cannot do it (from 1.3.0.0, see V-18). Typing always works.
 
 ### 5.3 Obligations
 - No medical advice: the chat never names a medicine, a dose or a diagnosis, whatever the patient asks or
@@ -229,7 +230,7 @@ fresh browser on the chat page unless it says otherwise.
 - Stage 2 ships when each bonus scenario (S-20 to S-25) passes on the live link in both runs, and stage 1
   still passes.
 - Stage 3 ships item by item, only when stages 1 and 2 still pass after it.
-- Phase 2 (after the competition): ticket storage on a server and the clinic's own booking (section 2.2).
+- Phase 2 (after the competition): the clinic's own booking (section 2.2). Ticket storage on a server came in 1.3.0.0 (V-14).
 
 ## 7. Success measures
 
@@ -306,6 +307,10 @@ did not have. Fourteen were added in three versions on 22 Nov 2026. None is aske
 | V-12 | Chat thread inside a ticket | 1.3 | Front-desk staff |
 | V-13 | Feedback on a reply | 1.3 | Patient, clinic owner |
 | V-14 | Tickets shared across devices behind a desk code | 1.3 | Front-desk staff, patient |
+| V-15 | Language menu and New chat | 1.3 | Patient |
+| V-16 | Clinic info panel and open or closed sign | 1.3 | Patient |
+| V-17 | Clear all tickets, with Undo | 1.3 | Front-desk staff, tester |
+| V-18 | Backup for voice input | 1.3 | Patient |
 
 ### Requirements
 
@@ -325,8 +330,12 @@ did not have. Fourteen were added in three versions on 22 Nov 2026. None is aske
 | V-12 | An open ticket shows the patient's other questions, the replies and the team's replies, folded under it as "Chat so far". Each question is still its own ticket |
 | V-13 | A patient can mark a reply "Helpful" or "Not helpful". The mark shows on the ticket and as a staff figure |
 | V-14 | A staff device can turn on "Show tickets from all devices" and, with the clinic's desk code, see and answer tickets from any patient's phone. The reply shows in that patient's chat. The switch is off by default |
+| V-15 | The patient can pick English, Hindi or Telugu from a menu. Every label changes, and replies come in that language even when the question is typed in English. A New chat button starts a fresh chat; the earlier tickets stay for the staff |
+| V-16 | The header shows whether the clinic is open now. A Clinic info button opens a panel with today's hours, Call, WhatsApp and Directions, the week's hours, the doctors and the address. It closes with its close button or Escape |
+| V-17 | Staff can clear all tickets with one press and no dialog. The queue and the patient chat in that browser empty. Undo puts them back for about 10 seconds |
+| V-18 | When the device's own speech service does not answer, the microphone records a short clip and the product turns it into text. The text then goes through the same rules as typed text. The microphone is hidden only where neither way works |
 
-Acceptance criteria for each are in `docs/epics.md`, epics E10 to E14.
+Acceptance criteria for each are in `docs/epics.md`, epics E10 to E15.
 
 ### Out of scope
 

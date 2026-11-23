@@ -133,6 +133,9 @@ with it blocked; "Yes" means the feature is in place. The last column is the ver
 | N/A | Patient can leave a name and phone for the call back | Yes | 1.0 |
 | N/A | "To call back" and "Could not answer" lists for staff | Yes | 1.0 |
 | N/A | Clear all tickets, with undo | Yes | 1.0 |
+| N/A | Language menu: every label, the replies and Listen follow the chosen language; a New chat button | Yes | 1.0 |
+| N/A | Clinic info panel: today's hours, Call, WhatsApp, Directions, the week's hours, the doctors and the address, with an open or closed sign | Yes | 1.0 |
+| N/A | Call-back phone with a country code list, checked for that country's length | Yes | 1.0 |
 | N/A | Asking for a person gets its own reply and a ticket; a seventh quick reply | Yes | 1.1 |
 | N/A | Named assistant and the clinic's own quick replies, set in the clinic file | Yes | 1.1 |
 | N/A | Ticket search, status filter and sort | Yes | 1.1 |
@@ -149,7 +152,7 @@ with it blocked; "Yes" means the feature is in place. The last column is the ver
 | N/A | Patient feedback on a reply ("Helpful" or "Not helpful") | Yes | 1.3 |
 | N/A | Tickets shared across devices: a staff device can see and answer tickets from any phone | Yes, behind the clinic's desk code | 1.3 |
 
-All 16 rows of the brief pass, and all 20 rows beyond it are in place. The same table with three other builds of
+All 16 rows of the brief pass, and all 23 rows beyond it are in place. The same table with three other builds of
 the batch beside it is in [REPORT.md](REPORT.md), section "Requirement and feature map"; what each version added
 and how it was tested is in the sections "Version 1.1.0.0" to "Version 1.3.0.0" there.
 
@@ -182,8 +185,13 @@ Every diagram is PlantUML source plus SVG. No PNG or JPG anywhere in this reposi
 - On the server, a ticket can be read or changed only with the private key of the browser that created it, or
   by staff with the clinic's desk code. A ticket id or a patient id alone opens nothing. Until the clinic sets a
   desk code, the list of every device's tickets is closed to everyone.
-- When the model is used, the server function sends it the drafted answer and the clinic file only, never
-  the patient's words.
+- When the model is used to word an answer, the server function sends it the drafted answer and the clinic file
+  only, never the patient's words.
+- Voice is the one exception, and only as a backup. Speaking a question uses the browser's own speech service.
+  If that service refuses, the page records a short clip (about 30 seconds at most) and sends it to the server,
+  which passes it to a model to be turned into text; the text then goes through the same rules as typed text.
+  Listen sends only the assistant's own reply text to the server voice, and only when the browser has no voice
+  for the language.
 - A name and phone are asked for only if the patient chooses to leave them for a call-back; they are saved
   on that ticket.
 - The fine print says who sees the messages (the clinic's front desk, once a chat is stored on the server; this

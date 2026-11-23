@@ -19,7 +19,7 @@ newest first within a status.
 end note
 SP -> SP : open ticket = the one chosen, else the first in the list
 note right of SP
-Only the open ticket's [data-ticket] holds #staff-reply
+Every ticket's [data-ticket] row has its own #staff-reply
 and #staff-send. "Needs human" older than 2 h shows
 "over 2 h". Call list: needs human, or a booking not
 closed, oldest first. Unknown list: "not sure" questions.
@@ -36,6 +36,15 @@ end
 opt Staff read "Chat so far" (v1.2)
   Staff -> SP : unfolds "Chat so far" on the open ticket
   SP --> Staff : the patient's other questions and replies, read only
+end
+opt Staff use the queue tools (tools.js)
+  Staff -> SP : search #queue-search, status and type filters, sort
+  SP --> Staff : rows hidden or reordered, never removed
+  note right of SP
+  Also: figures (open, urgent, over 2 hours, answered,
+  average wait, helpful or not), Alerts (off by default,
+  frontdesk.alerts) and Export CSV.
+  end note
 end
 opt Staff use a ready-made reply (v1.2)
   Staff -> SP : picks a ready-made reply
@@ -62,7 +71,7 @@ else text entered
   end note
   SP -> SP : render()
   SP --> Staff : "Sent. The patient sees it in their chat."
-  LS -> Chat : storage event, key frontdesk.tickets (another tab)
+  LS -> Chat : storage event, key frontdesk.tickets (another tab; also checked every 2 s)
   Chat -> Chat : render() when no question is pending
   Chat --> Patient : .bot-msg marked "From the clinic team" (no Listen button)
 end

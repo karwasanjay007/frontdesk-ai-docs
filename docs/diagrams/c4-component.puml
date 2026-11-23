@@ -7,6 +7,7 @@ Person(staff, "Front desk staff", "Staff page /staff")
 System_Ext(openrouter, "OpenRouter, DeepSeek V4.1 Flash", "deepseek/deepseek-v4.1-flash, reasoning off")
 System_Ext(upstash, "Upstash Redis (ticket store)", "v1.3: one key per ticket for seven days, a sorted set for the order, a small set per browser key")
 ContainerDb(ls, "localStorage", "Web Storage, JSON", "frontdesk.clinic, frontdesk.tickets, frontdesk.patient, frontdesk.lang, frontdesk.theme; v1.1: frontdesk.alerts; v1.2: frontdesk.notes; v1.3: frontdesk.synckey, frontdesk.alldevices")
+ContainerDb(ss, "sessionStorage", "Web Storage", "v1.3: frontdesk.deskcode (staff tab only)")
 Container(file, "clinic-data.json", "Static JSON", "The shipped clinic file")
 
 Container_Boundary(core, "core.js (window.FD), shared by both pages") {
@@ -54,6 +55,11 @@ Container_Boundary(api, "api/chat.js, Vercel function") {
   Component(handler, "handler(req, res)", "Node.js", "GET: ok. POST: reads draft, facts, lang, clinic; 5 s limit; returns { text, model } or { error }")
 }
 
+Container_Boundary(voiceapi, "api/tts.js and api/transcribe.js, Vercel functions") {
+  Component(ttsfn, "api/tts handler", "Node.js", "POST {text, lang}: reply text, at most 700 characters; openai/gpt-audio-mini; returns audio/wav; 15 s limit")
+  Component(sttfn, "api/transcribe handler", "Node.js", "POST {audio, lang}: a recorded WAV clip; google/gemini-2.5-flash-lite; returns { text }; 12 s limit")
+}
+
 Rel(patient, chatui, "Types, taps or speaks")
 Rel(staff, staffui, "Reads, replies, closes, edits the file")
 Rel(store, file, "Fetches")
@@ -66,6 +72,10 @@ Rel(client, guard, "Checks the model's text")
 Rel(chatui, tickets, "Adds a ticket per message")
 Rel(chatui, hours, "After-hours note")
 Rel(chatui, extras, "Draws")
+Rel(extras, ttsfn, "Listen: reply text when the browser has no voice or is slow", "HTTPS, JSON")
+Rel(extras, sttfn, "Backup voice input: a recorded clip", "HTTPS, JSON")
+Rel(ttsfn, openrouter, "Audio", "HTTPS, key on the server")
+Rel(sttfn, openrouter, "Audio to text", "HTTPS, key on the server")
 Rel(staffui, tickets, "Lists, replies, sets status")
 Rel(staffui, store, "Saves or resets the file")
 Rel(tickets, ls, "Reads and writes; storage event")
@@ -88,6 +98,7 @@ Rel(syncstaff, tickets, "v1.3: adds and removes tickets from other devices")
 Rel(staff, syncstaff, "v1.3: turns the switch on, types the desk code")
 Rel(syncchat, ls, "v1.3: keeps frontdesk.synckey")
 Rel(syncstaff, ls, "v1.3: keeps frontdesk.alldevices")
+Rel(syncstaff, ss, "v1.3: keeps frontdesk.deskcode")
 Rel(syncchat, ticketscore, "v1.3: sends tickets, fetches replies", "HTTPS, JSON, the browser key")
 Rel(syncstaff, ticketscore, "v1.3: lists every device's tickets, sends replies", "HTTPS, JSON, the desk code")
 Rel(ticketscore, redisdb, "v1.3: reads and writes through the store")

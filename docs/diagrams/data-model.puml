@@ -89,9 +89,12 @@ package "localStorage key frontdesk.tickets (JSON array)" {
     status : urgent | needs human | answered | closed
     lang : en | hi | te
     {field} bookingTime : string  ("" when not a booking)
+    {field} modelOk : boolean  (the rules allowed a reworded reply)
     afterHours : boolean
     afterHoursNote : string
     callBack : boolean
+    {field} contactName : string [optional]  (call-back form)
+    {field} contactPhone : string [optional]  (call-back form, with country code)
     {field} created : number  (ms since 1970)
     {field} updated : number [after first change]
     staffReplies : StaffReply[]
@@ -117,6 +120,12 @@ package "Other localStorage keys" {
   class StaffNote <<v1.2>> {
     {field} ticket id : string  (the map key)
     {field} note : string  (private, never sent)
+  }
+}
+
+package "sessionStorage (staff tab only)" {
+  class Session <<v1.3>> {
+    {field} frontdesk.deskcode : string  (the desk code typed for "all devices", sent as x-desk-code)
   }
 }
 

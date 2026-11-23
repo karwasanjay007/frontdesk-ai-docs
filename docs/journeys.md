@@ -3,8 +3,9 @@
 This page walks through what a patient and the clinic's staff do with FrontDesk AI and what the app does
 in reply. Each journey is drawn from the code as built: `core.js` (clinic data, the rules engine
 `answer()`, the reply guard `guard()`, tickets, statuses and opening hours), `chat.js` with `index.html`
-(the patient chat), `staff/staff.js` with `staff/index.html` (the staff page) and `api/chat.js` (the one
-server function on Vercel). The function names, the order of calls and what is read from and written to
+(the patient chat), `staff/staff.js`, `staff/tools.js` and `staff/form.js` with `staff/index.html` (the
+staff page), `sync.js` (the ticket mirror), and the server functions on Vercel: `api/chat.js`,
+`api/tickets.js`, `api/tts.js` and `api/transcribe.js`. The function names, the order of calls and what is read from and written to
 `localStorage` are as the code has them. Nothing here is planned work.
 
 Live: https://frontdesk-ai-xi-gray.vercel.app (patient chat) and https://frontdesk-ai-xi-gray.vercel.app/staff
@@ -20,10 +21,12 @@ Three things hold in every journey:
   checks the reworded text with `FD.guard()`; anything it rejects, and any failure or delay, falls back to
   the drafted file answer with the label "Answered from the clinic file". Every reply the model did not word carries
   that label, including the fixed emergency, refuse, medical, booking, greeting and not-sure templates.
-- **Everything is stored in this browser.** Tickets (`frontdesk.tickets`), an edited clinic file
+- **The browser holds the working copy.** Tickets (`frontdesk.tickets`), an edited clinic file
   (`frontdesk.clinic`), the patient id (`frontdesk.patient`), the language (`frontdesk.lang`) and the theme
-  (`frontdesk.theme`) live in `localStorage`. The staff page reaches the patient's chat through the
-  browser's `storage` event, so both pages must be open in the same browser.
+  (`frontdesk.theme`) live in `localStorage`. In the same browser the staff page reaches the patient's chat
+  through the `storage` event. Since version 1.3.0.0, when the deployment has a ticket store, `sync.js` also
+  mirrors tickets to `/api/tickets` with a per-browser key (`frontdesk.synckey`), so staff on another device
+  can answer them (J9). Without a store, nothing leaves the browser except the model and voice calls.
 
 Every diagram is a PlantUML sequence diagram rendered to SVG. Participants appear in the same order in
 each one: the person (Patient or Staff), the page they use, `core.js`, `localStorage`, `api/chat` (Vercel),
@@ -56,8 +59,8 @@ voice).
 | J8 | Ask for a person (v1.1.0.0) | Patient, then staff | Types "Can I speak to a human?" or taps the quick reply "Talk to a person" | A reply that the request has gone to the team, with "2 working hours", the clinic phone and WhatsApp; one ticket with status `needs human` that staff find, answer and so move to `answered` | v1.1.0.0 |
 | J9 | Tickets shared across devices (v1.3.0.0) | Patient on a phone, then staff on another device | Asks a question on a phone; staff turn on "Show tickets from all devices" and type the clinic's desk code | The ticket appears on the staff device, marked as from another device; the staff reply shows in the patient's chat as "From the clinic team" and the ticket is answered on both devices | v1.3.0.0 |
 
-All seven journeys asked for are supported by the code; none was dropped or merged. J8 was added in
-version 1.1.0.0 and J9 in version 1.3.0.0.
+All nine journeys are supported by the code; none was dropped or merged. J1 to J7 were the seven asked
+for, J8 was added in version 1.1.0.0 and J9 in version 1.3.0.0.
 
 ## J1 First visit and ask
 
@@ -77,15 +80,17 @@ The clinic file `/clinic-data.json` is served with the app.
 4. `FD.loadClinic()` fetches `/clinic-data.json` (falling back to `window.FRONTDESK_CLINIC` if the fetch
    fails) and `FD.clinic()` returns the edited file from `frontdesk.clinic` when it has a `clinic` section,
    otherwise the shipped one.
-5. `side()` fills the hours, doctors, address, contact buttons and the open or closed state; `labels()`
-   sets the language labels, the greeting (`FD.T[lang].hello(data)`) and the quick chips; `render()` draws
-   this patient's earlier tickets. The greeting is `#greeting`, a `.bot-greeting` inside `.greeting-row`,
-   never a `.bot-msg`.
+5. `side()` fills the hours, doctors, address, contact buttons and the open or closed state, and puts the
+   assistant's name (the clinic file's `assistant.name`, else "FrontDesk AI") in the header, the welcome
+   title and the page title; `labels()` sets the language labels, the greeting line ("Ask about timings,
+   prices, doctors, insurance or how to reach us.") and the quick chips (`FD.quick()`, the seven built-in
+   ones or the clinic's own); `render()` draws this patient's earlier tickets. The greeting is `#greeting`,
+   a `.bot-greeting` inside `.greeting-row`, never a `.bot-msg`.
 6. With `?q=` in the address, `history.replaceState()` removes `q` first and then `send(q)` asks it, so a
    reload does not ask again.
 7. `send()` adds a provisional user line, counts the question as pending and shows the typing dots
    (`.typing-row`, never a `.bot-msg`).
-8. `FD.answer(q, data)` returns `{kind, status, text, lang, facts, bookingTime, modelOk}`.
+8. `FD.answer(q, data, lang)` returns `{kind, status, text, lang, facts, bookingTime, modelOk}`.
 9. `askModel()` calls `api/chat` only when `kind` is `answer` and `modelOk` is true, that is, a reply built
    from the file. Greetings, thanks, safety replies (J2), bookings (J3) and not sure get no model call.
 10. The browser posts `{draft, facts, lang, clinic}` with a 6 second `AbortController` limit.
@@ -102,7 +107,12 @@ The clinic file `/clinic-data.json` is served with the app.
     adds the user's `.user-msg` and the reply as the last `.bot-msg`. The `.src-label` "Answered from the
     clinic file" is shown whenever `source` is not `model`
     (any reply the model did not word, including the fixed templates). A
-    Listen button sits beside the reply when the browser can speak.
+    Listen button sits beside the reply when the browser can speak, with two feedback buttons, "Helpful"
+    and "Not helpful". A tap calls `FD.updateTicket(id, {feedback})` ("up" or "down"; a second tap takes
+    it back), and the staff page shows it on the ticket and in its figures.
+15. When the deployment has a ticket store, `sync.js` sends the new ticket to `/api/tickets` (J9).
+16. "New chat" (`#new-chat`) gives the patient a fresh id with `FD.newPatient()`; earlier questions stay
+    with the clinic team.
 
 ![J1 First visit and ask](diagrams/j1-first-visit-and-ask.svg)
 
@@ -176,8 +186,10 @@ if the patient wishes.
    ("5 pm" becomes "5:00 pm", or morning, afternoon, evening).
 3. The reply is kind `booking`, status `needs human`, "Thank you. I have passed your request for <time> to
    our team, and someone will call you back within 2 working hours to confirm. I cannot confirm a slot
-   myself." followed in English by the clinic's appointments policy. `bookingTime` is the time found, or
-   "not given". There is no model call.
+   myself." followed in English by the clinic's appointments policy. When the request names one weekday,
+   `bookingDayNote()` adds that day's hours from the file (so a Sunday request reads at once that Sunday is
+   short or for emergencies only). `bookingTime` is the time found, or "not given", and `bookingDate` the
+   date when one is found. There is no model call.
 4. `FD.openNow(data)` reads today's hours. When the clinic is closed (outside the hours, or the day says
    "emergencies only" or "closed"), `FD.nextOpening(data)` finds the next opening in the coming week ("today
    at 9:00 am", "tomorrow at ...", "<Day> at ...") and the note reads "We are closed right now and open
@@ -185,10 +197,11 @@ if the patient wishes.
 5. `FD.addTicket()` stores the booking with `bookingTime`, `afterHours`, `afterHoursNote` and `callBack:
    true`.
 6. Beside the reply, never inside it: "Continue on WhatsApp", the after-hours note, and the form "So we can
-   call you back (optional)" with name and phone.
-7. On Save the phone is reduced to digits and a leading 91 is dropped from a 12-digit number. Ten digits
-   are needed. `FD.updateTicket(id, {contactName, contactPhone})` stores them and the form is replaced by
-   "Thank you, <name>. We will call <phone>."
+   call you back (optional)" with name, a country code list and phone.
+7. On Save, `intlNumber()` checks the number against the length for the chosen country (a leading 0 used
+   at home is dropped; "Other" takes a full number with its code) and makes it `+<code><number>`.
+   `FD.updateTicket(id, {contactName, contactPhone})` stores them and the form is replaced by "Thank you,
+   <name>. We will call <phone>."
 8. On `/staff` the ticket shows "requested <time>" and "after hours", and it sits in the call list with the
    name and phone, or "(no phone left)", until it is closed (J4).
 
@@ -197,7 +210,8 @@ if the patient wishes.
 Source: [j3-booking-and-call-back.puml](diagrams/j3-booking-and-call-back.puml)
 
 **Error and edge paths.**
-- A phone number that is not ten digits shows "Enter a phone number with 10 digits." and nothing is saved.
+- A phone number that does not fit the chosen country shows "Check the number for the country you chose
+  ..." and nothing is saved.
 - The name is optional and kept to 60 characters.
 - "How do I book?" is not a booking; it is answered from the appointments policy in the file.
 - The after-hours note is shown for a booking even after a staff reply, because a booking always needs a
@@ -217,21 +231,30 @@ browser's `localStorage`.
 1. `init()` applies the theme, then `FD.loadClinic()` is followed by `clinicEditor()` (J6) and `render()`.
 2. `render()` reads `FD.tickets()` and sorts with `FD.byPriority`: urgent, needs human, answered, closed,
    and newest first within a status. It shows the counts for each status.
-3. One ticket is open at a time: the one chosen, else the first in the list. Only the open ticket's
-   `[data-ticket]` holds `#staff-reply` and `#staff-send`, with the bot's reply and whether it was worded
-   by the model or answered from the file, any call-back name and phone (with call and WhatsApp links) and
-   earlier staff replies.
+3. Every ticket shows a number, T-001 and up, in the order the tickets were opened, and the patient's
+   feedback when given. One ticket is open at a time: the one chosen, else the first in the list. Every
+   ticket's `[data-ticket]` row has its own `#staff-reply` box and `#staff-send` button. The open ticket
+   also shows "Chat so far" (the patient's other questions and replies, folded), the bot's reply and
+   whether it was worded by the model or answered from the file, any call-back name and phone (with call
+   and WhatsApp links) and earlier staff replies.
 4. A needs-human ticket older than 2 hours is marked "over 2 h". The call list holds needs-human tickets
    and bookings that are not closed, oldest first. The unknown list shows up to 12 not-sure questions.
 5. Clicking another ticket's heading opens it and clears the draft.
-6. The staff member types and presses Send reply (or Ctrl+Enter). `FD.replyToTicket(id, text)` adds
+6. The queue tools (`staff/tools.js`) sit above the queue: figures (open now, urgent, over 2 hours,
+   answered, average wait, helpful or not), a search box (`#queue-search`), status and type filters, a
+   sort (priority, newest, oldest), "Alerts" (off by default, kept in `frontdesk.alerts`; a beep and a
+   browser notice for a new urgent ticket), a folded private note for the open ticket (kept in
+   `frontdesk.notes`, never sent to the patient), four ready-made replies that fill the open ticket's box
+   without sending, and "Export CSV". They hide or reorder rows; they never remove a ticket.
+7. The staff member types and presses Send reply (or Ctrl+Enter). `FD.replyToTicket(id, text)` adds
    `{text, at}` to `staffReplies`, moves the status on and writes `frontdesk.tickets`: urgent and needs
    human become answered, answered becomes closed, closed stays closed. The page shows "Sent. The patient
    sees it in their chat."
-7. The write raises a `storage` event in the patient's tab. The chat redraws (when no question of its own is
-   pending) and the reply appears as a `.bot-msg` marked "From the clinic team", without a Listen button.
-8. "Close ticket" (shown unless the ticket is closed) calls `FD.setStatus(id, "closed")`.
-9. New patient questions raise a `storage` event that redraws `/staff`; the page also redraws every 30
+8. The write raises a `storage` event in the patient's tab (the chat also checks every 2 seconds). The chat
+   redraws (when no question of its own is pending) and the reply appears as a `.bot-msg` marked "From the
+   clinic team", without a Listen button.
+9. "Close ticket" (shown unless the ticket is closed) calls `FD.setStatus(id, "closed")`.
+10. New patient questions raise a `storage` event that redraws `/staff`; the page also redraws every 30
    seconds unless the reply box has focus. A draft being typed is kept across redraws.
 
 ![J4 Staff reply](diagrams/j4-staff-reply.svg)
@@ -243,7 +266,8 @@ Source: [j4-staff-reply.puml](diagrams/j4-staff-reply.puml)
 - With no tickets the queue shows "No tickets yet. Questions from the patient chat appear here." and the
   call list "Nobody is waiting for a call."
 - A second reply to an answered ticket closes it.
-- A staff page in another browser or on another device sees none of these tickets.
+- A staff page in another browser or on another device sees none of these tickets, unless the ticket
+  store is set up and staff turn on "Show tickets from all devices" with the desk code (J9).
 
 ## J5 No-key run
 
@@ -325,8 +349,9 @@ Source: [j6-clinic-file-edit.puml](diagrams/j6-clinic-file-edit.puml)
 1. Choosing English, हिंदी or తెలుగు in `#lang` calls `FD.setLang()` (writes `frontdesk.lang`), then
    `labels()` and `render()`: the placeholder, buttons, privacy line, side headings, greeting and quick
    chips follow the choice.
-2. The reply's language follows the script of the question, not the choice: `langOf()` returns Telugu if
-   any Telugu letter is present, else Hindi for any Devanagari letter, else English. The rules engine's
+2. The reply's language follows the script of the question: `langOf()` returns Telugu if any Telugu
+   letter is present, else Hindi for any Devanagari letter, else English. A question typed in English
+   letters is answered in the chosen language (`FD.answer(q, data, lang)`). The rules engine's
    word lists include Hindi and Telugu words for each intent.
 3. `FD.answer()` builds the reply from `T.hi` or `T.te`, which hold every template (emergency, refusal,
    medical, not sure, booking, hours, prices, doctors, insurance and more). Values from the clinic file
@@ -336,9 +361,11 @@ Source: [j6-clinic-file-edit.puml](diagrams/j6-clinic-file-edit.puml)
    (Telugu script)", and `FD.guard()` rejects a reply in another script.
 5. The `.bot-msg` carries `lang="hi"` or `lang="te"`, and the after-hours note and the "could not save"
    line use the reply's language.
-6. **Speech in.** When `SpeechRecognition` or `webkitSpeechRecognition` exists, `#mic` is shown. A tap
-   starts recognition in en-IN, hi-IN or te-IN (from the chosen language) for one final result, which is
-   sent as the question. A second tap stops it.
+6. **Speech in.** `#mic` is shown when `SpeechRecognition` or `webkitSpeechRecognition` exists, or the
+   browser can record audio. A tap starts recognition in en-IN, hi-IN or te-IN (from the chosen language).
+   The words heard are sent as the question; a very short or numbers-only snippet is left in the box to
+   check. A second tap stops it. When recognition does not start within 2.5 s or its service refuses, the
+   page records a clip instead, stops on a pause and sends it to `/api/transcribe` to turn into text.
 7. **Speech out.** When `speechSynthesis` exists, each bot reply (not staff replies) has a Listen button.
    It reads the reply's text with `SpeechSynthesisUtterance` in en-IN, hi-IN or te-IN, chosen by
    `FD.langOf()` on that text, after cancelling anything already speaking. When the browser has no voice
@@ -350,9 +377,10 @@ Source: [j6-clinic-file-edit.puml](diagrams/j6-clinic-file-edit.puml)
 Source: [j7-languages-and-voice.puml](diagrams/j7-languages-and-voice.puml)
 
 **Error and edge paths.**
-- Hindi written in Latin letters ("kam karo") is read as English script, so the reply is in English; some
+- Hindi written in Latin letters ("kam karo") is read as English script, so the reply is in the chosen
+  language; some
   such words are still caught by the rules (for example the discount words).
-- Without speech recognition the mic stays hidden; without speech synthesis there is no Listen button. If the server voice also fails, the button says no voice is available.
+- Without speech recognition and without a way to record, the mic stays hidden; without speech synthesis there is no Listen button. If the server voice also fails, the button says no voice is available.
 - A recognition error or the end of speech clears the listening state; nothing is sent.
 - The chosen language is kept in `frontdesk.lang` for the next visit.
 
@@ -401,20 +429,22 @@ them both pages work as before and the add-on goes quiet.
 3. The function cleans the ticket and stores it in the ticket store under a hash of that key. The chat's
    small print now says the messages go to the clinic's front desk.
 4. Staff on another device open `/staff` and see their own tickets only.
-5. Staff turn on "Show tickets from all devices" and type the clinic's desk code. The function checks the
-   code against the server's environment and returns the list.
+5. Staff turn on "Show tickets from all devices" (kept in `frontdesk.alldevices`) and type the clinic's
+   desk code, which is kept in `sessionStorage` for this session only. The function checks the code against
+   the server's environment and returns the list. The staff page asks for changes about every five seconds.
 6. The ticket appears, marked as from another device. Staff reply as in J4.
 7. `sync.js` sends the change with the desk code. The function merges it: every staff reply is kept and
    the status further along wins.
-8. The patient's phone fetches its own tickets with its key about every ten seconds and shows the reply
-   as "From the clinic team". The ticket is answered on both devices.
+8. The patient's phone fetches its own tickets with its key every ten seconds for ten minutes after its
+   last change, then once a minute up to half an hour, and shows the reply as "From the clinic team". The ticket is answered on both devices.
 
 ![J9 Tickets shared across devices](diagrams/j9-shared-tickets.svg)
 
 Source: [j9-shared-tickets.puml](diagrams/j9-shared-tickets.puml)
 
 **Error and edge paths.**
-- No desk code, or a wrong one: no list is returned (401) and staff see their own tickets only.
+- No desk code, or a wrong one: no list is returned (401), the page asks for the code and staff see their
+  own tickets only. No desk code set on the server: 403, and the page says the clinic has not set one.
 - A stranger with a ticket id and a patient id but another key can read nothing and change nothing (403).
 - No store configured, or the call blocked: both pages work as before and the add-on goes quiet.
 - A ticket's question, reply and patient never change once stored; a record is kept for seven days.

@@ -19,27 +19,28 @@ link, and this document is revised to describe what was built.
 | `questions.mjs [id]` | `tests/questions.mjs`: the eight sample questions with their must include and must not include, plus extra questions in the same style, in both runs |
 | `contrast.mjs` | `tests/contrast.mjs`: acts on each page and measures text contrast in light and dark, every state |
 | manual | No script planned; checked by hand on the live link |
-| `tests/<name>` | Epics E10 to E14 (versions 1.1.0.0 to 1.3.0.0) name the test file of the code repository in full. Each was run on the live link or on the engine on 22 Nov 2026; its saved result is the `last-*.txt` file named in the feature's Status line |
+| `tests/<name>` | Epics E10 to E15 (versions 1.1.0.0 to 1.3.0.0) name the test file of the code repository in full. Each was run on the live link or on the engine on 22 Nov 2026; its saved result is the `last-*.txt` file named in the feature's Status line |
 
 ## Epics at a glance
 
 | Epic | Title | Features | Acceptance criteria | PRD trace | Status |
 | --- | --- | --- | --- | --- | --- |
 | E1 | Patient chat | 3 | 8 | S-1, S-19, G1, G2, G16, stage 1 | built (`last-brief-live.txt`) |
-| E2 | Answers from the clinic file | 4 | 13 | S-2, S-8, S-10 to S-13, F-1, F-2, F-4, F-10, D-1, D-2, D-5, G3, G6, G7, G15 | built (`last-brief-live.txt`, `last-engine.txt`) |
+| E2 | Answers from the clinic file | 4 | 14 | S-2, S-8, S-10 to S-13, F-1, F-2, F-4, F-10, D-1, D-2, D-5, G3, G6, G7, G15 | built (`last-brief-live.txt`, `last-engine.txt`) |
 | E3 | Safety | 4 | 13 | S-3 to S-6, S-14 to S-17, F-3, F-6 to F-9, G4, G5, G8, G9 | built (`last-brief-live.txt`, `last-engine.txt`) |
 | E4 | Tickets and staff page | 3 | 11 | S-7, S-21, S-22, F-5, D-3, D-4, D-7, G10 to G13, G20, G21, Q-3, Q-4 | built (`last-brief-live.txt`, `last-bonus-live.txt`) |
 | E5 | Languages and quick replies | 2 | 5 | S-20, S-24, G19, G22, stage 2 | built (`last-bonus-live.txt`) |
 | E6 | Clinic data editing | 2 | 4 | S-23, S-25, F-11, G18, Q-1 | built (`last-bonus-live.txt`) |
 | E7 | Phone, themes, accessibility | 3 | 6 | S-9, G23, G24 | built; accessibility checked by hand only (`last-widths-live.txt`, `last-contrast-live.txt`) |
 | E8 | Grader contract and robustness | 4 | 11 | S-18, S-19, F-12, F-13, G1, G2, G14, G16, G17, G25 | built (both runs ALL PASS) |
-| E9 | Go further: after hours, call list, WhatsApp hand-off, any business, voice | 5 | 12 | S-26, S-27, D-8, G26 to G30, stage 3 | partly built: four of five built; any business only partly (dental word lists) |
+| E9 | Go further: after hours, call list, WhatsApp hand-off, any business, voice | 5 | 13 | S-26, S-27, D-8, G26 to G30, V-18, stage 3 | partly built: four of five built; any business only partly (dental word lists) |
 | E10 | Asking for a person and assistant settings (1.1) | 2 | 9 | V-1, V-4 | built (`last-person-engine.txt`, `last-person-live.txt`) |
 | E11 | Staff queue tools (1.1 and 1.2) | 5 | 18 | V-2, V-5 to V-9 | built; the alert tone and the browser notification not covered by a test (`last-tools-live.txt`, `last-tools2-live.txt`) |
 | E12 | Clinic file form (1.1) | 2 | 9 | V-3, V-4 | built (`last-form-live.txt`) |
 | E13 | Tickets shared across devices (1.3) | 4 | 20 | V-14 | built, behind the clinic's desk code (`last-sync-live.txt`, `last-tickets-api-live.txt`, `last-tickets-redis.txt`) |
 | E14 | Ticket numbers, thread, feedback and the booking day note (1.2 and 1.3) | 4 | 13 | V-10 to V-13 | built (`last-extras3-live.txt`, `last-booking-day.txt`) |
-| **Total** | | **47** | **152** | | |
+| E15 | Language menu, New chat, clinic info panel and Clear all (1.3) | 3 | 10 | V-15 to V-17 | built; the clinic info panel and the empty-queue message are not covered by a test (`last-i18n-live.txt`, `last-staffclear-live.txt`) |
+| **Total** | | **50** | **164** | | |
 
 ---
 
@@ -204,7 +205,7 @@ Goal: every message is a ticket; staff see them all at /staff and reply into the
 
 As front-desk staff, I want every patient message as a ticket so that nothing is missed.
 
-**Status:** Built. Tickets are kept in this browser's storage (localStorage). `last-brief-live.txt`: "PASS every data-status is one of the four exact strings | seen: "needs human", "urgent", "answered"". Not built: a shared server store, so staff on another device do not see the tickets (left for phase 2, PRD Q-3).
+**Status:** Built. Tickets are kept in this browser's storage; from 1.3.0.0 they can also reach the clinic's store (E13). `last-brief-live.txt`: "PASS every data-status is one of the four exact strings | seen: "needs human", "urgent", "answered"". Not built: a shared server store, so staff on another device do not see the tickets (left for phase 2, PRD Q-3).
 
 | ID | Given | When | Then | Trace | Planned check |
 | --- | --- | --- | --- | --- | --- |
@@ -435,14 +436,15 @@ As a business owner who is not a dentist, I want to use the same product with my
 
 As a patient who would rather speak, I want to ask by voice and hear the reply in English, Hindi or Telugu.
 
-**Status:** Built, checked by hand. The microphone uses the browser's speech recognition (en-IN, hi-IN, te-IN) and is hidden where it is not supported; each reply has a Listen button that reads it aloud in its language, with a server voice (`api/tts`) as backup when the browser has none for that language or is slow to start (checked 21 Nov 2026: Telugu and Hindi audio transcribed back word for word, and Telugu Listen played to the end in Chrome). No saved test; at 375 px `last-brief-live.txt` still passes item 9 with the buttons present.
+**Status:** Built, checked by hand. The microphone uses the browser's speech recognition (en-IN, hi-IN, te-IN); when that fails it records a short clip that the server turns into text, and it is hidden only where neither works; each reply has a Listen button that reads it aloud in its language, with a server voice (`api/tts`) as backup when the browser has none for that language or is slow to start (checked 21 Nov 2026: Telugu and Hindi audio transcribed back word for word, and Telugu Listen played to the end in Chrome). `last-voice-live.txt`: "PASS the spoken question arrived as text" (the recording backup). At 375 px `last-brief-live.txt` still passes item 9 with the buttons present.
 
 | ID | Given | When | Then | Trace | Planned check |
 | --- | --- | --- | --- | --- | --- |
 | AC-E9.F5.1 | A device that supports speech | The patient taps the microphone and speaks | The words fill `#chat-input`, and sending works as if typed | G30 | manual |
 | AC-E9.F5.2 | A reply shows | The patient taps the speaker button | The reply is read aloud in the patient's language | G30 | manual |
-| AC-E9.F5.3 | A device without speech support, or no key | The chat page opens | The voice buttons are hidden, and typing works as before | G30 | manual |
+| AC-E9.F5.3 | A device that can neither recognise speech nor record audio | The chat page opens | The voice buttons are hidden, and typing works as before | G30 | manual |
 | AC-E9.F5.4 | The voice buttons show | The page is read at 375 px | Nothing scrolls sideways and the chat box and send button stay in view | G30, G23 | `brief.mjs [R9 phone]` |
+| AC-E9.F5.5 | The browser's speech service does not answer | The patient taps the microphone and asks a question | The clip is recorded, turned into text, and answered as if typed | V-18 | `tests/voice.mjs` |
 
 ## E10 Asking for a person and assistant settings
 
@@ -705,6 +707,51 @@ As a patient, I want to know the hours of the day I asked for so that I pick a t
 | AC-E14.F4.3 | A booking names a day and a time | The ticket is read | The requested time is still on the ticket | V-10 | `tests/booking-day.cjs` |
 | AC-E14.F4.4 | A clinic file without hours | The patient asks to book for a named day | The booking still opens, with no empty line in the reply | V-10 | `tests/booking-day.cjs` |
 
+## E15 Language menu, New chat, clinic info panel and Clear all
+
+Goal (version 1.3.0.0): controls on the chat page and the staff page that were built but had no feature of
+their own. The graded ids, classes and statuses stay as they were.
+
+### E15.F1 Language menu and New chat
+
+As a patient, I want to pick my language and start a fresh chat so that I read every word and begin again
+when I need to.
+
+**Status:** Built. `last-i18n-live.txt`: "PASS hi: every page label is in the chosen language"; "PASS hi: English question answered in the chosen language".
+
+| ID | Given | When | Then | Trace | Planned check |
+| --- | --- | --- | --- | --- | --- |
+| AC-E15.F1.1 | A fresh browser on the chat page | The page loads | English is the language in the menu | V-15 | `tests/i18n.mjs` |
+| AC-E15.F1.2 | The chat page | The patient picks Hindi or Telugu from the menu | Every visible label changes to that language | V-15 | `tests/i18n.mjs` |
+| AC-E15.F1.3 | Hindi or Telugu is picked | The patient types a question in English | The reply is in the picked language | V-15 | `tests/i18n.mjs` |
+| AC-E15.F1.4 | The chat holds replies | The patient presses New chat | The conversation is cleared, and the earlier tickets stay on /staff | V-15 | `tests/i18n.mjs` |
+
+### E15.F2 Clinic info panel and open or closed sign
+
+As a patient, I want to see at a glance whether the clinic is open and how to reach it so that I can call or
+visit without asking.
+
+**Status:** Built. No test file covers it; checked by hand.
+
+| ID | Given | When | Then | Trace | Planned check |
+| --- | --- | --- | --- | --- | --- |
+| AC-E15.F2.1 | The standard clinic file | The chat page opens | The header says Open now or Closed now, from the clinic's hours | V-16 | `manual` |
+| AC-E15.F2.2 | The chat page | The patient presses Clinic info | A panel shows today's hours, Call, WhatsApp and Directions buttons, the week's hours, the doctors and the address, all from the clinic file | V-16 | `manual` |
+| AC-E15.F2.3 | The panel is open | The patient presses its close button or Escape | The panel closes | V-16 | `manual` |
+
+### E15.F3 Clear all tickets, with Undo
+
+As front-desk staff or a tester, I want to empty the queue in one press and take it back if I pressed by
+mistake so that I can start a clean round.
+
+**Status:** Built. `last-staffclear-live.txt`: "PASS Clear all tickets empties the queue and says so"; "PASS the patient chat in the same browser empties too".
+
+| ID | Given | When | Then | Trace | Planned check |
+| --- | --- | --- | --- | --- | --- |
+| AC-E15.F3.1 | One ticket on /staff | Staff press Clear all tickets | The queue empties, a message says how many were cleared, and no dialog opens | V-17 | `tests/staffclear.mjs` |
+| AC-E15.F3.2 | The tickets were cleared | The patient chat in the same browser is read | It is empty too | V-17 | `tests/staffclear.mjs` |
+| AC-E15.F3.3 | The tickets were cleared | Staff press Undo within about 10 seconds | The ticket and the patient chat come back | V-17 | `tests/staffclear.mjs` |
+
 ## Revisions
 
 | Date | Change |
@@ -712,3 +759,4 @@ As a patient, I want to know the hours of the day I asked for so that I pick a t
 | 20 Nov 2026 | First version, planned, before any code |
 | 21 Nov 2026 | Revised after the build: a Status line on every feature, with the live test line that proves it; what is not built says why. The "Planned check" column is kept as written before the build |
 | 23 Nov 2026 | Epics E10 to E14 added for versions 1.1.0.0 to 1.3.0.0 (17 features, 69 acceptance criteria), each criterion beside the test file that checks it. Epics E1 to E9 are unchanged. Totals now 47 features and 152 criteria |
+| 23 Nov 2026 | Epic E15 added for controls found in the code with no feature: the language menu, New chat, the clinic info panel and Clear all (3 features, 10 criteria). AC-E9.F5.5 added for the recording backup of voice input. The E2 count corrected from 13 to 14 criteria. Totals now 50 features and 164 criteria |
