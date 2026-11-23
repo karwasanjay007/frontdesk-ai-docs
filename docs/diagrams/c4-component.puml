@@ -5,13 +5,15 @@ title FrontDesk AI: components (C4 level 3, as built)
 Person(patient, "Patient", "Chat page /")
 Person(staff, "Front desk staff", "Staff page /staff")
 System_Ext(openrouter, "OpenRouter, DeepSeek V4.1 Flash", "deepseek/deepseek-v4.1-flash, reasoning off")
-ContainerDb(ls, "localStorage", "Web Storage, JSON", "frontdesk.clinic, frontdesk.tickets, frontdesk.patient, frontdesk.lang, frontdesk.theme; v1.1: frontdesk.alerts")
+System_Ext(upstash, "Upstash Redis (ticket store)", "v1.3: one key per ticket for seven days, a sorted set for the order, a small set per browser key")
+ContainerDb(ls, "localStorage", "Web Storage, JSON", "frontdesk.clinic, frontdesk.tickets, frontdesk.patient, frontdesk.lang, frontdesk.theme; v1.1: frontdesk.alerts; v1.2: frontdesk.notes; v1.3: frontdesk.synckey, frontdesk.alldevices")
 Container(file, "clinic-data.json", "Static JSON", "The shipped clinic file")
 
 Container_Boundary(core, "core.js (window.FD), shared by both pages") {
   Component(store, "Clinic data store", "JavaScript", "loadClinic, clinic, originalClinic, saveClinic, resetClinic, validateClinic")
   Component(engine, "Rules engine", "JavaScript", "answer(message, data): emergency, rule change or discount, medical, booking, answer from the file, not sure; returns kind, status, text, lang, facts, bookingTime, modelOk; v1.1: answer() is a wrapper over answerFile(); adds reply kind human (status needs human) for ask for a person, only where the file had no answer")
   Component(enginefile, "File-only rules engine", "JavaScript", "v1.1: answerFile(message, data), the rules engine of 1.0 unchanged; answer() calls it first")
+  Component(bookingday, "Booking day note", "JavaScript", "v1.2: bookingDayNote: a booking that names one weekday also states that day's hours from the clinic file; the ticket, its status and the requested time are kept")
   Component(quick, "Quick replies and assistant name", "JavaScript", "v1.1: FD.quick, FD.quickLabels: seven standard quick replies or the clinic's own from the optional assistant section of the clinic file; FD.assistantName")
   Component(guard, "Guard", "JavaScript", "guard(modelText, ruled, data): rejects any number, capitalised name, doctor, promise, medicine or language change not in the draft or the file")
   Component(tickets, "Ticket store", "JavaScript", "patientId, tickets, addTicket, replyToTicket, updateTicket, setStatus, byPriority")
@@ -20,21 +22,32 @@ Container_Boundary(core, "core.js (window.FD), shared by both pages") {
 }
 
 Container_Boundary(chatjs, "chat.js, the patient chat") {
-  Component(chatui, "Chat UI", "JavaScript", "send, render, botRow, ticketRows, showTyping, ?q= on load; each reply added once as .bot-msg")
+  Component(chatui, "Chat UI", "JavaScript", "send, render, botRow, ticketRows, showTyping, ?q= on load; each reply added once as .bot-msg; v1.3: Helpful and Not helpful buttons [data-fb] in .msg-tools, beside the reply, never inside .bot-msg; ticket field feedback")
   Component(client, "Model client", "JavaScript", "askModel(q, ruled): answerable replies only; posts the draft, facts, language and clinic file; 6 s limit; warm-up GET on load, body read")
   Component(extras, "Extras", "JavaScript", "side (Today card: Call, WhatsApp, Directions), waLink, voice, call-back form, open chip")
 }
 
 Container_Boundary(staffjs, "staff/staff.js, the staff page") {
-  Component(staffui, "Staff UI", "JavaScript", "render (queue, counts, To call back, Could not answer), sendReply, clinicEditor; one open ticket holds #staff-reply and #staff-send")
+  Component(staffui, "Staff UI", "JavaScript", "render (queue, counts, To call back, Could not answer), sendReply, clinicEditor; one open ticket holds #staff-reply and #staff-send; v1.3: ticket numbers .t-no (T-001, T-002), the chat thread details.t-thread (Chat so far) folded inside the open ticket, feedback shown on the ticket")
 }
 
-Container_Boundary(stafftoolsjs, "staff/tools.js and staff/tools.css, staff add-on (v1.1)") {
+Container_Boundary(stafftoolsjs, "staff/tools.js and staff/tools.css, staff add-on (v1.1, extended in v1.2)") {
   Component(stafftools, "Staff ticket tools", "JavaScript", "v1.1: toolbar before #ticket-queue: #queue-search, [data-filter], #queue-sort, #alerts-toggle, #queue-shown; observes the queue, never calls into staff.js; opt-in urgent alerts")
+  Component(stafftools2, "Queue figures, export, replies, notes", "JavaScript", "v1.2: the queue at a glance (open, urgent, overdue, answered, average wait); CSV export, a cell that starts like a formula written as text; four ready-made replies that fill the open ticket's reply box; filter by ticket type; a private staff note, never shown to the patient; v1.3: figure #kpi-feedback")
 }
 
 Container_Boundary(staffformjs, "staff/form.js and staff/form.css, staff add-on (v1.1)") {
   Component(staffform, "Clinic file form", "JavaScript", "v1.1: details #clinic-form before the JSON box; cf- fields generated from the JSON in #clinic-json; writes back into that box; the existing Save stores it")
+}
+
+Container_Boundary(syncjs, "sync.js, add-on loaded on both pages (v1.3)") {
+  Component(syncchat, "Chat sync", "JavaScript", "v1.3: sends this patient's tickets when they change, fetches staff replies; a private browser key kept under frontdesk.synckey")
+  Component(syncstaff, "Staff sync", "JavaScript", "v1.3: #sync-bar with #all-devices (Show tickets from all devices, off by default) and #desk-code (the clinic's desk code, kept for the session only); tickets from other devices carry remote: true and leave when the switch goes off")
+}
+
+Container_Boundary(ticketsapi, "api/tickets.js, Vercel function (v1.3)") {
+  Component(ticketscore, "core(request, db, env)", "Node.js", "v1.3: the rules, separate from the store: patient key (only a hash is kept), desk code, clean, merge, rate limit; answers 503 when no store is configured")
+  Component(redisdb, "redisDb", "Node.js", "v1.3: the store behind core(): Upstash Redis over REST")
 }
 
 Container_Boundary(api, "api/chat.js, Vercel function") {
@@ -65,6 +78,20 @@ Rel(staff, staffform, "Edits the clinic file as a form")
 Rel(stafftools, staffui, "Observes #ticket-queue")
 Rel(stafftools, ls, "Reads tickets; stores frontdesk.alerts only when alerts are on")
 Rel(staffform, staffui, "Reads and writes the #clinic-json box")
+Rel(engine, bookingday, "v1.2: adds the named day's hours to a booking reply")
+Rel(bookingday, store, "v1.2: reads the hours from the clinic file")
+Rel(staff, stafftools2, "v1.2: reads the figures, exports, picks a ready-made reply, writes a note")
+Rel(stafftools2, staffui, "v1.2: fills the open ticket's reply box; staff still press Send")
+Rel(stafftools2, ls, "v1.2: reads tickets; keeps notes under frontdesk.notes")
+Rel(syncchat, tickets, "v1.3: reads this patient's tickets, writes staff replies")
+Rel(syncstaff, tickets, "v1.3: adds and removes tickets from other devices")
+Rel(staff, syncstaff, "v1.3: turns the switch on, types the desk code")
+Rel(syncchat, ls, "v1.3: keeps frontdesk.synckey")
+Rel(syncstaff, ls, "v1.3: keeps frontdesk.alldevices")
+Rel(syncchat, ticketscore, "v1.3: sends tickets, fetches replies", "HTTPS, JSON, the browser key")
+Rel(syncstaff, ticketscore, "v1.3: lists every device's tickets, sends replies", "HTTPS, JSON, the desk code")
+Rel(ticketscore, redisdb, "v1.3: reads and writes through the store")
+Rel(redisdb, upstash, "v1.3: Redis commands", "HTTPS, REST, address and token on the server")
 
 SHOW_LEGEND()
 @enduml

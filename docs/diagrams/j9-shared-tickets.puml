@@ -1,0 +1,71 @@
+@startuml j9-shared-tickets
+!include style.iuml
+title J9 Tickets shared across devices (v1.3)
+actor Patient
+participant "Chat page\n(index.html, chat.js, sync.js)" as Chat
+participant "core.js" as Core
+database "localStorage\n(patient's phone)" as LS
+participant "Ticket function\n(/api/tickets)" as Fn
+database "Ticket store\n(server, seven days)" as Store
+participant "Staff page on another device\n(staff/index.html, staff.js, sync.js)" as SP
+actor Staff
+autonumber
+
+Patient -> Chat : asks a question on a phone
+Chat -> Core : FD.answer(q, data)
+Core --> Chat : the reply from the clinic file, as always
+Chat -> Core : FD.addTicket({...})
+Core -> LS : write frontdesk.tickets (the ticket stays in the phone's browser)
+Chat --> Patient : the answer
+Chat -> LS : read frontdesk.synckey (made once, this browser's private key)
+Chat -> Fn : sync.js sends the ticket with the browser's private key
+alt the store is set up and the call gets through
+  Fn -> Fn : cleans the ticket, makes a hash of the key
+  Fn -> Store : one record for the ticket with owner = the hash;\nits id added to the ordered list and to the owner's set
+  note right of Fn
+  v1.3. The question, reply and patient
+  never change once stored. The record
+  is kept for seven days.
+  end note
+  Fn --> Chat : stored
+  Chat --> Patient : the small print now says the messages go to the clinic's front desk
+else no store configured, or the call is blocked
+  Fn --> Chat : no store (or no answer)
+  Chat --> Patient : the chat works as before; the add-on goes quiet
+end
+
+Staff -> SP : open /staff on another device
+SP --> Staff : their own tickets only
+Staff -> SP : turn on "Show tickets from all devices"
+SP -> SP : write frontdesk.alldevices; ask for the clinic's desk code
+Staff -> SP : type the desk code (kept for the session only)
+SP -> Fn : sync.js asks for the list with the desk code
+alt no desk code, or a wrong one
+  Fn --> SP : 401, no list
+  SP --> Staff : their own tickets only, as before
+else the desk code matches the one in the server's environment
+  Fn -> Store : read the ordered list and its records
+  Fn --> SP : the list of tickets
+  SP --> Staff : the patient's ticket appears, marked as from another device (remote)
+  Staff -> SP : types in #staff-reply, presses #staff-send
+  SP -> Core : FD.replyToTicket(id, text)
+  SP -> Fn : sync.js sends the change with the desk code
+  Fn -> Store : merge: every staff reply kept, the status further along wins
+  loop about every ten seconds
+    Chat -> Fn : sync.js fetches this browser's own tickets with its private key
+    Fn -> Store : read the owner's set of ids and their records
+    Fn --> Chat : the tickets of this owner only
+  end
+  Chat -> Core : merge the staff reply into the ticket
+  Core -> LS : write frontdesk.tickets
+  Chat --> Patient : .bot-msg marked "From the clinic team"
+  note over Chat, SP : the ticket is answered on both devices
+end
+
+opt A stranger holds a ticket id and a patient id, but another key
+  Fn <-] : read or change that ticket
+  Fn -> Fn : the hash of the key is not the ticket's owner
+  Fn -->] : 403, nothing readable, nothing changed
+end
+note over Chat, SP : without a store both pages work as in 1.2; a patient reads with the browser's key, staff with the desk code; the staff reply path is J4
+@enduml

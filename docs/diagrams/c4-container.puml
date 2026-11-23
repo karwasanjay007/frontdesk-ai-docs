@@ -7,19 +7,22 @@ Person(staff, "Front desk staff", "Same browser in the competition build")
 System_Ext(openrouter, "OpenRouter", "Model gateway, chat completions API")
 System_Ext(deepseek, "DeepSeek V4.1 Flash", "deepseek/deepseek-v4.1-flash, reasoning off")
 System_Ext(whatsapp, "WhatsApp", "wa.me link")
+System_Ext(upstash, "Upstash Redis (ticket store)", "v1.3: one key per ticket, kept for seven days; reached over REST")
 
-System_Boundary(vercel, "Vercel project frontdesk-ai (team elodos, *.vercel.app)") {
-  Container(static, "Static files", "HTML, CSS, JavaScript, JSON", "index.html, staff/index.html, shared scripts, clinic-data.json; no build step; v1.1: staff/tools.js, staff/tools.css, staff/form.js, staff/form.css")
+System_Boundary(vercel, "Vercel project frontdesk-ai (*.vercel.app)") {
+  Container(static, "Static files", "HTML, CSS, JavaScript, JSON", "index.html, staff/index.html, shared scripts, clinic-data.json; no build step; v1.1: staff/tools.js, staff/tools.css, staff/form.js, staff/form.css; v1.3: sync.js")
   Container(fn, "api/chat", "Vercel serverless function, Node.js", "GET: warm-up, returns ok. POST: takes the drafted answer, its facts, the language and the clinic file (never the patient's words); calls the model with the key from the environment; 5 s limit; returns text only")
   Container(tts, "api/tts", "Vercel serverless function, Node.js", "POST {text, lang}: the bot's reply text only, at most 700 characters; calls openai/gpt-audio-mini for pcm16 audio at 24 kHz, returns audio/wav; 15 s limit")
+  Container(ticketsfn, "api/tickets", "Vercel serverless function, Node.js", "v1.3, api/tickets.js, the ticket store function: the rules in core() (patient key, desk code, clean, merge, rate limit), storage through Upstash Redis over REST; answers 503 when no store is configured")
 }
 
 System_Boundary(browser, "The browser") {
-  Container(chat, "Chat page /", "Plain JavaScript", "core.js and chat.js: rules engine, guard, model client, chat UI, call-back form, Today card, languages, speech; #chat-input, #chat-send, .bot-msg, ?q=; v1.1: answer() wraps answerFile() (the file-only engine of 1.0), reply kind human (needs human), quick replies and assistant name from the clinic file")
-  Container(staffui, "Staff page /staff", "Plain JavaScript", "core.js and staff.js: ticket queue, single reply box, call-back list, Could not answer list, clinic file editor; #ticket-queue, [data-ticket], #staff-reply, #staff-send")
-  Container(stafftools, "Staff ticket tools", "Plain JavaScript, CSS", "v1.1 add-on, staff/tools.js and staff/tools.css, loaded after staff.js: search, status filter, sort, opt-in urgent alerts; a toolbar before #ticket-queue; observes the queue, never calls into staff.js")
+  Container(chat, "Chat page /", "Plain JavaScript", "core.js and chat.js: rules engine, guard, model client, chat UI, call-back form, Today card, languages, speech; #chat-input, #chat-send, .bot-msg, ?q=; v1.1: answer() wraps answerFile() (the file-only engine of 1.0), reply kind human (needs human), quick replies and assistant name from the clinic file; v1.2: a booking that names one weekday also states that day's hours (bookingDayNote in core.js); v1.3: Helpful and Not helpful buttons beside each reply")
+  Container(staffui, "Staff page /staff", "Plain JavaScript", "core.js and staff.js: ticket queue, single reply box, call-back list, Could not answer list, clinic file editor; #ticket-queue, [data-ticket], #staff-reply, #staff-send; v1.3: ticket numbers, the chat thread folded inside the open ticket, feedback shown on the ticket")
+  Container(stafftools, "Staff ticket tools", "Plain JavaScript, CSS", "v1.1 add-on, staff/tools.js and staff/tools.css, loaded after staff.js: search, status filter, sort, opt-in urgent alerts; a toolbar before #ticket-queue; observes the queue, never calls into staff.js; v1.2: queue figures, CSV export, ready-made replies, filter by ticket type, a private staff note; v1.3: a feedback figure")
   Container(staffform, "Clinic file form", "Plain JavaScript, CSS", "v1.1 add-on, staff/form.js and staff/form.css, loaded after staff.js: a form generated from the JSON in #clinic-json; writes back into that box; the existing Save stores it")
-  ContainerDb(ls, "localStorage", "Web Storage, JSON", "Tickets, staff replies and the edited clinic file, shared by both pages; storage event carries changes")
+  Container(sync, "Sync add-on", "Plain JavaScript", "v1.3 add-on, sync.js, loaded on both pages. Chat: sends this patient's tickets when they change, with a private browser key, and fetches staff replies. Staff: the switch Show tickets from all devices, off by default, which needs the clinic's desk code. If the store is missing or slow, both pages behave as before")
+  ContainerDb(ls, "localStorage", "Web Storage, JSON", "Tickets, staff replies and the edited clinic file, shared by both pages; storage event carries changes; v1.2: frontdesk.notes (private staff notes); v1.3: frontdesk.synckey (this browser's private key), frontdesk.alldevices (the switch)")
   Container(speech, "Web Speech API", "Built into the browser", "Recognition and synthesis in en-IN, hi-IN, te-IN; hidden where missing")
 }
 
@@ -41,6 +44,14 @@ Rel(static, staffform, "Serves", "HTTPS")
 Rel(stafftools, staffui, "Observes #ticket-queue; hides rows, never removes them")
 Rel(stafftools, ls, "Reads tickets; stores frontdesk.alerts only when alerts are on")
 Rel(staffform, staffui, "Reads and writes the #clinic-json box")
+Rel(stafftools, ls, "v1.2: reads and writes the private staff note under frontdesk.notes")
+Rel(static, sync, "Serves", "HTTPS")
+Rel(sync, chat, "v1.3: mirrors this patient's tickets; brings staff replies into the chat")
+Rel(sync, staffui, "v1.3: adds tickets from other devices while the switch is on")
+Rel(staff, sync, "v1.3: turns on Show tickets from all devices, types the desk code")
+Rel(sync, ls, "v1.3: reads and writes tickets; keeps frontdesk.synckey and frontdesk.alldevices")
+Rel(sync, ticketsfn, "v1.3: sends this patient's tickets, fetches replies; the full list only with the desk code", "HTTPS, JSON")
+Rel(ticketsfn, upstash, "v1.3: stores and reads tickets", "HTTPS, REST; address and token in the Vercel environment")
 Rel(chat, speech, "Listens and speaks on request")
 Rel(chat, whatsapp, "Offers a link with the question written in", "wa.me")
 

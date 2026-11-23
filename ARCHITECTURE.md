@@ -6,7 +6,7 @@ Written from the code as built and live at https://frontdesk-ai-xi-gray.vercel.a
 | | |
 | --- | --- |
 | Code | `frontdesk-ai` (private): `core.js`, `chat.js`, `staff/staff.js`, `api/chat.js`, `api/tts.js`, `styles.css`, `index.html`, `staff/index.html`, `clinic-data.json`, `tests/` |
-| Live | https://frontdesk-ai-xi-gray.vercel.app, Vercel project `frontdesk-ai`, team elodos |
+| Live | https://frontdesk-ai-xi-gray.vercel.app, Vercel project `frontdesk-ai` |
 | Last revised | 20 Nov 2026 |
 
 ## 1. Overview and goals
@@ -113,10 +113,10 @@ The ticket and clinic file shapes, the localStorage keys and the `api/chat` requ
 
 ![Deployment](docs/diagrams/deployment.svg)
 
-- Vercel project `frontdesk-ai` in team elodos, on its own address https://frontdesk-ai-xi-gray.vercel.app,
+- Vercel project `frontdesk-ai`, on its own address https://frontdesk-ai-xi-gray.vercel.app,
   never sai4b.com. Static files and two Node.js functions (`api/chat.js`, `api/tts.js`); no build step and no
   `vercel.json`.
-- Deploy from PowerShell in the code folder: `vercel deploy --prod --yes --scope elodos`.
+- Deploy from PowerShell in the code folder: `vercel deploy --prod --yes`.
 - `OPENROUTER_API_KEY` is a sensitive Production environment variable: hidden in the dashboard and never in
   the repository, the page code or a document. `OPENROUTER_MODEL` and `OPENROUTER_TTS_MODEL` (default `openai/gpt-audio-mini`) are optional.
 - `.vercelignore` keeps off the site: `.vercel`, `.env*`, `brief`, `brand`, `tests`, every `*.md`,

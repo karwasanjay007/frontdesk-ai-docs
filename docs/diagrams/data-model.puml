@@ -95,6 +95,8 @@ package "localStorage key frontdesk.tickets (JSON array)" {
     {field} created : number  (ms since 1970)
     {field} updated : number [after first change]
     staffReplies : StaffReply[]
+    {field} feedback : "up" | "down" | ""  (v1.3)
+    {field} remote : true  (v1.3, staff browser only, a ticket from another device)
   }
   class StaffReply {
     text : string
@@ -108,6 +110,27 @@ package "Other localStorage keys" {
     frontdesk.lang : en | hi | te
     frontdesk.theme : light | dark
     {field} frontdesk.alerts : "1"  (v1.1, only when staff turn urgent alerts on)
+    {field} frontdesk.notes : map of ticket id to note  (v1.2, written only when a note is saved)
+    {field} frontdesk.synckey : string  (v1.3, this browser's private key for its own tickets)
+    {field} frontdesk.alldevices : "1"  (v1.3, while the staff switch "all devices" is on)
+  }
+  class StaffNote <<v1.2>> {
+    {field} ticket id : string  (the map key)
+    {field} note : string  (private, never sent)
+  }
+}
+
+package "Ticket store on the server (v1.3, Upstash Redis, kept seven days)" {
+  class StoredTicket <<v1.3>> {
+    {field} the ticket's fields  (as Ticket, without remote)
+    {field} owner : string  (a hash of the browser key that created it)
+  }
+  class TicketOrder <<v1.3>> {
+    {field} ticket ids : ordered list
+  }
+  class OwnerIndex <<v1.3>> {
+    {field} owner : string  (the hash)
+    {field} ticket ids : small set
   }
 }
 
@@ -119,6 +142,24 @@ Assistant "1" *-- "0..8" QuickReply : quick_replies
 Ticket "1" *-- "0..*" StaffReply : staffReplies
 Browser "1" -- "0..*" Ticket : patient
 ClinicFile ..> Ticket : rules engine answer()\nsets reply, kind, status
+Browser "1" *-- "0..*" StaffNote : frontdesk.notes (v1.2)
+StaffNote "0..1" ..> "1" Ticket : ticket id
+Ticket "1" ..> "0..1" StoredTicket : sync.js sends a copy (v1.3)
+TicketOrder "1" o-- "0..*" StoredTicket : in the order opened
+OwnerIndex "1" o-- "0..*" StoredTicket : owner
+Browser ..> OwnerIndex : hash of frontdesk.synckey (v1.3)
+
+note bottom of StoredTicket
+  <b>v1.3 ticket store</b>
+  One record per ticket for seven days.
+  The question, reply and patient never
+  change once stored. A merge keeps every
+  staff reply; the status further along wins.
+  A patient browser reads its own tickets
+  with its key; staff read the list with
+  the clinic's desk code, which the browser
+  keeps for the session only.
+end note
 
 note right of Ticket
   <b>Status from the reply kind</b>

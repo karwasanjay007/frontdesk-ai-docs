@@ -54,9 +54,10 @@ voice).
 | J6 | Clinic file edit | Clinic staff | Edits the clinic file on `/staff` and saves, or resets it | File checked and stored; the chat answers from the edited file; reset brings back the shipped file | E6 |
 | J7 | Languages and voice | Patient | Picks a language, types in Hindi or Telugu script, speaks, or taps Listen | Labels in the chosen language; replies in the script of the question; speech in and out where the browser supports it | E5, E9 |
 | J8 | Ask for a person (v1.1.0.0) | Patient, then staff | Types "Can I speak to a human?" or taps the quick reply "Talk to a person" | A reply that the request has gone to the team, with "2 working hours", the clinic phone and WhatsApp; one ticket with status `needs human` that staff find, answer and so move to `answered` | v1.1.0.0 |
+| J9 | Tickets shared across devices (v1.3.0.0) | Patient on a phone, then staff on another device | Asks a question on a phone; staff turn on "Show tickets from all devices" and type the clinic's desk code | The ticket appears on the staff device, marked as from another device; the staff reply shows in the patient's chat as "From the clinic team" and the ticket is answered on both devices | v1.3.0.0 |
 
 All seven journeys asked for are supported by the code; none was dropped or merged. J8 was added in
-version 1.1.0.0.
+version 1.1.0.0 and J9 in version 1.3.0.0.
 
 ## J1 First visit and ask
 
@@ -384,3 +385,36 @@ Source: [j8-ask-for-a-person.puml](diagrams/j8-ask-for-a-person.puml)
 - A question the clinic file answers, for example "What is the phone number to call back?", is still
   answered from the file, with no `human` ticket.
 - The search box and the filter hide rows; they never remove a ticket.
+
+## J9 Tickets shared across devices (v1.3.0.0)
+
+**Goal.** Let clinic staff on one device see and answer a ticket a patient opened on another device, and
+let the patient see the reply, without changing how either page works on its own.
+
+**Preconditions.** As J1. The ticket store and the clinic's desk code are set up on the server. Without
+them both pages work as before and the add-on goes quiet.
+
+**Steps.**
+1. The patient asks a question on a phone. The chat answers from the clinic file as always and keeps the
+   ticket in the phone's browser.
+2. `sync.js` sends the ticket to `/api/tickets` with the browser's private key (`frontdesk.synckey`).
+3. The function cleans the ticket and stores it in the ticket store under a hash of that key. The chat's
+   small print now says the messages go to the clinic's front desk.
+4. Staff on another device open `/staff` and see their own tickets only.
+5. Staff turn on "Show tickets from all devices" and type the clinic's desk code. The function checks the
+   code against the server's environment and returns the list.
+6. The ticket appears, marked as from another device. Staff reply as in J4.
+7. `sync.js` sends the change with the desk code. The function merges it: every staff reply is kept and
+   the status further along wins.
+8. The patient's phone fetches its own tickets with its key about every ten seconds and shows the reply
+   as "From the clinic team". The ticket is answered on both devices.
+
+![J9 Tickets shared across devices](diagrams/j9-shared-tickets.svg)
+
+Source: [j9-shared-tickets.puml](diagrams/j9-shared-tickets.puml)
+
+**Error and edge paths.**
+- No desk code, or a wrong one: no list is returned (401) and staff see their own tickets only.
+- A stranger with a ticket id and a patient id but another key can read nothing and change nothing (403).
+- No store configured, or the call blocked: both pages work as before and the add-on goes quiet.
+- A ticket's question, reply and patient never change once stored; a record is kept for seven days.
