@@ -73,6 +73,16 @@ Nothing deletes a ticket.
 | `frontdesk.patient` | patient session id, plain text | `patientId()` | `chat.js` |
 | `frontdesk.lang` | `en`, `hi` or `te`, plain text | the language menu (`setLang()`) | `getLang()`, default `en` |
 | `frontdesk.theme` | `light` or `dark`, plain text | the theme button (`toggleTheme()`) | `applyTheme()`; when absent the system setting applies |
+| `frontdesk.alerts` (since 1.1.0.0) | "1", plain text; absent when alerts are off | the alerts switch on /staff (`staff/tools.js`) | `staff/tools.js` |
+| `frontdesk.notes` (since 1.2.0.0) | JSON object, ticket id to private staff note | Save note on /staff (`staff/tools.js`) | `staff/tools.js`; never shown to the patient |
+| `frontdesk.synckey` (since 1.3.0.0) | this chat browser's private key for its tickets on the server, plain text | `sync.js`, made the first time the key is needed | `sync.js` |
+| `frontdesk.alldevices` (since 1.3.0.0) | "1" when "Show tickets from all devices" is on; absent when off | the switch on /staff (`sync.js`) | `sync.js` |
+
+One more key is kept in **sessionStorage**, not localStorage:
+
+| Key | Value | Written by | Read by |
+| --- | --- | --- | --- |
+| `frontdesk.deskcode` (since 1.3.0.0) | the clinic's desk code as typed by staff on /staff, plain text. Its value is never written in any document | `sync.js`, when staff enter the code | `sync.js`, sent as the `x-desk-code` header to `api/tickets`. It lasts for the browser session only and is gone when the tab closes |
 
 Every read and write is wrapped so that a blocked or full `localStorage` does not stop the page: a failed
 read gives the default and a failed write is ignored.
@@ -210,7 +220,7 @@ are worked out from the tickets when the staff page is drawn.
 | `remote: true` | a ticket in a staff browser | marks a ticket that came from another device; these leave the list when the switch goes off |
 | `frontdesk.synckey` | localStorage, chat browser | this browser's private key for its tickets on the server |
 | `frontdesk.alldevices` | localStorage, staff browser | whether "Show tickets from all devices" is on; off by default |
-| Desk code | staff browser | typed by staff and kept for the session only |
+| `frontdesk.deskcode` | sessionStorage, staff browser | the desk code typed by staff, kept for the browser session only and gone when the tab closes |
 
 Ticket numbers (T-001, T-002 and so on) are worked out from the order the tickets were opened. The
 ticket `id` is unchanged.

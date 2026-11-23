@@ -1,4 +1,10 @@
-# FrontDesk AI: epics, features and acceptance criteria
+
+| AC-E14.F4.5 | A clinic file where the named day is closed, or its hours are empty or a list | The patient asks to book for that day in English, Hindi or Telugu | The English reply says the day is closed, the Hindi and Telugu replies add no line that contradicts it, and no empty value is printed | V-10 | `tests/booking-odd.cjs` |
+| AC-E9.F2.3 | A needs-human reply with the call-back form beside it | The patient leaves a name and a UK number typed with its leading 0, or a number that is too short | The UK number is saved with +44, shown on the staff card with working call and WhatsApp links and listed in the call-back list; it is not added inside the bot reply; a too-short number is refused with a message | G27 | `tests/callback.mjs` |
+| AC-E7.F1.4 | Either page at widths from 375 to 2560 px | The page is measured | Nothing scrolls sideways, the content reaches the right edge, the message box and Send stay in view, and tap targets are 40 px or more | G23 | `tests/widths.mjs` |
+| AC-E5.F1.4 | A fresh browser on the chat page | The patient asks timings or prices in other words in Hindi, Roman-script Hindi or Telugu | The reply carries the figure from the clinic file, and no ticket waits for a human | S-20, G19 | `tests/wording.mjs` |
+| AC-E2.F1.6 | A different clinic file, with other names, numbers, hours keys, services, doctors and policies, or with a whole section left out | Each question is answered by the engine | Every reply comes from that file, nothing from the sample clinic appears, and no reply prints an empty value | F-1, F-4, [A-6] | `tests/other-clinic.cjs` |
+| AC-E1.F1.4 | A fresh browser on the chat page | The patient sends two questions one straight after the other, and the first reply is slow | The replies come out in the order sent, each with its own ticket, and the last `.bot-msg` answers the last question | G2 | `tests/order.mjs` |# FrontDesk AI: epics, features and acceptance criteria
 
 | | |
 | --- | --- |
@@ -21,26 +27,59 @@ link, and this document is revised to describe what was built.
 | manual | No script planned; checked by hand on the live link |
 | `tests/<name>` | Epics E10 to E15 (versions 1.1.0.0 to 1.3.0.0) name the test file of the code repository in full. Each was run on the live link or on the engine on 22 Nov 2026; its saved result is the `last-*.txt` file named in the feature's Status line |
 
+## Which test verifies what
+
+Every test file in the code repository's `tests` folder, read from its header and its PASS and FAIL lines
+(`tests/lib.mjs` is the shared helper, not a test). Saved results are in `../evidence/`. The engine suites
+(`.cjs`) run without a browser and print to the console; where a `last-*.txt` is named, that console output
+was saved by hand.
+
+| Test file | What it checks | Latest saved result | Criteria it proves |
+| --- | --- | --- | --- |
+| `tests/brief.mjs` | Every "Done when" and "How we check" line of the brief, in a fresh browser, with and without the key | `last-brief-live.txt`, `last-brief-nokey-live.txt` | E1 to E9, as each row names |
+| `tests/questions.mjs` | The eight sample questions with must include and must not include, plus extras, in both runs | `last-questions-live.txt`, `last-questions-blocked-live.txt` | E2, E3, E5, E8, as each row names |
+| `tests/contrast.mjs` | Text contrast in light and dark, every state | `last-contrast-live.txt`, `last-contrast-measured-live.txt` | AC-E7.F2.1 |
+| `tests/audit.mjs` | 27 grader-style questions from the brief audit, checked against the clinic file, with the key and with `/api/` blocked | `last-audit-ai-live.txt`: "ALL PASS (45 questions)"; `last-audit-blocked-live.txt` | AC-E2.F1.4, AC-E2.F1.5 |
+| `tests/bonus.mjs` | The six bonus items: Hindi and Telugu, booking, priority and age, edit data, quick replies, replies follow the edit | `last-bonus-live.txt`: "ALL PASS (15 checks)"; `last-bonus-blocked-live.txt` | AC-E4.F3.1, AC-E4.F3.2, AC-E5.F1.1, AC-E5.F2.1, AC-E6.F1.1, AC-E6.F2.1, AC-E9.F2.1 |
+| `tests/booking-odd.cjs` | The booking day note with unusual clinic files: a closed day in Hindi or Telugu, an empty or list value (engine only) | `last-booking-odd.txt`: "ALL PASS (6 checks)" | AC-E14.F4.4, AC-E14.F4.5 |
+| `tests/booking-day.cjs` | The booking reply adds the named day's hours (engine only) | `last-booking-day.txt` | AC-E14.F4.1 to AC-E14.F4.4 |
+| `tests/callback.mjs` | Call-back details with a country code (UK +44 typed with its leading 0), the staff card's call and WhatsApp links, a too-short number refused, WhatsApp Web on a computer | `last-callback-live.txt`: "ALL PASS (8 checks)" | AC-E9.F2.3, AC-E9.F3.1 |
+| `tests/emergency.mjs` | Bleeding that will not stop, said other ways in English, Hindi and Telugu: the emergency number first and one new urgent ticket | `last-emergency-live.txt`: "ALL PASS (12 checks)" | AC-E3.F1.3, AC-E5.F1.3 |
+| `tests/engine.cjs` | The rules engine and the guard without a browser: every case the reviews found, plus the sample questions | `last-engine.txt`: "ALL PASS" | AC-E2.F3.1, AC-E2.F3.2, AC-E3.F4.2, AC-E3.F4.4 |
+| `tests/order.mjs` | Two questions sent one straight after the other: replies in the order sent, one ticket each, the last `.bot-msg` answers the last question | `last-order-live.txt`: "ALL PASS (5 checks)" | AC-E1.F1.2, AC-E1.F1.4 |
+| `tests/other-clinic.cjs` | A different clinic through the rules engine, then the same file with a whole section left out: nothing from the sample clinic leaks and no empty value is printed | `last-other-clinic.txt`: "PASS different clinic: 46 of 46 as expected"; "ALL PASS" | AC-E2.F1.6, AC-E3.F4.3 |
+| `tests/sweep.cjs` | 386 unseen questions in English, Hindi, Telugu and Roman script through the rules engine, each with its expected kind and the file strings it must carry | `last-sweep.txt`: "ALL PASS (386 questions)" | AC-E3.F4.4, AC-E10.F1.4 |
+| `tests/widths.mjs` | Widths 375 to 2560 px: no sideways scroll, content reaches the right edge, message box and Send in view, targets of 40 px or more | `last-widths-live.txt`: "ALL PASS (20 checks)" | AC-E7.F1.1, AC-E7.F1.2, AC-E7.F1.4 |
+| `tests/wording.mjs` | Timings and prices asked other ways in Hindi, Roman-script Hindi and Telugu: the figure from the file and no ticket waiting for a human | `last-wording-live.txt`: "ALL PASS (14 checks)"; `last-wording-blocked-live.txt` | AC-E5.F1.1, AC-E5.F1.4 |
+| `tests/voice.mjs` | The recording backup for the microphone | `last-voice-live.txt` | AC-E9.F5.5 |
+| `tests/person.cjs`, `tests/person.mjs` | Asking for a person, the assistant name and the clinic's own quick replies | `last-person-engine.txt`, `last-person-live.txt` | E10 |
+| `tests/tools.mjs`, `tests/tools2.mjs` | The staff queue tools | `last-tools-live.txt`, `last-tools2-live.txt` | E11 |
+| `tests/form.mjs` | The clinic file form | `last-form-live.txt` | E12 |
+| `tests/sync.mjs`, `tests/sync-live.mjs`, `tests/sync-wait-live.mjs`, `tests/tickets-api-live.mjs`, `tests/tickets-redis.cjs` | Tickets shared across devices and the ticket store's rules | `last-sync-live.txt`, `last-sync-real-store-live.txt`, `last-sync-staff-real-store-live.txt`, `last-tickets-api-live.txt`, `last-tickets-redis.txt` | E13 |
+| `tests/extras3.mjs` | Ticket numbers, the thread and feedback | `last-extras3-live.txt` | AC-E14.F1.1 to AC-E14.F3.4 |
+| `tests/i18n.mjs` | The language menu and New chat | `last-i18n-live.txt`, `last-i18n-blocked-live.txt` | AC-E15.F1.1 to AC-E15.F1.4 |
+| `tests/staffclear.mjs` | Clear all tickets, with Undo | `last-staffclear-live.txt` | AC-E15.F3.1 to AC-E15.F3.3 |
+
 ## Epics at a glance
 
 | Epic | Title | Features | Acceptance criteria | PRD trace | Status |
 | --- | --- | --- | --- | --- | --- |
-| E1 | Patient chat | 3 | 8 | S-1, S-19, G1, G2, G16, stage 1 | built (`last-brief-live.txt`) |
-| E2 | Answers from the clinic file | 4 | 14 | S-2, S-8, S-10 to S-13, F-1, F-2, F-4, F-10, D-1, D-2, D-5, G3, G6, G7, G15 | built (`last-brief-live.txt`, `last-engine.txt`) |
+| E1 | Patient chat | 3 | 9 | S-1, S-19, G1, G2, G16, stage 1 | built (`last-brief-live.txt`) |
+| E2 | Answers from the clinic file | 4 | 15 | S-2, S-8, S-10 to S-13, F-1, F-2, F-4, F-10, D-1, D-2, D-5, G3, G6, G7, G15 | built (`last-brief-live.txt`, `last-engine.txt`) |
 | E3 | Safety | 4 | 13 | S-3 to S-6, S-14 to S-17, F-3, F-6 to F-9, G4, G5, G8, G9 | built (`last-brief-live.txt`, `last-engine.txt`) |
 | E4 | Tickets and staff page | 3 | 11 | S-7, S-21, S-22, F-5, D-3, D-4, D-7, G10 to G13, G20, G21, Q-3, Q-4 | built (`last-brief-live.txt`, `last-bonus-live.txt`) |
-| E5 | Languages and quick replies | 2 | 5 | S-20, S-24, G19, G22, stage 2 | built (`last-bonus-live.txt`) |
+| E5 | Languages and quick replies | 2 | 6 | S-20, S-24, G19, G22, stage 2 | built (`last-bonus-live.txt`) |
 | E6 | Clinic data editing | 2 | 4 | S-23, S-25, F-11, G18, Q-1 | built (`last-bonus-live.txt`) |
-| E7 | Phone, themes, accessibility | 3 | 6 | S-9, G23, G24 | built; accessibility checked by hand only (`last-widths-live.txt`, `last-contrast-live.txt`) |
+| E7 | Phone, themes, accessibility | 3 | 7 | S-9, G23, G24 | built; accessibility checked by hand only (`last-widths-live.txt`, `last-contrast-live.txt`) |
 | E8 | Grader contract and robustness | 4 | 11 | S-18, S-19, F-12, F-13, G1, G2, G14, G16, G17, G25 | built (both runs ALL PASS) |
-| E9 | Go further: after hours, call list, WhatsApp hand-off, any business, voice | 5 | 13 | S-26, S-27, D-8, G26 to G30, V-18, stage 3 | partly built: four of five built; any business only partly (dental word lists) |
+| E9 | Go further: after hours, call list, WhatsApp hand-off, any business, voice | 5 | 14 | S-26, S-27, D-8, G26 to G30, V-18, stage 3 | partly built: four of five built; any business only partly (dental word lists) |
 | E10 | Asking for a person and assistant settings (1.1) | 2 | 9 | V-1, V-4 | built (`last-person-engine.txt`, `last-person-live.txt`) |
 | E11 | Staff queue tools (1.1 and 1.2) | 5 | 18 | V-2, V-5 to V-9 | built; the alert tone and the browser notification not covered by a test (`last-tools-live.txt`, `last-tools2-live.txt`) |
 | E12 | Clinic file form (1.1) | 2 | 9 | V-3, V-4 | built (`last-form-live.txt`) |
 | E13 | Tickets shared across devices (1.3) | 4 | 20 | V-14 | built, behind the clinic's desk code (`last-sync-live.txt`, `last-tickets-api-live.txt`, `last-tickets-redis.txt`) |
-| E14 | Ticket numbers, thread, feedback and the booking day note (1.2 and 1.3) | 4 | 13 | V-10 to V-13 | built (`last-extras3-live.txt`, `last-booking-day.txt`) |
+| E14 | Ticket numbers, thread, feedback and the booking day note (1.2 and 1.3) | 4 | 14 | V-10 to V-13 | built (`last-extras3-live.txt`, `last-booking-day.txt`) |
 | E15 | Language menu, New chat, clinic info panel and Clear all (1.3) | 3 | 10 | V-15 to V-17 | built; the clinic info panel and the empty-queue message are not covered by a test (`last-i18n-live.txt`, `last-staffclear-live.txt`) |
-| **Total** | | **50** | **164** | | |
+| **Total** | | **50** | **170** | | |
 
 ---
 
@@ -58,7 +97,7 @@ As a patient, I want to type a question and get a reply so that I do not have to
 | ID | Given | When | Then | Trace | Planned check |
 | --- | --- | --- | --- | --- | --- |
 | AC-E1.F1.1 | A fresh browser on the chat page | The patient types "What time do you open on Saturday?" in `#chat-input` and clicks `#chat-send` | A reply appears that says 9:00 am to 8:00 pm | S-1 | `brief.mjs [R1 saturday]` |
-| AC-E1.F1.2 | A question has been sent | The reply is ready | Exactly one new `.bot-msg` is added, complete, and it is the last `.bot-msg` on the page | G2 | `brief.mjs [C2 bot-msg]` |
+| AC-E1.F1.2 | A question has been sent | The reply is ready | Exactly one new `.bot-msg` is added, complete, and it is the last `.bot-msg` on the page | G2 | `brief.mjs [C2 bot-msg]`, `tests/order.mjs` |
 | AC-E1.F1.3 | The message box is empty or holds only spaces | The patient clicks Send | Nothing is sent, no ticket opens, and no message is shown as an error dialog | G16, G17 | manual |
 
 ### E1.F2 First visit
@@ -101,8 +140,8 @@ my visit.
 | AC-E2.F1.1 | The sample clinic file | The patient asks "How much is a root canal?" | The reply gives Rs 6,500 to Rs 9,000 | S-2, S-11 | `brief.mjs [R2 root canal]`, `questions.mjs [Q2]` |
 | AC-E2.F1.2 | The sample clinic file | The patient asks "Which doctor sees children?" | The reply includes "Sneha Rao" and "Saturday" | S-12 | `questions.mjs [Q3]` |
 | AC-E2.F1.3 | The sample clinic file | The patient asks "Do you take Niva Bupa insurance?" | The reply includes lower-case "cashless" | S-13, G6 | `questions.mjs [Q4]` |
-| AC-E2.F1.4 | The sample clinic file | The patient asks about each other part of the file (parking, lunch break, Sunday, public holidays, payment, EMI, walk-ins, cancelling, first visit, sterilisation, landmark, phone) | Each reply carries that part's words from the file | F-1, D-1 | `questions.mjs [extra]` |
-| AC-E2.F1.5 | Any run of questions | Each reply is read | Every rupee amount, time, doctor name and phone number in it can be found in the clinic file | F-4, S-2 | `brief.mjs [R2 prices in file]` |
+| AC-E2.F1.4 | The sample clinic file | The patient asks about each other part of the file (parking, lunch break, Sunday, public holidays, payment, EMI, walk-ins, cancelling, first visit, sterilisation, landmark, phone) | Each reply carries that part's words from the file | F-1, D-1 | `questions.mjs [extra]`, `tests/audit.mjs` |
+| AC-E2.F1.5 | Any run of questions | Each reply is read | Every rupee amount, time, doctor name and phone number in it can be found in the clinic file | F-4, S-2 | `brief.mjs [R2 prices in file]`, `tests/audit.mjs` |
 
 ### E2.F2 Optional language model
 
@@ -126,8 +165,8 @@ patient.
 
 | ID | Given | When | Then | Trace | Planned check |
 | --- | --- | --- | --- | --- | --- |
-| AC-E2.F3.1 | A model reply holds a rupee amount, time, doctor name or phone number not in the file | It is checked | It is rejected and the file answer is used, with the label | G7, F-4 | manual (guard cases fed by hand) |
-| AC-E2.F3.2 | A model reply names a medicine, holds "%" or a discount word, or drops a fact the rules found | It is checked | It is rejected and the file answer is used, with the label | G7, G5 | manual |
+| AC-E2.F3.1 | A model reply holds a rupee amount, time, doctor name or phone number not in the file | It is checked | It is rejected and the file answer is used, with the label | G7, F-4 | manual (guard cases fed by hand), `tests/engine.cjs` |
+| AC-E2.F3.2 | A model reply names a medicine, holds "%" or a discount word, or drops a fact the rules found | It is checked | It is rejected and the file answer is used, with the label | G7, G5 | `tests/engine.cjs` |
 
 ### E2.F4 No-key answers with the label
 
@@ -158,7 +197,7 @@ As a patient in an emergency, I want the emergency number first so that I can ca
 | --- | --- | --- | --- | --- | --- |
 | AC-E3.F1.1 | A fresh browser on the chat page | The patient sends "My face is swelling and I cannot breathe" | The reply starts "Call 98000 00123 now." then the file's emergency rule, and a ticket with status urgent opens | S-5, G9, F-7 | `brief.mjs [R5 emergency]` |
 | AC-E3.F1.2 | A fresh browser on the chat page | The patient sends "My face is swelling and I cannot breathe properly" | The reply includes "98000 00123" and the ticket status is urgent | S-16 | `questions.mjs [Q7]` |
-| AC-E3.F1.3 | A message about heavy bleeding that does not stop, swelling of the face or neck, or trouble breathing | It is sent | It is treated as an emergency, before any other rule | G4, [A-7] | `questions.mjs [extra]` |
+| AC-E3.F1.3 | A message about heavy bleeding that does not stop, swelling of the face or neck, or trouble breathing | It is sent | It is treated as an emergency, before any other rule | G4, [A-7] | `questions.mjs [extra]`, `tests/emergency.mjs` |
 
 ### E3.F2 No medical advice
 
@@ -193,9 +232,9 @@ As a patient, I want an honest "not sure" and a call back so that I am not given
 | ID | Given | When | Then | Trace | Planned check |
 | --- | --- | --- | --- | --- | --- |
 | AC-E3.F4.1 | A fresh browser on the chat page | The patient sends "Do you do Invisalign?" | The reply says the chat is not sure and someone will call back within 2 working hours, and one new ticket with status needs human opens | S-3, S-14, F-6 | `brief.mjs [R3 invisalign]`, `questions.mjs [Q5]` |
-| AC-E3.F4.2 | The file mentions "aligners" | The patient names a product or brand not in the file | The not-sure reply is used, not an answer about aligners | G8 | `brief.mjs [R3 invisalign]` |
-| AC-E3.F4.3 | A part of the clinic file is missing or empty | The patient asks about it | The not-sure reply and a needs-human ticket follow; nothing fails | [A-6] | `questions.mjs [missing field]` |
-| AC-E3.F4.4 | Any message | No rule and no part of the file matches | The not-sure reply is used | G4 | `questions.mjs [extra]` |
+| AC-E3.F4.2 | The file mentions "aligners" | The patient names a product or brand not in the file | The not-sure reply is used, not an answer about aligners | G8 | `brief.mjs [R3 invisalign]`, `tests/engine.cjs` |
+| AC-E3.F4.3 | A part of the clinic file is missing or empty | The patient asks about it | The not-sure reply and a needs-human ticket follow; nothing fails | [A-6] | `questions.mjs [missing field]`, `tests/other-clinic.cjs` |
+| AC-E3.F4.4 | Any message | No rule and no part of the file matches | The not-sure reply is used | G4 | `questions.mjs [extra]`, `tests/engine.cjs`, `tests/sweep.cjs` |
 
 ## E4 Tickets and staff page
 
@@ -237,8 +276,8 @@ call the right patient first.
 
 | ID | Given | When | Then | Trace | Planned check |
 | --- | --- | --- | --- | --- | --- |
-| AC-E4.F3.1 | A fresh browser on the chat page | The patient sends "Can I book a cleaning on Saturday at 11 am?" | The reply says the team will confirm and never confirms a slot; /staff shows a needs-human ticket with Saturday 11 am | S-21, G20, D-7 | `brief.mjs [B2 booking]` |
-| AC-E4.F3.2 | Tickets of each status exist | /staff opens | Urgent first, then needs human, answered, closed; each ticket shows its age ("12 min"); old needs-human tickets stand out | S-22, G21 | `brief.mjs [B3 ageing]` |
+| AC-E4.F3.1 | A fresh browser on the chat page | The patient sends "Can I book a cleaning on Saturday at 11 am?" | The reply says the team will confirm and never confirms a slot; /staff shows a needs-human ticket with Saturday 11 am | S-21, G20, D-7 | `brief.mjs [B2 booking]`, `tests/bonus.mjs` |
+| AC-E4.F3.2 | Tickets of each status exist | /staff opens | Urgent first, then needs human, answered, closed; each ticket shows its age ("12 min"); old needs-human tickets stand out | S-22, G21 | `brief.mjs [B3 ageing]`, `tests/bonus.mjs` |
 
 ## E5 Languages and quick replies
 
@@ -252,9 +291,9 @@ As a patient, I want a reply in the language I write in so that I understand it.
 
 | ID | Given | When | Then | Trace | Planned check |
 | --- | --- | --- | --- | --- | --- |
-| AC-E5.F1.1 | A fresh browser on the chat page | The patient writes the Saturday question in Devanagari | The reply is in Hindi and keeps "9:00 am to 8:00 pm" as the file writes it | S-20, G19 | `questions.mjs [B1 hindi]` |
+| AC-E5.F1.1 | A fresh browser on the chat page | The patient writes the Saturday question in Devanagari | The reply is in Hindi and keeps "9:00 am to 8:00 pm" as the file writes it | S-20, G19 | `questions.mjs [B1 hindi]`, `tests/bonus.mjs`, `tests/wording.mjs` |
 | AC-E5.F1.2 | A fresh browser on the chat page | The patient writes the Saturday question in Telugu script | The reply is in Telugu and keeps "9:00 am to 8:00 pm" | S-20, G19 | `questions.mjs [B1 telugu]` |
-| AC-E5.F1.3 | An emergency, refusal, medical or not-sure message in Hindi or Telugu | It is sent | The fixed reply comes in that language, with the same rules and ticket status as in English | G19, G4 | `questions.mjs [B1 fixed replies]` |
+| AC-E5.F1.3 | An emergency, refusal, medical or not-sure message in Hindi or Telugu | It is sent | The fixed reply comes in that language, with the same rules and ticket status as in English | G19, G4 | `questions.mjs [B1 fixed replies]`, `tests/emergency.mjs` |
 
 ### E5.F2 Quick-reply buttons
 
@@ -264,7 +303,7 @@ As a patient, I want buttons for common questions so that I can ask with one tap
 
 | ID | Given | When | Then | Trace | Planned check |
 | --- | --- | --- | --- | --- | --- |
-| AC-E5.F2.1 | The chat page | The patient taps a quick reply (timings, prices, doctors, insurance, location, book a visit) | Its question is sent as if typed and a `.bot-msg` answer follows | S-24, G22 | `brief.mjs [B5 quick replies]` |
+| AC-E5.F2.1 | The chat page | The patient taps a quick reply (timings, prices, doctors, insurance, location, book a visit) | Its question is sent as if typed and a `.bot-msg` answer follows | S-24, G22 | `brief.mjs [B5 quick replies]`, `tests/bonus.mjs` |
 | AC-E5.F2.2 | A quick reply was tapped | The ticket list is read | One ticket opened, as for a typed question | F-5 | `brief.mjs [B5 quick replies]` |
 
 ## E6 Clinic data editing
@@ -279,7 +318,7 @@ As front-desk staff, I want to change the clinic's details so that the chat neve
 
 | ID | Given | When | Then | Trace | Planned check |
 | --- | --- | --- | --- | --- | --- |
-| AC-E6.F1.1 | /staff is open | Staff change the root canal price and save | The file keeps the new price after a reload | S-23, G18 | `brief.mjs [B4 edit data]` |
+| AC-E6.F1.1 | /staff is open | Staff change the root canal price and save | The file keeps the new price after a reload | S-23, G18 | `brief.mjs [B4 edit data]`, `tests/bonus.mjs` |
 | AC-E6.F1.2 | /staff is open | Staff paste a whole clinic file and save | It replaces the current file if it can be read; otherwise nothing is replaced and staff are told what is wrong, with no dialog | G18, G17, Q-1 | manual |
 
 ### E6.F2 Replies follow the edit
@@ -290,7 +329,7 @@ As the clinic owner, I want answers to follow the edit so that what patients rea
 
 | ID | Given | When | Then | Trace | Planned check |
 | --- | --- | --- | --- | --- | --- |
-| AC-E6.F2.1 | The root canal price was changed on /staff | The patient asks "How much is a root canal?" | The reply gives the new price and not the old one | S-25, F-11 | `brief.mjs [B6 after edit]` |
+| AC-E6.F2.1 | The root canal price was changed on /staff | The patient asks "How much is a root canal?" | The reply gives the new price and not the old one | S-25, F-11 | `brief.mjs [B6 after edit]`, `tests/bonus.mjs` |
 | AC-E6.F2.2 | The price was changed | Every reply is read | Every amount in it is found in the edited file, and the guard checks the model's text against the edited file | F-4, G7 | `brief.mjs [B6 after edit]` |
 
 ## E7 Phone, themes, accessibility
@@ -305,8 +344,8 @@ As a patient on a phone, I want the message box always in view so that I can kee
 
 | ID | Given | When | Then | Trace | Planned check |
 | --- | --- | --- | --- | --- | --- |
-| AC-E7.F1.1 | The chat page at 375 px wide | The patient chats | Nothing scrolls sideways at 375 px and the chat box and send button stay in view | S-9, G23 | `brief.mjs [R9 phone]` |
-| AC-E7.F1.2 | /staff at 375 px wide | Staff open a ticket and reply | Nothing scrolls sideways and the reply box and send button can be reached | G23 | `brief.mjs [R9 phone]` |
+| AC-E7.F1.1 | The chat page at 375 px wide | The patient chats | Nothing scrolls sideways at 375 px and the chat box and send button stay in view | S-9, G23 | `brief.mjs [R9 phone]`, `tests/widths.mjs` |
+| AC-E7.F1.2 | /staff at 375 px wide | Staff open a ticket and reply | Nothing scrolls sideways and the reply box and send button can be reached | G23 | `brief.mjs [R9 phone]`, `tests/widths.mjs` |
 | AC-E7.F1.3 | Either page at 375 px | Every control is measured | Each tap target is at least 44 px | G23 | `brief.mjs [R9 phone]` |
 
 ### E7.F2 Light and dark
@@ -408,7 +447,7 @@ As front-desk staff, I want a list of who to call back each morning so that no m
 
 | ID | Given | When | Then | Trace | Planned check |
 | --- | --- | --- | --- | --- | --- |
-| AC-E9.F2.1 | Needs-human and booking tickets exist | /staff opens | "To call back" shows first, with each patient's question, its age and any requested time | G27 | manual |
+| AC-E9.F2.1 | Needs-human and booking tickets exist | /staff opens | "To call back" shows first, with each patient's question, its age and any requested time | G27 | `tests/bonus.mjs` |
 | AC-E9.F2.2 | The call list shows | The page is read | `#ticket-queue`, `#staff-reply` and `#staff-send` each still exist once | G27, F-12 | `brief.mjs [C4 ticket queue]`, `[C5 staff ids]` |
 
 ### E9.F3 Continue on WhatsApp
@@ -419,7 +458,7 @@ As a patient, I want to carry my question to the clinic's WhatsApp so that I am 
 
 | ID | Given | When | Then | Trace | Planned check |
 | --- | --- | --- | --- | --- | --- |
-| AC-E9.F3.1 | A needs-human or booking reply | It shows | It offers a link that opens WhatsApp to the clinic's number from the file with the question already written | G28 | manual |
+| AC-E9.F3.1 | A needs-human or booking reply | It shows | It offers a link that opens WhatsApp to the clinic's number from the file with the question already written | G28 | `tests/callback.mjs` |
 | AC-E9.F3.2 | The link shows | The reply text is read | The not-sure words and the call-back promise are unchanged; the reply carries the "Answered from the clinic file" label (the model did not word it) | G28 | `brief.mjs [R3 invisalign]` |
 
 ### E9.F4 Any booking-based business
@@ -464,7 +503,7 @@ about languages or a phone number.
 | AC-E10.F1.1 | A fresh browser on the chat page | The patient sends "Can I speak to a human?" or "Please call me back" | The reply says the request went to the team and gives the phone number; it keeps "not sure" and "2 working hours" | V-1 | `tests/person.cjs`, `tests/person.mjs` |
 | AC-E10.F1.2 | Both requests have been sent | /staff opens | Each is one needs-human ticket, listed in "To call back" and not in "Could not answer" | V-1 | `tests/person.mjs` |
 | AC-E10.F1.3 | A question the clinic file answers, such as "What is the phone number to call back?" | It is sent | The reply is exactly the reply of the file-only engine; the ask-for-a-person rule does not take it | V-1 | `tests/person.cjs` |
-| AC-E10.F1.4 | The 386 questions of the sweep | Each is answered by the engine | Each reply is exactly the reply of the file-only engine | V-1 | `tests/person.cjs` |
+| AC-E10.F1.4 | The 386 questions of the sweep | Each is answered by the engine | Each reply is exactly the reply of the file-only engine | V-1 | `tests/person.cjs`, `tests/sweep.cjs` |
 | AC-E10.F1.5 | The standard clinic file | The chat page opens | There are seven quick replies and the last is "Talk to a person", also in Hindi and Telugu, with no sideways scroll at 375 px | V-1 | `tests/person.mjs` |
 
 ### E10.F2 Assistant name and the clinic's own quick replies
@@ -705,7 +744,7 @@ As a patient, I want to know the hours of the day I asked for so that I pick a t
 | AC-E14.F4.1 | The standard clinic file | The patient asks to book and names one weekday, in English, Hindi or Telugu | The booking keeps its ticket and the reply adds that day's hours from the file | V-10 | `tests/booking-day.cjs` |
 | AC-E14.F4.2 | The standard clinic file | The booking names no weekday, or two | The reply is as before | V-10 | `tests/booking-day.cjs` |
 | AC-E14.F4.3 | A booking names a day and a time | The ticket is read | The requested time is still on the ticket | V-10 | `tests/booking-day.cjs` |
-| AC-E14.F4.4 | A clinic file without hours | The patient asks to book for a named day | The booking still opens, with no empty line in the reply | V-10 | `tests/booking-day.cjs` |
+| AC-E14.F4.4 | A clinic file without hours | The patient asks to book for a named day | The booking still opens, with no empty line in the reply | V-10 | `tests/booking-day.cjs`, `tests/booking-odd.cjs` |
 
 ## E15 Language menu, New chat, clinic info panel and Clear all
 
@@ -760,3 +799,4 @@ mistake so that I can start a clean round.
 | 21 Nov 2026 | Revised after the build: a Status line on every feature, with the live test line that proves it; what is not built says why. The "Planned check" column is kept as written before the build |
 | 23 Nov 2026 | Epics E10 to E14 added for versions 1.1.0.0 to 1.3.0.0 (17 features, 69 acceptance criteria), each criterion beside the test file that checks it. Epics E1 to E9 are unchanged. Totals now 47 features and 152 criteria |
 | 23 Nov 2026 | Epic E15 added for controls found in the code with no feature: the language menu, New chat, the clinic info panel and Clear all (3 features, 10 criteria). AC-E9.F5.5 added for the recording backup of voice input. The E2 count corrected from 13 to 14 criteria. Totals now 50 features and 164 criteria |
+| 23 Nov 2026 | Reverse-checked against the tests: a table of which test verifies what, naming all 29 test files; test names added beside 22 criteria that a test proves; six criteria added (AC-E1.F1.4, AC-E2.F1.6, AC-E5.F1.4, AC-E7.F1.4, AC-E9.F2.3, AC-E14.F4.5). Totals now 50 features and 170 criteria |

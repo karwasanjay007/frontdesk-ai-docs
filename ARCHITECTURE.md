@@ -119,7 +119,15 @@ The ticket and clinic file shapes, the localStorage keys and the `api/chat` requ
   `vercel.json`.
 - Deploy from PowerShell in the code folder: `vercel deploy --prod --yes`.
 - `OPENROUTER_API_KEY` is a sensitive Production environment variable: hidden in the dashboard and never in
-  the repository, the page code or a document. `OPENROUTER_MODEL` and `OPENROUTER_TTS_MODEL` (default `openai/gpt-audio-mini`) are optional.
+  the repository, the page code or a document. `OPENROUTER_MODEL`, `OPENROUTER_TTS_MODEL` (default `openai/gpt-audio-mini`) and `OPENROUTER_AUDIO_MODEL` (default `google/gemini-2.5-flash-lite`, read by `api/transcribe.js`) are optional.
+- The ticket store's address and token are `KV_REST_API_URL` and `KV_REST_API_TOKEN`; `api/tickets.js` also
+  accepts `UPSTASH_REDIS_REST_URL` and `UPSTASH_REDIS_REST_TOKEN` as other names for them. The desk code is
+  `FRONTDESK_DESK_CODE`. Names only; no value is written in any document.
+- Outside addresses the page or the functions reach: `openrouter.ai` (the model gateway, from `api/chat.js`,
+  `api/tts.js` and `api/transcribe.js`); the Upstash Redis REST address held in the environment (from
+  `api/tickets.js`); `fonts.googleapis.com` and `fonts.gstatic.com` (Google Fonts, the style sheet and the font
+  files, loaded by `index.html`); `wa.me` on a phone and `web.whatsapp.com` (WhatsApp Web) on a computer, for the
+  WhatsApp links built by `waUrl()` in `core.js`; `www.google.com/maps` for the Directions button in `chat.js`.
 - `.vercelignore` keeps off the site: `.vercel`, `.env*`, `brief`, `brand`, `tests`, every `*.md`,
   `kilo.jsonc`, `.aider.conf.yml` and the agent tool folders (`.clinerules`, `.cursor`, `.github`,
   `.vscode`, `.windsurf`).
@@ -224,5 +232,5 @@ stricter guard, engine gaps, call-back details, design".
 | Ticket store function | `api/tickets.js` | `core(request, db, env)`: the rules (patient key, desk code, clean, merge, rate limit), separate from the store; `redisDb`: Upstash Redis over REST, one key per ticket for seven days, a sorted set for the order, a small set per browser key. Answers 503 when no store is configured |
 | Sync add-on | `sync.js` (loaded on `/` and `/staff`) | Chat: sends this patient's tickets when they change, fetches staff replies; key in `frontdesk.synckey`. Staff: `#sync-bar` with `#all-devices` (state in `frontdesk.alldevices`), `#desk-code` (kept for the session only); tickets from other devices carry `remote: true` in this browser and leave when the switch goes off |
 | Ticket numbers, thread, feedback | `staff/staff.js`, `chat.js`, `staff/tools.js` | `.t-no`, `details.t-thread`, `[data-fb]` buttons in `.msg-tools`, ticket field `feedback`, figure `#kpi-feedback` |
-| Environment | Vercel project | `KV_REST_API_URL`, `KV_REST_API_TOKEN` (added by the store), `FRONTDESK_DESK_CODE` (set by the clinic) |
+| Environment | Vercel project | `KV_REST_API_URL`, `KV_REST_API_TOKEN` (added by the store), `FRONTDESK_DESK_CODE` (set by the clinic). `api/tickets.js` also reads `UPSTASH_REDIS_REST_URL` and `UPSTASH_REDIS_REST_TOKEN` as other names for the store's address and token, when the `KV_` pair is not set |
 | Tests | `tests/extras3.mjs`, `tests/sync.mjs`, `tests/tickets-api-live.mjs`, `tests/sync-live.mjs` | 15, 31, 11 and 6 checks |
