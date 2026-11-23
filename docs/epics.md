@@ -1,10 +1,4 @@
-
-| AC-E14.F4.5 | A clinic file where the named day is closed, or its hours are empty or a list | The patient asks to book for that day in English, Hindi or Telugu | The English reply says the day is closed, the Hindi and Telugu replies add no line that contradicts it, and no empty value is printed | V-10 | `tests/booking-odd.cjs` |
-| AC-E9.F2.3 | A needs-human reply with the call-back form beside it | The patient leaves a name and a UK number typed with its leading 0, or a number that is too short | The UK number is saved with +44, shown on the staff card with working call and WhatsApp links and listed in the call-back list; it is not added inside the bot reply; a too-short number is refused with a message | G27 | `tests/callback.mjs` |
-| AC-E7.F1.4 | Either page at widths from 375 to 2560 px | The page is measured | Nothing scrolls sideways, the content reaches the right edge, the message box and Send stay in view, and tap targets are 40 px or more | G23 | `tests/widths.mjs` |
-| AC-E5.F1.4 | A fresh browser on the chat page | The patient asks timings or prices in other words in Hindi, Roman-script Hindi or Telugu | The reply carries the figure from the clinic file, and no ticket waits for a human | S-20, G19 | `tests/wording.mjs` |
-| AC-E2.F1.6 | A different clinic file, with other names, numbers, hours keys, services, doctors and policies, or with a whole section left out | Each question is answered by the engine | Every reply comes from that file, nothing from the sample clinic appears, and no reply prints an empty value | F-1, F-4, [A-6] | `tests/other-clinic.cjs` |
-| AC-E1.F1.4 | A fresh browser on the chat page | The patient sends two questions one straight after the other, and the first reply is slow | The replies come out in the order sent, each with its own ticket, and the last `.bot-msg` answers the last question | G2 | `tests/order.mjs` |# FrontDesk AI: epics, features and acceptance criteria
+# FrontDesk AI: epics, features and acceptance criteria
 
 | | |
 | --- | --- |
@@ -49,7 +43,7 @@ was saved by hand.
 | `tests/order.mjs` | Two questions sent one straight after the other: replies in the order sent, one ticket each, the last `.bot-msg` answers the last question | `last-order-live.txt`: "ALL PASS (5 checks)" | AC-E1.F1.2, AC-E1.F1.4 |
 | `tests/other-clinic.cjs` | A different clinic through the rules engine, then the same file with a whole section left out: nothing from the sample clinic leaks and no empty value is printed | `last-other-clinic.txt`: "PASS different clinic: 46 of 46 as expected"; "ALL PASS" | AC-E2.F1.6, AC-E3.F4.3 |
 | `tests/sweep.cjs` | 386 unseen questions in English, Hindi, Telugu and Roman script through the rules engine, each with its expected kind and the file strings it must carry | `last-sweep.txt`: "ALL PASS (386 questions)" | AC-E3.F4.4, AC-E10.F1.4 |
-| `tests/widths.mjs` | Widths 375 to 2560 px: no sideways scroll, content reaches the right edge, message box and Send in view, targets of 40 px or more | `last-widths-live.txt`: "ALL PASS (20 checks)" | AC-E7.F1.1, AC-E7.F1.2, AC-E7.F1.4 |
+| `tests/widths.mjs` | Widths 375 to 2560 px: no sideways scroll, content reaches the right edge, message box and Send in view, every tap target 44 px or more in height and width, on both pages (the staff page with its folded parts opened) | `last-widths-live.txt`: "ALL PASS (25 checks)" | AC-E7.F1.1, AC-E7.F1.2, AC-E7.F1.3, AC-E7.F1.4 |
 | `tests/wording.mjs` | Timings and prices asked other ways in Hindi, Roman-script Hindi and Telugu: the figure from the file and no ticket waiting for a human | `last-wording-live.txt`: "ALL PASS (14 checks)"; `last-wording-blocked-live.txt` | AC-E5.F1.1, AC-E5.F1.4 |
 | `tests/voice.mjs` | The recording backup for the microphone | `last-voice-live.txt` | AC-E9.F5.5 |
 | `tests/person.cjs`, `tests/person.mjs` | Asking for a person, the assistant name and the clinic's own quick replies | `last-person-engine.txt`, `last-person-live.txt` | E10 |
@@ -99,6 +93,7 @@ As a patient, I want to type a question and get a reply so that I do not have to
 | AC-E1.F1.1 | A fresh browser on the chat page | The patient types "What time do you open on Saturday?" in `#chat-input` and clicks `#chat-send` | A reply appears that says 9:00 am to 8:00 pm | S-1 | `brief.mjs [R1 saturday]` |
 | AC-E1.F1.2 | A question has been sent | The reply is ready | Exactly one new `.bot-msg` is added, complete, and it is the last `.bot-msg` on the page | G2 | `brief.mjs [C2 bot-msg]`, `tests/order.mjs` |
 | AC-E1.F1.3 | The message box is empty or holds only spaces | The patient clicks Send | Nothing is sent, no ticket opens, and no message is shown as an error dialog | G16, G17 | manual |
+| AC-E1.F1.4 | A fresh browser on the chat page | The patient sends two questions one straight after the other, and the first reply is slow | The replies come out in the order sent, each with its own ticket, and the last `.bot-msg` answers the last question | G2 | `tests/order.mjs` |# FrontDesk AI: epics, features and acceptance criteria
 
 ### E1.F2 First visit
 
@@ -142,6 +137,7 @@ my visit.
 | AC-E2.F1.3 | The sample clinic file | The patient asks "Do you take Niva Bupa insurance?" | The reply includes lower-case "cashless" | S-13, G6 | `questions.mjs [Q4]` |
 | AC-E2.F1.4 | The sample clinic file | The patient asks about each other part of the file (parking, lunch break, Sunday, public holidays, payment, EMI, walk-ins, cancelling, first visit, sterilisation, landmark, phone) | Each reply carries that part's words from the file | F-1, D-1 | `questions.mjs [extra]`, `tests/audit.mjs` |
 | AC-E2.F1.5 | Any run of questions | Each reply is read | Every rupee amount, time, doctor name and phone number in it can be found in the clinic file | F-4, S-2 | `brief.mjs [R2 prices in file]`, `tests/audit.mjs` |
+| AC-E2.F1.6 | A different clinic file, with other names, numbers, hours keys, services, doctors and policies, or with a whole section left out | Each question is answered by the engine | Every reply comes from that file, nothing from the sample clinic appears, and no reply prints an empty value | F-1, F-4, [A-6] | `tests/other-clinic.cjs` |
 
 ### E2.F2 Optional language model
 
@@ -294,6 +290,7 @@ As a patient, I want a reply in the language I write in so that I understand it.
 | AC-E5.F1.1 | A fresh browser on the chat page | The patient writes the Saturday question in Devanagari | The reply is in Hindi and keeps "9:00 am to 8:00 pm" as the file writes it | S-20, G19 | `questions.mjs [B1 hindi]`, `tests/bonus.mjs`, `tests/wording.mjs` |
 | AC-E5.F1.2 | A fresh browser on the chat page | The patient writes the Saturday question in Telugu script | The reply is in Telugu and keeps "9:00 am to 8:00 pm" | S-20, G19 | `questions.mjs [B1 telugu]` |
 | AC-E5.F1.3 | An emergency, refusal, medical or not-sure message in Hindi or Telugu | It is sent | The fixed reply comes in that language, with the same rules and ticket status as in English | G19, G4 | `questions.mjs [B1 fixed replies]`, `tests/emergency.mjs` |
+| AC-E5.F1.4 | A fresh browser on the chat page | The patient asks timings or prices in other words in Hindi, Roman-script Hindi or Telugu | The reply carries the figure from the clinic file, and no ticket waits for a human | S-20, G19 | `tests/wording.mjs` |
 
 ### E5.F2 Quick-reply buttons
 
@@ -340,13 +337,14 @@ Goal: the chat and /staff work on a 375 px phone and read well in light and dark
 
 As a patient on a phone, I want the message box always in view so that I can keep chatting.
 
-**Status:** Built. `last-brief-live.txt`: "PASS item 9 phone 375: chat page: no sideways scroll after three messages | scrollWidth 375" and "PASS item 9 phone 375: /staff: no sideways scroll"; `last-widths-live.txt`: "ALL PASS (20 checks)" at 375, 768, 1366, 1920 and 2560 px. The test measures tap targets at 40 px or more ("PASS 375 chat: targets 40 px or more"); 44 px (AC-E7.F1.3) is not measured by a saved test.
+**Status:** Built. `last-brief-live.txt`: "PASS item 9 phone 375: chat page: no sideways scroll after three messages | scrollWidth 375" and "PASS item 9 phone 375: /staff: no sideways scroll"; `last-widths-live.txt`: "ALL PASS (25 checks)" at 375, 768, 1366, 1920 and 2560 px. Since 1.3.0.1 the test measures every tap target at 44 px or more in height and width, on both pages, with the folded parts of the staff page opened ("PASS 375 chat: every tap target is 44 px or more"), which is AC-E7.F1.3.
 
 | ID | Given | When | Then | Trace | Planned check |
 | --- | --- | --- | --- | --- | --- |
 | AC-E7.F1.1 | The chat page at 375 px wide | The patient chats | Nothing scrolls sideways at 375 px and the chat box and send button stay in view | S-9, G23 | `brief.mjs [R9 phone]`, `tests/widths.mjs` |
 | AC-E7.F1.2 | /staff at 375 px wide | Staff open a ticket and reply | Nothing scrolls sideways and the reply box and send button can be reached | G23 | `brief.mjs [R9 phone]`, `tests/widths.mjs` |
-| AC-E7.F1.3 | Either page at 375 px | Every control is measured | Each tap target is at least 44 px | G23 | `brief.mjs [R9 phone]` |
+| AC-E7.F1.3 | Either page at 375 px | Every control is measured | Each tap target is at least 44 px | G23 | `brief.mjs [R9 phone]`, `tests/widths.mjs` (since 1.3.0.1: 44 px in height and width, both pages) |
+| AC-E7.F1.4 | Either page at widths from 375 to 2560 px | The page is measured | Nothing scrolls sideways, the content reaches the right edge, the message box and Send stay in view, and every tap target is 44 px or more in height and width | G23 | `tests/widths.mjs` |
 
 ### E7.F2 Light and dark
 
@@ -449,6 +447,7 @@ As front-desk staff, I want a list of who to call back each morning so that no m
 | --- | --- | --- | --- | --- | --- |
 | AC-E9.F2.1 | Needs-human and booking tickets exist | /staff opens | "To call back" shows first, with each patient's question, its age and any requested time | G27 | `tests/bonus.mjs` |
 | AC-E9.F2.2 | The call list shows | The page is read | `#ticket-queue`, `#staff-reply` and `#staff-send` each still exist once | G27, F-12 | `brief.mjs [C4 ticket queue]`, `[C5 staff ids]` |
+| AC-E9.F2.3 | A needs-human reply with the call-back form beside it | The patient leaves a name and a UK number typed with its leading 0, or a number that is too short | The UK number is saved with +44, shown on the staff card with working call and WhatsApp links and listed in the call-back list; it is not added inside the bot reply; a too-short number is refused with a message | G27 | `tests/callback.mjs` |
 
 ### E9.F3 Continue on WhatsApp
 
@@ -745,6 +744,7 @@ As a patient, I want to know the hours of the day I asked for so that I pick a t
 | AC-E14.F4.2 | The standard clinic file | The booking names no weekday, or two | The reply is as before | V-10 | `tests/booking-day.cjs` |
 | AC-E14.F4.3 | A booking names a day and a time | The ticket is read | The requested time is still on the ticket | V-10 | `tests/booking-day.cjs` |
 | AC-E14.F4.4 | A clinic file without hours | The patient asks to book for a named day | The booking still opens, with no empty line in the reply | V-10 | `tests/booking-day.cjs`, `tests/booking-odd.cjs` |
+| AC-E14.F4.5 | A clinic file where the named day is closed, or its hours are empty or a list | The patient asks to book for that day in English, Hindi or Telugu | The English reply says the day is closed, the Hindi and Telugu replies add no line that contradicts it, and no empty value is printed | V-10 | `tests/booking-odd.cjs` |
 
 ## E15 Language menu, New chat, clinic info panel and Clear all
 

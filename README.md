@@ -9,7 +9,7 @@ FrontDesk AI is the front desk chat for a dental clinic: patients get answers fr
 | Code | `frontdesk-ai` (private while a competition is open) |
 | Built by | Sanjay Karwa, Smart AI for Business |
 | Stack | Plain HTML, CSS and JavaScript with a rules engine in the browser; one Vercel function calling OpenRouter with DeepSeek V4.1 Flash (`deepseek/deepseek-v4.1-flash`), the key on the server only; localStorage |
-| Version | 1.3.0.0 (22 Nov 2026; baseline 1.0.0.0, Sanjay Karwa, 21 Nov 2026) |
+| Version | 1.3.0.1 (23 Nov 2026; baseline 1.0.0.0, Sanjay Karwa, 21 Nov 2026) |
 | Status | Built and live. Every functional test passes on the live link, with the key and with the model blocked (rerun 22 Nov 2026 after two wording fixes, see REPORT.md). The contrast scan finds nothing under 4.5:1; its flagged lines are notes about text on the teal brand colour, not failures. Version 1.1.0.0 (22 Nov 2026) adds four things beside the baseline: a reply and a ticket when a patient asks for a person, search and filters on the staff page, a form for the clinic file, and an assistant name and quick replies set in that file. Every earlier test passes on the live link after it, unedited |
 
 ## For the judges: FrontDesk AI in two minutes
@@ -51,7 +51,7 @@ results in [evidence/](evidence/), build report in [REPORT.md](REPORT.md).
 | How they check: ids, classes, `?q=`, no-key run | (in the hidden-data test) | All met | the same two files; [last-questions-live.txt](evidence/last-questions-live.txt) ALL PASS (16 checks) |
 | Hidden-data test | 60 | Met on our tests; the graders' questions and data are unseen | the files above and [last-engine.txt](evidence/last-engine.txt) ALL PASS (127 checks); [last-emergency-live.txt](evidence/last-emergency-live.txt) ALL PASS (12 checks): bleeding that will not stop, said five other ways in English, Hindi and Telugu (22 Nov 2026); [last-wording-live.txt](evidence/last-wording-live.txt) and [last-wording-blocked-live.txt](evidence/last-wording-blocked-live.txt) ALL PASS (14 checks each): timings and prices asked other ways in Hindi, Roman-script Hindi and Telugu (22 Nov 2026); [last-sweep.txt](evidence/last-sweep.txt) ALL PASS (386 questions): unseen questions written by two reviewers who read only the clinic file, in English, Hindi, Telugu and both typed in Roman letters (22 Nov 2026); [last-other-clinic.txt](evidence/last-other-clinic.txt) ALL PASS: a second clinic with other names, numbers, hours, services and policies, and the same file with a section left out (22 Nov 2026) |
 | Bonus menu, at most 6 count | 30 | All 6 met, both ways | [last-bonus-live.txt](evidence/last-bonus-live.txt) ALL PASS (15 checks) |
-| Phone and light/dark | 10 | Met | [last-widths-live.txt](evidence/last-widths-live.txt) ALL PASS (20 checks, 375 to 2560 px); [last-contrast-live.txt](evidence/last-contrast-live.txt): nothing under 4.5:1 (its flagged lines are text on the teal brand colour at 5.89:1 or more) |
+| Phone and light/dark | 10 | Met | [last-widths-live.txt](evidence/last-widths-live.txt) ALL PASS (25 checks, 375 to 2560 px); [last-contrast-live.txt](evidence/last-contrast-live.txt): nothing under 4.5:1 (its flagged lines are text on the teal brand colour at 5.89:1 or more) |
 
 **What we added, and why.**
 

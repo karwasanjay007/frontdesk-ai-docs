@@ -12,7 +12,7 @@ link, saved in `evidence/`; none of it is the graders' tester.
 | Must do (9 items) | All 9 met, with the key and with the model blocked | `evidence/last-brief-live.txt` ALL PASS (29 checks), `evidence/last-brief-live-nokey.txt` ALL PASS (30 checks) |
 | How they check (ids, classes, `?q=`, no-key run) | All met | the same two files; `evidence/last-questions-live.txt` ALL PASS (16 checks) |
 | Bonus menu (6 count) | All 6 met, both ways | `evidence/last-bonus-live.txt` ALL PASS (15 checks) |
-| Phone and light/dark | No sideways scroll from 375 to 2560 px on both pages; nothing under 4.5:1 in light or dark, at rest or on hover | `evidence/last-widths-live.txt` ALL PASS (20 checks); `evidence/last-contrast-live.txt` (see the note in the evidence table) |
+| Phone and light/dark | No sideways scroll from 375 to 2560 px on both pages; nothing under 4.5:1 in light or dark, at rest or on hover | `evidence/last-widths-live.txt` ALL PASS (25 checks); `evidence/last-contrast-live.txt` (see the note in the evidence table) |
 | Go further (after hours, call-back list, WhatsApp hand-off, any business, voice) | Four of five built; any business only partly, because the word lists that recognise intents are dental | `docs/epics.md` E9; functional review finding 17 |
 | Rules engine and guard, without a browser | ALL PASS (127 checks) | `evidence/last-engine.txt` |
 | Documentation | SPEC-CHECK, PRD, TECH-STACK, ARCHITECTURE, IMPLEMENTATION-PLAN, epics, journeys, data model, schemas, four reviews | this repository |
@@ -111,7 +111,7 @@ Four independent reviews before release, reports in `review/`. One line per revi
 | `evidence/last-brief-live-nokey.txt` | The same with every `/api/` request blocked, plus the label checks | ALL PASS (30 checks) |
 | `evidence/last-questions-live.txt` | The eight sample questions: must include, must not include, ticket status | ALL PASS (16 checks) |
 | `evidence/last-bonus-live.txt` | The six bonus items, also run with the model blocked | ALL PASS (15 checks) |
-| `evidence/last-widths-live.txt` | Scroll width, content edge and target size at 375, 768, 1366, 1920 and 2560 px, both pages | ALL PASS (20 checks) |
+| `evidence/last-widths-live.txt` | Scroll width, content edge and target size at 375, 768, 1366, 1920 and 2560 px, both pages | ALL PASS (25 checks) |
 | `evidence/last-contrast-live.txt` | Contrast in light and dark, at rest and on hover | 17 lines flagged, every one a BLUE-BG note for text on the teal brand colour, measuring 5.89:1 or more; none under 4.5:1, so not a failure |
 | `evidence/last-engine.txt` | The rules engine and the guard in Node: review cases, sample questions, crafted bad model replies | ALL PASS (127 checks) |
 | `evidence/last-emergency-live.txt` | Five ways of saying the bleeding will not stop (three English, one Hindi, one Telugu), each in a fresh browser on the live link: the emergency number first, one new urgent ticket | ALL PASS (12 checks), 22 Nov 2026 |
@@ -368,3 +368,24 @@ reply box.
 
 **Not covered.** Named staff accounts (there is one shared desk code). Test tickets from the release checks stay
 in the store for seven days.
+
+## Version 1.3.0.1 (23 Nov 2026)
+
+A check of the documents against the code found that the acceptance criterion for tap targets asked for 44 px while
+the width test measured 40 px, on the chat page only. The owner chose 44 px.
+
+**What changed.** Sizes only: the quick-reply and filter chips, the skip link, Export, the note summary, and the
+fields, check boxes and buttons of the clinic form go from 40 to 44 px, and are at least 44 px wide. No id, text or
+reply changed.
+
+**The test.** `tests/widths.mjs` was edited on the owner's word, the one earlier test changed in this project
+after the baseline: it now measures height and width at 44 px, on the chat page and on the staff page with its
+folded parts opened, at 375, 768, 1366, 1920 and 2560 px (25 checks). A check box inside a label is measured by its
+label, which is what a finger presses.
+
+**What the live run found.** The switch "Show tickets from all devices" only appears when the ticket store is
+active, so the local run could not see it. The live run measured it and the test rule above was the outcome.
+
+**Tests on the live site.** `evidence/last-widths-live.txt` ALL PASS (25 checks); the brief with the AI and with it
+blocked (29 each), the staff tools (37 and 17), the clinic form (43), the 1.3 extras (15) and asking for a person
+(76): all pass.

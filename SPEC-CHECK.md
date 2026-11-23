@@ -76,7 +76,7 @@ data we have not seen.
 | --- | --- | --- | --- |
 | Hidden-data test: "Our tester runs a different set of data through your live link, and checks the numbers and answers it gets back. A basic build only works on the sample file. A good build works out every number from the data it is given, uses the exact ids above, and still answers when something is missing, such as an empty customer or a removed AI key." | 60 | 60 on our tests; at risk on the graders' | Every must-do and every "How we check" line passes with the key (28 checks) and with the model blocked (30 checks); the eight sample questions pass (16 checks); the engine answers 29 further questions and refuses a clinic file missing phone, address or hours (`last-engine.txt`); after a staff edit the timing and price follow the new file (bonus 6). Not measured: the graders' 20 hidden questions and a file for a different kind of business |
 | Bonus menu: "Each item 5 marks, and at most 6 items count. A script or a screenshot check decides, not taste." | 30 | 30 | All six items pass on the live link, with the key and with the model blocked (`last-bonus-live.txt`, 15 checks) |
-| Phone and light/dark: "No sideways scroll at 375 px wide (5 marks). Readable in both light and dark (5 marks)." | 10 | 10 | Scroll width equals the window width at 375, 768, 1366, 1920 and 2560 px on both pages (`last-widths-live.txt`, 20 checks); `last-contrast-live.txt` finds nothing under 4.5:1 in light or dark, at rest or on hover (its BLUE-BG lines flag text on the teal brand colour and each measures 5.89:1 or more) |
+| Phone and light/dark: "No sideways scroll at 375 px wide (5 marks). Readable in both light and dark (5 marks)." | 10 | 10 | Scroll width equals the window width at 375, 768, 1366, 1920 and 2560 px on both pages (`last-widths-live.txt`, 25 checks); `last-contrast-live.txt` finds nothing under 4.5:1 in light or dark, at rest or on hover (its BLUE-BG lines flag text on the teal brand colour and each measures 5.89:1 or more) |
 | Total | 100 | 100 on our own tests | Our tests, on the sample clinic file and an edited copy of it. The graders' tester may ask other questions and use other data; section 6 lists what that could cost |
 
 ### Scoring coverage map (21 Nov 2026, live link)
@@ -184,7 +184,7 @@ latest saved results:
 | The same with the model blocked | `evidence/last-brief-nokey-live.txt` | ALL PASS (29 checks) |
 | The eight sample questions, with the key and with the model blocked | `evidence/last-questions-live.txt`, `evidence/last-questions-blocked-live.txt` | ALL PASS (16 checks each) |
 | The six bonus items, with the key and with the model blocked | `evidence/last-bonus-live.txt`, `evidence/last-bonus-blocked-live.txt` | ALL PASS (15 checks each) |
-| Phone: no sideways scroll from 375 to 2560 px | `evidence/last-widths-live.txt` | ALL PASS (20 checks) |
+| Phone: no sideways scroll from 375 to 2560 px | `evidence/last-widths-live.txt` | ALL PASS (25 checks) |
 | Light and dark: every text 4.5:1 or better | `evidence/last-contrast-live.txt`, `evidence/last-contrast-measured-live.txt` | Not confirmed by the saved files; see the note below |
 
 So every must-do line, every "How we check" line, every bonus item and the phone mark still hold on the live
