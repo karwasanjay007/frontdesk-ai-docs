@@ -149,7 +149,7 @@ The ticket and clinic file shapes, the localStorage keys and the `api/chat` requ
   browser's 6 s) or a guard failure all end the same way: the file answer with the label "Answered from
   the clinic file" (G15). If the device cannot save a ticket, the reply says so and gives the clinic phone.
 - **Accessibility.** 4.5:1 contrast in every state and both themes (contrast scan, section 10); targets of
-  40 px or more (widths test); labels on the input, send, microphone and Listen buttons.
+  44 px or more (widths test); labels on the input, send, microphone and Listen buttons.
 - **Performance.** The file answer is ready at once; the model adds at most 6 s, and only to answerable
   replies. The warm-up GET removes the function's cold start from the first question; reasoning is off.
 - **Languages.** English, Hindi and Telugu for the fixed replies, the page labels and speech (en-IN, hi-IN,
