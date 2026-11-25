@@ -53,18 +53,20 @@ was saved by hand.
 | `tests/extras3.mjs` | Ticket numbers, the thread and feedback | `last-extras3-live.txt` | AC-E14.F1.1 to AC-E14.F3.4 |
 | `tests/i18n.mjs` | The language menu and New chat | `last-i18n-live.txt`, `last-i18n-blocked-live.txt` | AC-E15.F1.1 to AC-E15.F1.4 |
 | `tests/staffclear.mjs` | Clear all tickets, with Undo | `last-staffclear-live.txt` | AC-E15.F3.1 to AC-E15.F3.3 |
+| `tests/mixed.cjs` | A question that mixes timings with prices or the address gets both from the clinic file; one topic alone is as before; "how much time" and a price the file does not hold stay not sure (engine only) | `last-mixed.txt`: "ALL PASS (17 checks)" | AC-E2.F1.7 |
+| `tests/controls.mjs` | The light and dark button on both pages (colours, 4.5:1, its state, the status line, the choice kept), the skip link by keyboard and by click, and the mixed question with the model blocked | `last-controls-live.txt`: "ALL PASS (20 checks)" | AC-E2.F1.7, AC-E7.F2.2, AC-E7.F3.3 |
 
 ## Epics at a glance
 
 | Epic | Title | Features | Acceptance criteria | PRD trace | Status |
 | --- | --- | --- | --- | --- | --- |
 | E1 | Patient chat | 3 | 9 | S-1, S-19, G1, G2, G16, stage 1 | built (`last-brief-live.txt`) |
-| E2 | Answers from the clinic file | 4 | 15 | S-2, S-8, S-10 to S-13, F-1, F-2, F-4, F-10, D-1, D-2, D-5, G3, G6, G7, G15 | built (`last-brief-live.txt`, `last-engine.txt`) |
+| E2 | Answers from the clinic file | 4 | 16 | S-2, S-8, S-10 to S-13, F-1, F-2, F-4, F-10, D-1, D-2, D-5, G3, G6, G7, G15 | built (`last-brief-live.txt`, `last-engine.txt`) |
 | E3 | Safety | 4 | 13 | S-3 to S-6, S-14 to S-17, F-3, F-6 to F-9, G4, G5, G8, G9 | built (`last-brief-live.txt`, `last-engine.txt`) |
 | E4 | Tickets and staff page | 3 | 11 | S-7, S-21, S-22, F-5, D-3, D-4, D-7, G10 to G13, G20, G21, Q-3, Q-4 | built (`last-brief-live.txt`, `last-bonus-live.txt`) |
 | E5 | Languages and quick replies | 2 | 6 | S-20, S-24, G19, G22, stage 2 | built (`last-bonus-live.txt`) |
 | E6 | Clinic data editing | 2 | 4 | S-23, S-25, F-11, G18, Q-1 | built (`last-bonus-live.txt`) |
-| E7 | Phone, themes, accessibility | 3 | 7 | S-9, G23, G24 | built; accessibility checked by hand only (`last-widths-live.txt`, `last-contrast-live.txt`) |
+| E7 | Phone, themes, accessibility | 3 | 9 | S-9, G23, G24 | built; the skip link and the theme button tested since 1.3.0.2, the rest of accessibility checked by hand (`last-controls-live.txt`, `last-widths-live.txt`, `last-contrast-live.txt`) |
 | E8 | Grader contract and robustness | 4 | 11 | S-18, S-19, F-12, F-13, G1, G2, G14, G16, G17, G25 | built (both runs ALL PASS) |
 | E9 | Go further: after hours, call list, WhatsApp hand-off, any business, voice | 5 | 14 | S-26, S-27, D-8, G26 to G30, V-18, stage 3 | partly built: four of five built; any business only partly (dental word lists) |
 | E10 | Asking for a person and assistant settings (1.1) | 2 | 9 | V-1, V-4 | built (`last-person-engine.txt`, `last-person-live.txt`) |
@@ -73,7 +75,7 @@ was saved by hand.
 | E13 | Tickets shared across devices (1.3) | 4 | 20 | V-14 | built, behind the clinic's desk code (`last-sync-live.txt`, `last-tickets-api-live.txt`, `last-tickets-redis.txt`) |
 | E14 | Ticket numbers, thread, feedback and the booking day note (1.2 and 1.3) | 4 | 14 | V-10 to V-13 | built (`last-extras3-live.txt`, `last-booking-day.txt`) |
 | E15 | Language menu, New chat, clinic info panel and Clear all (1.3) | 3 | 10 | V-15 to V-17 | built; the clinic info panel and the empty-queue message are not covered by a test (`last-i18n-live.txt`, `last-staffclear-live.txt`) |
-| **Total** | | **50** | **170** | | |
+| **Total** | | **50** | **173** | | |
 
 ---
 
@@ -138,6 +140,7 @@ my visit.
 | AC-E2.F1.4 | The sample clinic file | The patient asks about each other part of the file (parking, lunch break, Sunday, public holidays, payment, EMI, walk-ins, cancelling, first visit, sterilisation, landmark, phone) | Each reply carries that part's words from the file | F-1, D-1 | `questions.mjs [extra]`, `tests/audit.mjs` |
 | AC-E2.F1.5 | Any run of questions | Each reply is read | Every rupee amount, time, doctor name and phone number in it can be found in the clinic file | F-4, S-2 | `brief.mjs [R2 prices in file]`, `tests/audit.mjs` |
 | AC-E2.F1.6 | A different clinic file, with other names, numbers, hours keys, services, doctors and policies, or with a whole section left out | Each question is answered by the engine | Every reply comes from that file, nothing from the sample clinic appears, and no reply prints an empty value | F-1, F-4, [A-6] | `tests/other-clinic.cjs` |
+| AC-E2.F1.7 | The sample clinic file | The patient asks "What are your timings and prices?", a price word with no treatment named beside the word of another topic the file answers | The reply gives the price list and the timings (9:00 am to 8:00 pm, Rs 6,500 to Rs 9,000), and no ticket waits for a human; a price for something the file does not hold, asked beside a timing, is still not sure | S-2, F-1, V-19 | `tests/mixed.cjs`, `tests/controls.mjs` (since 1.3.0.2) |
 
 ### E2.F2 Optional language model
 
@@ -355,17 +358,19 @@ As a patient, I want to read the chat in either theme so that it suits my phone.
 | ID | Given | When | Then | Trace | Planned check |
 | --- | --- | --- | --- | --- | --- |
 | AC-E7.F2.1 | Light and dark themes | Every state is reached (message sent, label, staff reply, notices, hover and focus on every control, staff actions) | Every text is at least 4.5:1 against its real background | G24 | `contrast.mjs` |
+| AC-E7.F2.2 | Either page, in the light theme | The theme button is pressed, then pressed again | The colours change and change back; the button carries its pressed state and names the theme the next press gives; a status line says "Dark theme on" or "Light theme on"; the choice is kept after a reload | G24, V-20 | `tests/controls.mjs` (since 1.3.0.2) |
 
 ### E7.F3 Accessibility
 
 As a patient using a screen reader or keyboard, I want to use the chat fully.
 
-**Status:** Built, checked by hand only. The chat log is `aria-live="polite"` and the voice and call-back fields carry labels; no keyboard-only test is saved.
+**Status:** Built. The skip link is tested since 1.3.0.2 (`last-controls-live.txt`: "PASS skip link: Enter puts the cursor in the message box"); the rest is checked by hand: the chat log is `aria-live="polite"` and the voice and call-back fields carry labels; no test walks every control by keyboard.
 
 | ID | Given | When | Then | Trace | Planned check |
 | --- | --- | --- | --- | --- | --- |
 | AC-E7.F3.1 | The chat page | A reply is added | It is announced to screen readers | G2 | manual |
 | AC-E7.F3.2 | Either page | It is used by keyboard only | Every control can be reached and shows where focus is | G24 | manual |
+| AC-E7.F3.3 | The chat page | The skip link gets the keyboard focus, then Enter or a click | It is on screen and 44 px high while it has the focus, and the cursor lands in the message box | G24, V-21 | `tests/controls.mjs` (since 1.3.0.2) |
 
 ## E8 Grader contract and robustness
 
@@ -800,3 +805,4 @@ mistake so that I can start a clean round.
 | 23 Nov 2026 | Epics E10 to E14 added for versions 1.1.0.0 to 1.3.0.0 (17 features, 69 acceptance criteria), each criterion beside the test file that checks it. Epics E1 to E9 are unchanged. Totals now 47 features and 152 criteria |
 | 23 Nov 2026 | Epic E15 added for controls found in the code with no feature: the language menu, New chat, the clinic info panel and Clear all (3 features, 10 criteria). AC-E9.F5.5 added for the recording backup of voice input. The E2 count corrected from 13 to 14 criteria. Totals now 50 features and 164 criteria |
 | 23 Nov 2026 | Reverse-checked against the tests: a table of which test verifies what, naming all 29 test files; test names added beside 22 criteria that a test proves; six criteria added (AC-E1.F1.4, AC-E2.F1.6, AC-E5.F1.4, AC-E7.F1.4, AC-E9.F2.3, AC-E14.F4.5). Totals now 50 features and 170 criteria |
+| 25 Nov 2026 | Version 1.3.0.2, after the project feedback: three criteria added (AC-E2.F1.7 a question that mixes timings and prices, AC-E7.F2.2 the theme button says which theme is on, AC-E7.F3.3 the skip link) and two test files (`tests/mixed.cjs`, `tests/controls.mjs`), 31 test files in all. Totals now 50 features and 173 criteria |

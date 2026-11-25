@@ -1,0 +1,18 @@
+PASS What are your timings and prices? -> answer
+PASS timings and prices -> answer
+PASS What are your prices and timings? -> answer
+PASS What are your hours and fees? -> answer
+PASS Tell me your timings and charges -> answer
+PASS What time do you open and what are your prices? -> answer
+PASS What are your timings, prices and address? -> answer
+PASS Where are you and what are your charges? -> answer
+PASS timing aur price batao -> answer
+PASS What are your timings? -> answer
+PASS What are your prices? -> answer
+PASS What time do you open on Saturday? -> answer
+PASS What time do you open on Saturday and how much is a cleaning? -> answer
+PASS How much time does it take? -> notsure
+PASS How much time? -> notsure
+PASS How much is Invisalign and what are your timings? -> notsure
+PASS What is the price of a veneer and when do you open? -> notsure
+ALL PASS (17 checks)

@@ -389,3 +389,39 @@ active, so the local run could not see it. The live run measured it and the test
 **Tests on the live site.** `evidence/last-widths-live.txt` ALL PASS (25 checks); the brief with the AI and with it
 blocked (29 each), the staff tools (37 and 17), the clinic form (43), the 1.3 extras (15) and asking for a person
 (76): all pass.
+
+## Version 1.3.0.2 (25 Nov 2026)
+
+The project feedback of 25 Nov 2026 came from a browser that typed one question and pressed four controls. It
+named three things. Each was reproduced before it was changed.
+
+**A question that mixes two topics.** "What are your timings and prices?" got the not-sure reply. A price word
+with no treatment named asks for the price list, but only when every other word in the question was a general
+one. "Timings" was not, so the list was not chosen, and the rule that never answers a price the file does not
+hold emptied the whole reply, the timings with it. Now the words of another topic the file answers (timings,
+hours, open, close, when, address, location, where) count as general words, so the reply gives the price list
+and the timings, both from the clinic file. "How much time does it take?" is still not sure, and so is a price
+for something the file does not hold, such as Invisalign, asked beside a timing.
+
+**The light and dark button.** The colours did switch: the page background went from rgb(243, 246, 246) to
+rgb(13, 21, 23), with text at 15.3 to 1 in light and 16.0 to 1 in dark. Nothing in the page text or on the button
+said so. The button now carries its pressed state, names the theme the next press gives, and a status line for
+screen readers says "Dark theme on" or "Light theme on", on the chat page and the staff page.
+
+**The skip link.** It is a link to the message box, shown when it has the keyboard focus. A click or Enter now
+puts the cursor in the message box in every browser.
+
+**The tests.** Two new files; no earlier test was edited. `tests/mixed.cjs` runs 17 questions through the rules
+engine: mixed questions get both parts, one topic alone is as before, and the two not-sure cases stay not sure.
+`tests/controls.mjs` presses the theme button and the skip link in a browser on both pages, and asks the
+feedback's own question with the model blocked.
+
+**Tests on the live site.** `evidence/last-controls-live.txt` ALL PASS (20 checks); `evidence/last-brief-live.txt`
+ALL PASS (29 checks) with the AI, and 29 with it blocked; `evidence/last-questions-live.txt` ALL PASS (16 checks).
+On the engine: `evidence/last-mixed.txt` ALL PASS (17 checks), `evidence/last-engine.txt` ALL PASS,
+`evidence/last-sweep.txt` ALL PASS (386 questions). With the AI on, the feedback's question gives the prices and
+the timings.
+
+**Not covered.** The staff tools, the clinic form, shared tickets, voice, the emergency, wording, call-back, audit
+and bonus suites were not rerun, because this change does not touch what they test. "Do you take insurance and
+what are your prices?" answers the insurance part only.

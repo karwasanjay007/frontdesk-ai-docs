@@ -180,3 +180,16 @@ records them as built.
   grants no permission.
 - The contrast of the clinic file form was not measured on its own; it uses the page's own colour tokens.
 - The assistant name and the clinic's own quick replies apply to every language as written in the file.
+
+## Version 1.3.0.2, as built (25 Nov 2026)
+
+Three corrections after the project feedback, each reproduced first, changed in one place and guarded by a new
+test; no earlier test was edited.
+
+- `core.js`: the list of general words beside a price word now holds the words of the other topics the file
+  answers, and "how much time" never asks for the price list (`tests/mixed.cjs`, 17 checks).
+- `core.js`: `toggleTheme()` calls `themeNote()`, which sets the button's pressed state and name and writes the
+  status line `#theme-status`; both pages use it (`tests/controls.mjs`, 20 checks).
+- `chat.js`: a click handler on the skip link puts the cursor in `#chat-input`.
+- Order of work: engine suites, the new tests and the suites of the graded path on a local server, the deploy,
+  then controls, brief (with the AI and with it blocked) and questions on the live link.

@@ -63,7 +63,7 @@ PASS మీరు ఎన్ని గంటలకు మూసేస్తార
 PASS Do you take Niva Bupa? -> answer/answered | Yes, we are cashless with Star Health and Niva Bupa. For other insurer
 PASS कितने का है -> notsure/needs human | मुझे इसके बारे में पक्का पता नहीं है (not sure), और मैं अंदाज़ा नहीं ल
 PASS Invisalign कितने का है -> notsure/needs human | मुझे इसके बारे में पक्का पता नहीं है (not sure), और मैं अंदाज़ा नहीं ल
-PASS मुझे कल शाम 5 बजे का अपॉइंटमेंट चाहिए -> booking/needs human | धन्यवाद। मैंने आपका अनुरोध (tomorrow, Mon 23 Nov 2026, evening) हमारी 
+PASS मुझे कल शाम 5 बजे का अपॉइंटमेंट चाहिए -> booking/needs human | धन्यवाद। मैंने आपका अनुरोध (tomorrow, Thu 26 Nov 2026, evening) हमारी 
 PASS My gum has been bleeding non stop for an hour -> emergency/urgent | Call 98000 00123 now. Heavy bleeding that does not stop, swelling of t
 PASS I can't stop the bleeding -> emergency/urgent | Call 98000 00123 now. Heavy bleeding that does not stop, swelling of t
 PASS I cannot stop the bleeding from my gums -> emergency/urgent | Call 98000 00123 now. Heavy bleeding that does not stop, swelling of t
@@ -116,7 +116,7 @@ PASS general price: How much is a denture? -> notsure | I am not sure about that
 PASS general price: What is the price of veneers? -> notsure | I am not sure about that, and I will not guess. I have passe
 PASS the Doctors chip is answered when the file says nothing about children: Who are your doctors? | आपके डॉक्टर कौन हैं? | మీ డాక్టర్లు ఎవరు?
 PASS Hindi: "Wednesday and Saturday" reads बुधवार और शनिवार | बच्चों को Dr. Sneha Rao (Paediatric dentist, children under 14) बुधवार और शनिवार
-PASS booking time written as 17:00 -> booking tomorrow, Mon 23 Nov 2026, 5:00 pm
+PASS booking time written as 17:00 -> booking tomorrow, Thu 26 Nov 2026, 5:00 pm
 PASS sample: What time do you open on Saturday?
 PASS sample: How much is a root canal?
 PASS sample: Which doctor sees children?

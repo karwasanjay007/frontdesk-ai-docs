@@ -311,6 +311,9 @@ did not have. Fourteen were added in three versions on 22 Nov 2026. None is aske
 | V-16 | Clinic info panel and open or closed sign | 1.3 | Patient |
 | V-17 | Clear all tickets, with Undo | 1.3 | Front-desk staff, tester |
 | V-18 | Backup for voice input | 1.3 | Patient |
+| V-19 | A question that mixes timings and prices | 1.3.0.2 | Patient, tester |
+| V-20 | The theme button says which theme is on | 1.3.0.2 | Patient, staff, screen-reader users |
+| V-21 | The skip link works by click and by keyboard | 1.3.0.2 | Keyboard and screen-reader users |
 
 ### Requirements
 
@@ -334,8 +337,11 @@ did not have. Fourteen were added in three versions on 22 Nov 2026. None is aske
 | V-16 | The header shows whether the clinic is open now. A Clinic info button opens a panel with today's hours, Call, WhatsApp and Directions, the week's hours, the doctors and the address. It closes with its close button or Escape |
 | V-17 | Staff can clear all tickets with one press and no dialog. The queue and the patient chat in that browser empty. Undo puts them back for about 10 seconds |
 | V-18 | When the device's own speech service does not answer, the microphone records a short clip and the product turns it into text. The text then goes through the same rules as typed text. The microphone is hidden only where neither way works |
+| V-19 | A question that asks for prices without naming a treatment, beside another topic the clinic file answers (timings, the address), gets the price list and that other topic, both from the file. A price for something the file does not hold is still not sure, whatever else the question asks |
+| V-20 | Pressing the light and dark button changes the colours, and the page says so: the button carries its pressed state and names the theme the next press gives, and a status line tells a screen reader which theme is on |
+| V-21 | The skip link puts the cursor in the message box, by Enter and by a click, in every browser |
 
-Acceptance criteria for each are in `docs/epics.md`, epics E10 to E15.
+Acceptance criteria for each are in `docs/epics.md`, epics E10 to E15; those of V-19 to V-21 (version 1.3.0.2, 25 Nov 2026, written after the project feedback) are under E2 and E7.
 
 ### Out of scope
 

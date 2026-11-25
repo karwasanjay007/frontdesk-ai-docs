@@ -1,0 +1,21 @@
+PASS chat: one press switches to dark and the colours change | rgb(243, 246, 246) -> rgb(13, 21, 23)
+PASS chat: dark text on its background is at least 4.5 to 1 | 16.0
+PASS chat: the page text says the dark theme is on
+PASS chat: the button is pressed and names the next theme | Dark theme is on. Switch to light theme
+PASS chat: a second press is back to light | rgb(243, 246, 246)
+PASS chat: light text on its background is at least 4.5 to 1 | 15.3
+PASS chat: the choice is kept after a reload
+PASS chat: no page error | 
+PASS staff: one press switches to dark and the colours change | rgb(243, 246, 246) -> rgb(13, 21, 23)
+PASS staff: dark text on its background is at least 4.5 to 1 | 16.0
+PASS staff: the page text says the dark theme is on
+PASS staff: the button is pressed and names the next theme | Dark theme is on. Switch to light theme
+PASS staff: a second press is back to light | rgb(243, 246, 246)
+PASS staff: light text on its background is at least 4.5 to 1 | 15.3
+PASS staff: the choice is kept after a reload
+PASS staff: no page error | 
+PASS skip link: on screen and 44 px high when it has the focus | {"x":8,"y":8,"width":206.90625,"height":44}
+PASS skip link: Enter puts the cursor in the message box
+PASS skip link: a click puts the cursor in the message box
+PASS mixed question: timings and prices both answered from the file | Consultation: Rs 400. Adjusted against treatment if you start within 7
+ALL PASS (20 checks)

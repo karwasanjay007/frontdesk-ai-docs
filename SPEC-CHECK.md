@@ -218,5 +218,8 @@ Features the brief does not ask for. Each is kept apart from what the tester rea
 | The patient's chat thread inside a ticket | 1.3.0.0 | Folded by default; each question is still its own ticket | `last-extras3-live.txt` |
 | Patient feedback on a reply | 1.3.0.0 | The buttons sit beside the reply, never inside `.bot-msg` | `last-extras3-live.txt` |
 | Tickets shared across devices, behind the clinic's desk code | 1.3.0.0 | The staff page opens with this browser's tickets only; the switch is off by default. If the store is missing, blocked or slow, both pages behave as before | `last-sync-live.txt` (31), `last-tickets-api-live.txt` (11), `last-sync-real-store-live.txt` (6), `last-sync-staff-real-store-live.txt`, `last-tickets-redis.txt` (9) |
+| A question that mixes timings and prices gets both | 1.3.0.2 | The Saturday answer, a single price, and "not sure" for a price the file does not hold are as before | `last-mixed.txt` (17), `last-controls-live.txt` (20), `last-brief-live.txt` (29), `last-questions-live.txt` (16) |
+| The theme button says which theme is on | 1.3.0.2 | The colours, the button's id and the stored choice are unchanged; the status line is outside `.bot-msg` and `#ticket-queue` | `last-controls-live.txt` |
+| The skip link puts the cursor in the message box | 1.3.0.2 | The link, its text and `#chat-input` are unchanged | `last-controls-live.txt` |
 
 All evidence files are in `evidence/`.
