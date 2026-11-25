@@ -33,6 +33,7 @@ was saved by hand.
 | `tests/brief.mjs` | Every "Done when" and "How we check" line of the brief, in a fresh browser, with and without the key | `last-brief-live.txt`, `last-brief-nokey-live.txt` | E1 to E9, as each row names |
 | `tests/questions.mjs` | The eight sample questions with must include and must not include, plus extras, in both runs | `last-questions-live.txt`, `last-questions-blocked-live.txt` | E2, E3, E5, E8, as each row names |
 | `tests/contrast.mjs` | Text contrast in light and dark, every state | `last-contrast-live.txt`, `last-contrast-measured-live.txt` | AC-E7.F2.1 |
+| `tests/contrast-true.mjs` | Every text on both pages against the background really shown (part-transparent layers laid over each other), light and dark, at rest and after an urgent question | `last-contrast-true-live.txt`: "ALL PASS (10 checks)" | AC-E7.F2.1 |
 | `tests/audit.mjs` | 27 grader-style questions from the brief audit, checked against the clinic file, with the key and with `/api/` blocked | `last-audit-ai-live.txt`: "ALL PASS (45 questions)"; `last-audit-blocked-live.txt` | AC-E2.F1.4, AC-E2.F1.5 |
 | `tests/bonus.mjs` | The six bonus items: Hindi and Telugu, booking, priority and age, edit data, quick replies, replies follow the edit | `last-bonus-live.txt`: "ALL PASS (15 checks)"; `last-bonus-blocked-live.txt` | AC-E4.F3.1, AC-E4.F3.2, AC-E5.F1.1, AC-E5.F2.1, AC-E6.F1.1, AC-E6.F2.1, AC-E9.F2.1 |
 | `tests/booking-odd.cjs` | The booking day note with unusual clinic files: a closed day in Hindi or Telugu, an empty or list value (engine only) | `last-booking-odd.txt`: "ALL PASS (6 checks)" | AC-E14.F4.4, AC-E14.F4.5 |
@@ -353,11 +354,11 @@ As a patient on a phone, I want the message box always in view so that I can kee
 
 As a patient, I want to read the chat in either theme so that it suits my phone.
 
-**Status:** Built. `last-contrast-live.txt` lists only BLUE-BG lines, which flag white or pale text on the teal brand colour; every one measures 5.89:1 or higher (for example "BLUE-BG 7.61 button#chat-send "Send""), so none is under 4.5:1.
+**Status:** Built. `last-contrast-true-live.txt` (25 Nov 2026): "ALL PASS (10 checks)", lowest 5.94:1 on both pages in light and dark. `last-contrast-live.txt` lists BLUE-BG lines, which flag white or pale text on the teal brand colour at 7.61:1 or higher, and two lines it misreads against a part-transparent white box (explained in `SPEC-CHECK.md`); none is under 4.5:1.
 
 | ID | Given | When | Then | Trace | Planned check |
 | --- | --- | --- | --- | --- | --- |
-| AC-E7.F2.1 | Light and dark themes | Every state is reached (message sent, label, staff reply, notices, hover and focus on every control, staff actions) | Every text is at least 4.5:1 against its real background | G24 | `contrast.mjs` |
+| AC-E7.F2.1 | Light and dark themes | Every state is reached (message sent, label, staff reply, notices, hover and focus on every control, staff actions) | Every text is at least 4.5:1 against its real background | G24 | `contrast.mjs`, `tests/contrast-true.mjs` (since 25 Nov 2026) |
 | AC-E7.F2.2 | Either page, in the light theme | The theme button is pressed, then pressed again | The colours change and change back; the button carries its pressed state and names the theme the next press gives; a status line says "Dark theme on" or "Light theme on"; the choice is kept after a reload | G24, V-20 | `tests/controls.mjs` (since 1.3.0.2) |
 
 ### E7.F3 Accessibility
@@ -806,3 +807,4 @@ mistake so that I can start a clean round.
 | 23 Nov 2026 | Epic E15 added for controls found in the code with no feature: the language menu, New chat, the clinic info panel and Clear all (3 features, 10 criteria). AC-E9.F5.5 added for the recording backup of voice input. The E2 count corrected from 13 to 14 criteria. Totals now 50 features and 164 criteria |
 | 23 Nov 2026 | Reverse-checked against the tests: a table of which test verifies what, naming all 29 test files; test names added beside 22 criteria that a test proves; six criteria added (AC-E1.F1.4, AC-E2.F1.6, AC-E5.F1.4, AC-E7.F1.4, AC-E9.F2.3, AC-E14.F4.5). Totals now 50 features and 170 criteria |
 | 25 Nov 2026 | Version 1.3.0.2, after the project feedback: three criteria added (AC-E2.F1.7 a question that mixes timings and prices, AC-E7.F2.2 the theme button says which theme is on, AC-E7.F3.3 the skip link) and two test files (`tests/mixed.cjs`, `tests/controls.mjs`), 31 test files in all. Totals now 50 features and 173 criteria |
+| 25 Nov 2026 | Contrast and voice rerun on the live link. `tests/contrast-true.mjs` added beside `tests/contrast.mjs`, which misreads a part-transparent background; 32 test files in all. The E7.F2 status line corrected. No criterion added |

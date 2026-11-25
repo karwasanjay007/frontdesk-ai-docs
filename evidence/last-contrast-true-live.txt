@@ -1,0 +1,11 @@
+PASS light chat at rest: 18 texts, lowest 6.54 (div#greeting "Ask about timings, prices, doctors, insu" text 74,91,95 on 243,246,246)
+PASS light chat: #fine-text 7.07 span#fine-text "Messages stay in this browser and reach " text 74,91,95 on 254,254,254
+PASS light chat: #emg-link 7.56 a#emg-link "98000 00123" text 11,93,99 on 254,254,254
+PASS light chat after an urgent question: 22 texts, lowest 6.10 (small "Answered from the clinic file" text 74,91,95 on 232,239,239)
+PASS light staff page with the urgent ticket: 71 texts, lowest 6.10 (span "Needs human 0" text 74,91,95 on 232,239,239)
+PASS dark chat at rest: 18 texts, lowest 7.66 (a#emg-link "98000 00123" text 70,194,184 on 20,32,35)
+PASS dark chat: #fine-text 8.42 span#fine-text "Messages stay in this browser and reach " text 169,188,190 on 20,32,35
+PASS dark chat: #emg-link 7.66 a#emg-link "98000 00123" text 70,194,184 on 20,32,35
+PASS dark chat after an urgent question: 22 texts, lowest 5.94 (div "My face is swelling and I cannot breathe" text 255,255,255 on 31,111,105)
+PASS dark staff page with the urgent ticket: 71 texts, lowest 7.41 (span "Needs human 0" text 169,188,190 on 28,43,46)
+ALL PASS (10 checks)

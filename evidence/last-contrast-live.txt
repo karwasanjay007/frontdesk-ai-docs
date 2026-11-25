@@ -1,14 +1,21 @@
+=== chat page ===
 --- light at rest /
 BLUE-BG 7.61 button "Talk to a person" fg 255,255,255 bg 11,93,99
 BLUE-BG 7.61 span "Send" fg 255,255,255 bg 11,93,99
 2.94 span#fine-text "Messages stay in this browser and reach only the c" fg 74,91,95 bg 1,1,1
 2.74 a#emg-link "98000 00123" fg 11,93,99 bg 1,1,1
 --- light hover /
-BLUE-BG 7.94 button "Talk to a person" fg 255,255,255 bg 11,90,96
+BLUE-BG 8.52 button "Talk to a person" fg 255,255,255 bg 10,85,91
 --- light hover /
-BLUE-BG 7.83 span "Send" fg 255,255,255 bg 11,91,97
---- dark hover /
-BLUE-BG 8.34 button "Doctors" fg 191,230,227 bg 37,63,69
---- dark hover /
-BLUE-BG 8.34 button "Insurance" fg 191,230,227 bg 37,63,69
-8 PROBLEMS
+BLUE-BG 8.17 span "Send" fg 255,255,255 bg 10,88,94
+6 PROBLEMS
+
+=== staff page ===
+--- light at rest staff
+BLUE-BG 7.61 button "All" fg 255,255,255 bg 11,93,99
+BLUE-BG 7.61 button "All types" fg 255,255,255 bg 11,93,99
+BLUE-BG 7.61 button#cf-save "Save clinic file" fg 255,255,255 bg 11,93,99
+BLUE-BG 7.61 button#clinic-save "Save clinic file" fg 255,255,255 bg 11,93,99
+--- light hover staff
+BLUE-BG 8.17 button#clinic-save "Save clinic file" fg 255,255,255 bg 10,88,94
+5 PROBLEMS

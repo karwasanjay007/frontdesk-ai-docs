@@ -112,7 +112,7 @@ Four independent reviews before release, reports in `review/`. One line per revi
 | `evidence/last-questions-live.txt` | The eight sample questions: must include, must not include, ticket status | ALL PASS (16 checks) |
 | `evidence/last-bonus-live.txt` | The six bonus items, also run with the model blocked | ALL PASS (15 checks) |
 | `evidence/last-widths-live.txt` | Scroll width, content edge and target size at 375, 768, 1366, 1920 and 2560 px, both pages | ALL PASS (25 checks) |
-| `evidence/last-contrast-live.txt` | Contrast in light and dark, at rest and on hover | 17 lines flagged, every one a BLUE-BG note for text on the teal brand colour, measuring 5.89:1 or more; none under 4.5:1, so not a failure |
+| `evidence/last-contrast-live.txt`, `evidence/last-contrast-true-live.txt` | Contrast in light and dark | Rerun on 25 Nov 2026. The true-background test: ALL PASS (10 checks): every text on both pages, in light and dark, at rest and after an urgent question, against the background really shown; the lowest is 5.94:1. The scan: the scan of 25 Nov 2026 flags 11 lines: nine are BLUE-BG notes for text on the teal brand colour at 7.61:1 or more, and two (`#fine-text` 2.94, `#emg-link` 2.74) are a misreading, because the scan takes a background written as `color(srgb 1 1 1 / 0.92)` for near-black; none is a failure |
 | `evidence/last-engine.txt` | The rules engine and the guard in Node: review cases, sample questions, crafted bad model replies | ALL PASS (127 checks) |
 | `evidence/last-emergency-live.txt` | Five ways of saying the bleeding will not stop (three English, one Hindi, one Telugu), each in a fresh browser on the live link: the emergency number first, one new urgent ticket | ALL PASS (12 checks), 22 Nov 2026 |
 | `evidence/last-wording-live.txt`, `evidence/last-wording-blocked-live.txt` | Six timing and price questions said other ways (four Hindi, one Roman-script Hindi, one Telugu), each in a fresh browser on the live link: the figure from the clinic file is in the reply and no ticket waits for a human; with the key and with every `/api/` request blocked | ALL PASS (14 checks each), 22 Nov 2026 |
@@ -428,6 +428,14 @@ questions and 45, languages 11 and 11, wording 14 and 14, emergency 12, call-bac
 reply order 5, the controls 20, the staff tools 37 and 17, the clinic form 43, asking for a person 16, the 1.3
 extras 15 and shared tickets 31. The results are the `last-*-live.txt` files in `evidence/`.
 
-**Not covered.** The contrast scan and the voice test were not rerun. The staff list of all devices against the
+**Contrast and voice on the live site (25 Nov 2026, late evening).** `evidence/last-voice-live.txt` ALL PASS (2
+checks): a recorded question played into the microphone arrives as text and is answered. The contrast scan was
+rerun and read. Its two lines under 4.5:1 are a misreading: `tests/contrast.mjs` takes a background written as
+`color(srgb 1 1 1 / 0.92)` for near-black. Against the background really shown they measure 7.07:1 and 7.56:1.
+The scan was left as written, and a new test, `tests/contrast-true.mjs`, measures every text on both pages in
+light and dark, at rest and after an urgent question: `evidence/last-contrast-true-live.txt` ALL PASS (10 checks),
+lowest 5.94:1. It does not read a background picture or gradient, and it does not hover.
+
+**Not covered.** The staff list of all devices against the
 real store needs the clinic's desk code, which only the owner types, and was not rerun. "Do you take insurance
 and what are your prices?" answers the insurance part only.
