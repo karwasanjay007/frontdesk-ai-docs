@@ -314,6 +314,7 @@ did not have. Fourteen were added in three versions on 22 Nov 2026. None is aske
 | V-19 | A question that mixes timings and prices | 1.3.0.2 | Patient, tester |
 | V-20 | The theme button says which theme is on | 1.3.0.2 | Patient, staff, screen-reader users |
 | V-21 | The skip link works by click and by keyboard | 1.3.0.2 | Keyboard and screen-reader users |
+| V-22 | A reply or a question is sent even when its tab goes to the background | 1.3.0.3 | Front-desk staff, patient |
 
 ### Requirements
 
@@ -340,8 +341,9 @@ did not have. Fourteen were added in three versions on 22 Nov 2026. None is aske
 | V-19 | A question that asks for prices without naming a treatment, beside another topic the clinic file answers (timings, the address), gets the price list and that other topic, both from the file. A price for something the file does not hold is still not sure, whatever else the question asks |
 | V-20 | Pressing the light and dark button changes the colours, and the page says so: the button carries its pressed state and names the theme the next press gives, and a status line tells a screen reader which theme is on |
 | V-21 | The skip link puts the cursor in the message box, by Enter and by a click, in every browser |
+| V-22 | A staff reply, and a patient's question, reach the shared ticket store even when the tab is put in the background or closed straight after sending. A tab in the background does not ask the server for news |
 
-Acceptance criteria for each are in `docs/epics.md`, epics E10 to E15; those of V-19 to V-21 (version 1.3.0.2, 25 Nov 2026, written after the project feedback) are under E2 and E7.
+Acceptance criteria for each are in `docs/epics.md`, epics E10 to E15; those of V-19 to V-21 (version 1.3.0.2, 25 Nov 2026, written after the project feedback) are under E2 and E7, and those of V-22 (version 1.3.0.3) under E13.
 
 ### Out of scope
 

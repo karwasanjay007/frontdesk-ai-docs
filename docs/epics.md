@@ -51,6 +51,8 @@ was saved by hand.
 | `tests/tools.mjs`, `tests/tools2.mjs` | The staff queue tools | `last-tools-live.txt`, `last-tools2-live.txt` | E11 |
 | `tests/form.mjs` | The clinic file form | `last-form-live.txt` | E12 |
 | `tests/sync.mjs`, `tests/sync-live.mjs`, `tests/sync-wait-live.mjs`, `tests/tickets-api-live.mjs`, `tests/tickets-redis.cjs` | Tickets shared across devices and the ticket store's rules | `last-sync-live.txt`, `last-sync-real-store-live.txt`, `last-sync-staff-real-store-live.txt`, `last-tickets-api-live.txt`, `last-tickets-redis.txt` | E13 |
+| `tests/sync-scale.mjs` | Shared tickets with 300 tickets already in the store; a reply and a question sent just before the tab goes to the background | `last-sync-scale-live.txt`: "ALL PASS (9 checks)" | AC-E13.F3.4, AC-E13.F3.7, AC-E13.F1.5 |
+| `tests/sync-watch-live.mjs` | The staff side on the real store, waiting for a person's reply and printing the ticket as the store holds it | none saved yet; the last proof is `last-sync-staff-real-store-live.txt` | AC-E13.F3.4 |
 | `tests/extras3.mjs` | Ticket numbers, the thread and feedback | `last-extras3-live.txt` | AC-E14.F1.1 to AC-E14.F3.4 |
 | `tests/i18n.mjs` | The language menu and New chat | `last-i18n-live.txt`, `last-i18n-blocked-live.txt` | AC-E15.F1.1 to AC-E15.F1.4 |
 | `tests/staffclear.mjs` | Clear all tickets, with Undo | `last-staffclear-live.txt` | AC-E15.F3.1 to AC-E15.F3.3 |
@@ -73,10 +75,10 @@ was saved by hand.
 | E10 | Asking for a person and assistant settings (1.1) | 2 | 9 | V-1, V-4 | built (`last-person-engine.txt`, `last-person-live.txt`) |
 | E11 | Staff queue tools (1.1 and 1.2) | 5 | 18 | V-2, V-5 to V-9 | built; the alert tone and the browser notification not covered by a test (`last-tools-live.txt`, `last-tools2-live.txt`) |
 | E12 | Clinic file form (1.1) | 2 | 9 | V-3, V-4 | built (`last-form-live.txt`) |
-| E13 | Tickets shared across devices (1.3) | 4 | 20 | V-14 | built, behind the clinic's desk code (`last-sync-live.txt`, `last-tickets-api-live.txt`, `last-tickets-redis.txt`) |
+| E13 | Tickets shared across devices (1.3) | 4 | 22 | V-14, V-22 | built, behind the clinic's desk code (`last-sync-live.txt`, `last-tickets-api-live.txt`, `last-tickets-redis.txt`) |
 | E14 | Ticket numbers, thread, feedback and the booking day note (1.2 and 1.3) | 4 | 14 | V-10 to V-13 | built (`last-extras3-live.txt`, `last-booking-day.txt`) |
 | E15 | Language menu, New chat, clinic info panel and Clear all (1.3) | 3 | 10 | V-15 to V-17 | built; the clinic info panel and the empty-queue message are not covered by a test (`last-i18n-live.txt`, `last-staffclear-live.txt`) |
-| **Total** | | **50** | **173** | | |
+| **Total** | | **50** | **175** | | |
 
 ---
 
@@ -648,6 +650,7 @@ my phone.
 | AC-E13.F1.2 | The store is in place | The patient asks a question | The ticket reaches the store with its status and question, without browser-only fields, under a hash of the browser's key | V-14 | `tests/sync.mjs`, `tests/sync-live.mjs` |
 | AC-E13.F1.3 | A ticket has been stored | The chat page is read | The small print says the messages go to the clinic's front desk | V-14 | `tests/sync.mjs`, `tests/sync-live.mjs` |
 | AC-E13.F1.4 | A stored ticket has not changed | The chat checks again | It is not sent again | V-14 | `tests/sync.mjs` |
+| AC-E13.F1.5 | The store is in place | The patient asks a question and the tab goes to the background at once (another tab, the screen off) | The ticket still reaches the store | V-22 | `tests/sync-scale.mjs` (since 1.3.0.3) |
 
 ### E13.F2 Who can read or change a shared ticket
 
@@ -681,6 +684,7 @@ question asked on a phone.
 | AC-E13.F3.4 | A ticket from another device is open | Staff reply | The reply and the new status reach the store, the reply shows in the patient's chat on the other device, and the patient's own copy becomes answered | V-14 | `tests/sync.mjs`, `tests/sync-wait-live.mjs` |
 | AC-E13.F3.5 | A ticket was answered from another device | The patient gives feedback | The feedback reaches the staff device and does not undo the answered status or double the reply | V-14 | `tests/sync.mjs` |
 | AC-E13.F3.6 | Tickets from other devices show | Staff turn the switch off | Only this browser's own tickets are left | V-14 | `tests/sync.mjs` |
+| AC-E13.F3.7 | A ticket from another device is open, with 300 tickets in the shared list | Staff reply and switch to another tab at once | The reply still reaches the store and shows in the patient's chat | V-22 | `tests/sync-scale.mjs` (since 1.3.0.3) |
 
 ### E13.F4 Nothing changes when the store is away
 
@@ -808,3 +812,4 @@ mistake so that I can start a clean round.
 | 23 Nov 2026 | Reverse-checked against the tests: a table of which test verifies what, naming all 29 test files; test names added beside 22 criteria that a test proves; six criteria added (AC-E1.F1.4, AC-E2.F1.6, AC-E5.F1.4, AC-E7.F1.4, AC-E9.F2.3, AC-E14.F4.5). Totals now 50 features and 170 criteria |
 | 25 Nov 2026 | Version 1.3.0.2, after the project feedback: three criteria added (AC-E2.F1.7 a question that mixes timings and prices, AC-E7.F2.2 the theme button says which theme is on, AC-E7.F3.3 the skip link) and two test files (`tests/mixed.cjs`, `tests/controls.mjs`), 31 test files in all. Totals now 50 features and 173 criteria |
 | 25 Nov 2026 | Contrast and voice rerun on the live link. `tests/contrast-true.mjs` added beside `tests/contrast.mjs`, which misreads a part-transparent background; 32 test files in all. The E7.F2 status line corrected. No criterion added |
+| 25 Nov 2026 | Version 1.3.0.3: two criteria added (AC-E13.F1.5, AC-E13.F3.7: a question or a reply sent just before the tab goes to the background) and two test files (`tests/sync-scale.mjs`, `tests/sync-watch-live.mjs`), 34 test files in all. Totals now 50 features and 175 criteria |

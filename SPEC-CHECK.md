@@ -227,5 +227,6 @@ Features the brief does not ask for. Each is kept apart from what the tester rea
 | A question that mixes timings and prices gets both | 1.3.0.2 | The Saturday answer, a single price, and "not sure" for a price the file does not hold are as before | `last-mixed.txt` (17), `last-controls-live.txt` (20), `last-brief-live.txt` (29), `last-questions-live.txt` (16) |
 | The theme button says which theme is on | 1.3.0.2 | The colours, the button's id and the stored choice are unchanged; the status line is outside `.bot-msg` and `#ticket-queue` | `last-controls-live.txt` |
 | The skip link puts the cursor in the message box | 1.3.0.2 | The link, its text and `#chat-input` are unchanged | `last-controls-live.txt` |
+| A reply or a question is sent even when its tab goes to the background | 1.3.0.3 | What is sent, who may read it and the desk code rule are unchanged; with no store both pages behave as before | `last-sync-scale-live.txt` (9), `last-sync-live.txt` (31), `last-tickets-api-live.txt` (11) |
 
 All evidence files are in `evidence/`.

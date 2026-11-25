@@ -9,7 +9,7 @@ FrontDesk AI is the front desk chat for a dental clinic: patients get answers fr
 | Code | `frontdesk-ai` (private while a competition is open) |
 | Built by | Sanjay Karwa, Smart AI for Business |
 | Stack | Plain HTML, CSS and JavaScript with a rules engine in the browser; one Vercel function calling OpenRouter with DeepSeek V4.1 Flash (`deepseek/deepseek-v4.1-flash`), the key on the server only; localStorage |
-| Version | 1.3.0.2 (25 Nov 2026; baseline 1.0.0.0, Sanjay Karwa, 21 Nov 2026) |
+| Version | 1.3.0.3 (25 Nov 2026; baseline 1.0.0.0, Sanjay Karwa, 21 Nov 2026) |
 | Status | Built and live. Every functional test passes on the live link, with the key and with the model blocked (rerun 22 Nov 2026 after two wording fixes, see REPORT.md). No text is under 4.5:1 in light or dark (measured on 25 Nov 2026 against the background really shown, lowest 5.94:1); the older scan's flagged lines are notes about text on the teal brand colour and two misread lines, not failures. Version 1.1.0.0 (22 Nov 2026) adds four things beside the baseline: a reply and a ticket when a patient asks for a person, search and filters on the staff page, a form for the clinic file, and an assistant name and quick replies set in that file. Every earlier test passes on the live link after it, unedited |
 
 ## For the judges: FrontDesk AI in two minutes
@@ -155,7 +155,7 @@ with it blocked; "Yes" means the feature is in place. The last column is the ver
 
 All 16 rows of the brief pass, and all 24 rows beyond it are in place. The same table with three other builds of
 the batch beside it is in [REPORT.md](REPORT.md), section "Requirement and feature map"; what each version added
-and how it was tested is in the sections "Version 1.1.0.0" to "Version 1.3.0.2" there.
+and how it was tested is in the sections "Version 1.1.0.0" to "Version 1.3.0.3" there.
 
 ## Documentation
 

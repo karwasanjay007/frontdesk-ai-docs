@@ -1,8 +1,8 @@
-1.3.0.2
+1.3.0.3
 
 # FrontDesk AI release baseline
 #
-# Version:     1.3.0.2
+# Version:     1.3.0.3
 # Released:    22 November 2026 (baseline 1.0.0.0: 21 November 2026)
 # Owner:       Sanjay Karwa, Smart AI for Business
 # Live:        https://frontdesk-ai-xi-gray.vercel.app
@@ -35,3 +35,7 @@
 # Version 1.3.0.2 (25 November 2026), after the project feedback: a question that mixes timings with prices
 # ("What are your timings and prices?") is answered from the clinic file with both; the light and dark button
 # says which theme is on; the skip link puts the cursor in the message box in every browser.
+#
+# Version 1.3.0.3 (25 November 2026, late evening): a staff reply or a patient question is sent to the shared
+# ticket store even when its tab goes to the background straight after (it used to wait until the tab was
+# looked at again).

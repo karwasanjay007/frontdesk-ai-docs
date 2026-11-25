@@ -439,3 +439,30 @@ lowest 5.94:1. It does not read a background picture or gradient, and it does no
 **Not covered.** The staff list of all devices against the
 real store needs the clinic's desk code, which only the owner types, and was not rerun. "Do you take insurance
 and what are your prices?" answers the insurance part only.
+
+## Version 1.3.0.3 (25 Nov 2026, late evening)
+
+**What was wrong.** The part of both pages that sends tickets to the shared store did nothing while its tab was
+in the background. A member of staff who sent a reply and switched to another tab at once left the reply in
+that browser until the tab was looked at again. The same held for a patient whose phone screen went off straight
+after asking. It was found by a new test, not reported from the live site.
+
+**What changed.** In `sync.js` only: a tab in the background still sends what changed in it, and only stops
+asking the server for news; it sends at once when the tab is put away or closed.
+
+**The tests.** `tests/sync-scale.mjs` (9 checks) runs the server function's own rules over a store kept in
+memory that already holds 299 tickets: the staff reply travels in about 2 seconds, so the size of the list is not
+a cause of delay; a reply and a question sent just before the tab is hidden reach the store. Three of its checks
+failed before the change. `tests/sync-watch-live.mjs` is the waiting test of the staff side with a view of the
+ticket in the store, for the next time a person replies from the staff page. No earlier test was edited.
+
+**Tests on the live site.** `evidence/last-sync-live.txt` ALL PASS (31 checks), `evidence/last-sync-scale-live.txt`
+ALL PASS (9 checks), `evidence/last-tickets-api-live.txt` ALL PASS (11 checks), the patient path on the real store
+(6 checks), `evidence/last-brief-live.txt` ALL PASS (29 checks), `evidence/last-questions-live.txt` ALL PASS (16
+checks).
+
+**Not covered.** A reply from a real staff device through the real store was not shown again after this change:
+it needs a person at the staff page with the clinic's desk code, and four waiting windows that evening passed
+with nobody replying. It stands as proven on 22 Nov 2026 (`evidence/last-sync-staff-real-store-live.txt`). The
+other suites were not rerun, because the change is in the ticket sync only. A patient's tab in the background
+still does not fetch a staff reply until it is looked at again.

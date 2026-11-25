@@ -1,0 +1,10 @@
+PASS the store already holds 299 tickets from other patients
+PASS the new patient's ticket reaches the store
+PASS the staff device lists it among 300 tickets | 300 from other devices
+PASS the staff reply reaches the store within 30 s | 1 s | desk posts since the reply: 1, the ticket in 1 of them, sizes 1:200
+PASS the reply shows in the patient's chat on the other device
+PASS a reply sent just before the staff tab goes to the background still reaches the store | 0 s
+PASS and shows in the patient's chat
+PASS a question asked just before the patient's tab goes to the background is still stored
+PASS no page errors 
+ALL PASS (9 checks)

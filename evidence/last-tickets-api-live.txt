@@ -1,5 +1,5 @@
-PASS the list of every device's tickets is closed without a desk code | 403 desk code not set
-PASS a guessed desk code is refused | 403
+PASS the list of every device's tickets is closed without a desk code | 401 desk code needed
+PASS a guessed desk code is refused | 401
 PASS storing a ticket without a browser key is refused | 401
 PASS a browser stores its own ticket; unknown fields are dropped and the key hash is not returned | 200
 PASS the same browser reads it back from the real store

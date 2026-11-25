@@ -193,3 +193,11 @@ test; no earlier test was edited.
 - `chat.js`: a click handler on the skip link puts the cursor in `#chat-input`.
 - Order of work: engine suites, the new tests and the suites of the graded path on a local server, the deploy,
   then controls, brief (with the AI and with it blocked) and questions on the live link.
+
+## Version 1.3.0.3, as built (25 Nov 2026)
+
+- `sync.js`: `tick()` no longer stops when `document.hidden`; in the background it sends what changed and skips
+  the request for news. A send also runs on `visibilitychange` to hidden and on `pagehide`, and a small send is
+  marked `keepalive` so it outlives the page.
+- Tests: `tests/sync-scale.mjs` (9 checks, three failing before the change), `tests/sync-watch-live.mjs` for the
+  staff side on the real store with a person replying.
