@@ -5,7 +5,7 @@ PASS no sideways scroll at 375 px with the feedback buttons
 PASS the feedback is still there after a reload
 PASS the staff page still lists both tickets, each with its reply box and Send button | needs human, answered
 PASS tickets are numbered in the order they were opened | T-001, T-002
-PASS the ticket shows the patient's feedback | just now · patient found it helpful · PLDTK0
+PASS the ticket shows the patient's feedback | just now · after hours · patient found it helpful · PM34QF
 PASS the feedback figure counts it | 1 / 0
 PASS the open ticket has the rest of the chat, folded | Chat so far with this patient (1 other question)
 PASS unfolded, it shows the patient's other question and the reply

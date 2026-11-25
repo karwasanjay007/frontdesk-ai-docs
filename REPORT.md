@@ -422,6 +422,12 @@ On the engine: `evidence/last-mixed.txt` ALL PASS (17 checks), `evidence/last-en
 `evidence/last-sweep.txt` ALL PASS (386 questions). With the AI on, the feedback's question gives the prices and
 the timings.
 
-**Not covered.** The staff tools, the clinic form, shared tickets, voice, the emergency, wording, call-back, audit
-and bonus suites were not rerun, because this change does not touch what they test. "Do you take insurance and
-what are your prices?" answers the insurance part only.
+**Full regression on the live site (25 Nov 2026, evening).** 24 runs, all pass, no earlier test edited: the brief
+29 with the AI and 29 with it blocked, the sample questions 16 and 16, the bonus items 15 and 15, the audit 45
+questions and 45, languages 11 and 11, wording 14 and 14, emergency 12, call-back 8, clearing tickets 7, widths 25,
+reply order 5, the controls 20, the staff tools 37 and 17, the clinic form 43, asking for a person 16, the 1.3
+extras 15 and shared tickets 31. The results are the `last-*-live.txt` files in `evidence/`.
+
+**Not covered.** The contrast scan and the voice test were not rerun. The staff list of all devices against the
+real store needs the clinic's desk code, which only the owner types, and was not rerun. "Do you take insurance
+and what are your prices?" answers the insurance part only.
