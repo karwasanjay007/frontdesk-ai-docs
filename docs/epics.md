@@ -61,6 +61,7 @@ was saved by hand.
 | `tests/layout-wide.mjs` | Staff link in the top bar; clinic information on the right from 1024 px | `last-layout-wide-live.txt`: "ALL PASS (107 checks)" | AC-E16.F4.2 |
 | `tests/phone-chat.mjs` | Phone chat: slim pill, quick replies in one row after the answers, "+" menu | `last-phone-chat-live.txt`: "ALL PASS (197 checks)" | AC-E16.F5.1 |
 | `tests/starter-cards.mjs` | Phone chat: starter cards in two columns on an empty chat, the one row after the first message, the cards back after New chat, the row kept in the composer from 768 px; the not-sure reply without the label, a file answer with it | `last-starter-cards-live.txt`: "ALL PASS (41 checks)" | AC-E16.F5.2, AC-E16.F5.4 |
+| `tests/desk-chat.mjs` | Desktop chat from 768 px (1024, 1280, 1440, light and dark): plain answers with the clinic mark left of the clinic panel, 44 px icon buttons that keep their names, the slim bar with New chat, mic and a round Send, the red emergency pill, starter cards three to a row then one row | `last-desk-chat-live.txt`: "ALL PASS (138 checks)" | AC-E16.F6.1 to AC-E16.F6.3 |
 | `tests/sync-watch-live.mjs` | The staff side on the real store, waiting for a person's reply and printing the ticket as the store holds it | none saved yet; the last proof is `last-sync-staff-real-store-live.txt` | AC-E13.F3.4 |
 | `tests/extras3.mjs` | Ticket numbers, the thread and feedback | `last-extras3-live.txt` | AC-E14.F1.1 to AC-E14.F3.4 |
 | `tests/i18n.mjs` | The language menu and New chat | `last-i18n-live.txt`, `last-i18n-blocked-live.txt` | AC-E15.F1.1 to AC-E15.F1.4 |
@@ -87,8 +88,8 @@ was saved by hand.
 | E13 | Tickets shared across devices (1.3) | 4 | 22 | V-14, V-22 | built, behind the clinic's desk code (`last-sync-live.txt`, `last-tickets-api-live.txt`, `last-tickets-redis.txt`) |
 | E14 | Ticket numbers, thread, feedback and the booking day note (1.2 and 1.3) | 4 | 14 | V-10 to V-13 | built (`last-extras3-live.txt`, `last-booking-day.txt`) |
 | E15 | Language menu, New chat, clinic info panel and Clear all (1.3) | 3 | 10 | V-15 to V-17 | built; the clinic info panel and the empty-queue message are not covered by a test (`last-i18n-live.txt`, `last-staffclear-live.txt`) |
-| E16 | Shared store, a stricter model step, brand and phone chat (1.3.1 to 1.6) | 5 | 15 | Test | built; live: `last-brand-live.txt`, `last-layout-wide-live.txt`, `last-phone-chat-live.txt`, `last-starter-cards-live.txt`; engine-gaps, engine-doctor, model-step, store and shared run locally; AC-E16.F5.3 checked by hand |
-| **Total** | | **55** | **190** | | |
+| E16 | Shared store, a stricter model step, brand, phone and desktop chat (1.3.1 to 1.7) | 6 | 18 | Test | built; live: `last-brand-live.txt`, `last-layout-wide-live.txt`, `last-phone-chat-live.txt`, `last-starter-cards-live.txt`, `last-desk-chat-live.txt`; engine-gaps, engine-doctor, model-step, store and shared run locally; AC-E16.F5.3 checked by hand |
+| **Total** | | **56** | **193** | | |
 
 ---
 
@@ -811,7 +812,7 @@ mistake so that I can start a clean round.
 | AC-E15.F3.2 | The tickets were cleared | The patient chat in the same browser is read | It is empty too | V-17 | `tests/staffclear.mjs` |
 | AC-E15.F3.3 | The tickets were cleared | Staff press Undo within about 10 seconds | The ticket and the patient chat come back | V-17 | `tests/staffclear.mjs` |
 
-## E16 Shared store, a stricter model step, brand and phone chat (versions 1.3.1.0 to 1.6.0.1)
+## E16 Shared store, a stricter model step, brand, phone and desktop chat (versions 1.3.1.0 to 1.7.0.0)
 
 ### E16.F1 Engine gaps closed
 
@@ -853,6 +854,14 @@ mistake so that I can start a clean round.
 | AC-E16.F5.3 | A phone, up to 767 px | The chat is shown | A slim row: the emergency number as a red phone pill, borderless language and theme buttons, the language box shown whole ("EN"); the welcome line wraps; feedback as thumbs up and down; answers as plain text with the clinic mark | Look | checked by hand (version 1.6.0.1) |
 | AC-E16.F5.4 | Any screen | A not-sure or talk-to-a-person reply is shown | It carries no "Answered from the clinic file" label; an answer from the file still does | Test | `tests/starter-cards.mjs` |
 
+### E16.F6 Desktop chat (1.7.0.0)
+
+| Id | Given | When | Then | Planned check | Test |
+| --- | --- | --- | --- | --- | --- |
+| AC-E16.F6.1 | A window 768 px or wider, light or dark, a chat with answers | The chat is shown | Answers sit on the page without a card, each with the round clinic mark, in a column left of the pinned clinic panel; Listen, Helpful and Not helpful are 44 px icon buttons on one line that keep their names; user bubbles keep their colour; no sideways scroll | Test | `tests/desk-chat.mjs` |
+| AC-E16.F6.2 | A window 768 px or wider | The chat is shown | A composer bar at most 72 px tall with New chat and the microphone as round 44 px buttons in it (no "+" menu), a 16 px input and a round 44 px Send named "Send"; the emergency number a 44 px red phone pill; the note under it one short line; after three answers the bar and Send are in view | Test | `tests/desk-chat.mjs` |
+| AC-E16.F6.3 | A window 768 px or wider, an empty chat | The chat is shown | The quick questions are starter cards three to a row; after the first answer they are one row above the bar; New chat brings the cards back | Test | `tests/desk-chat.mjs` |
+
 ## Revisions
 
 | Date | Change |
@@ -867,3 +876,4 @@ mistake so that I can start a clean round.
 | 25 Nov 2026 | Version 1.3.0.3: two criteria added (AC-E13.F1.5, AC-E13.F3.7: a question or a reply sent just before the tab goes to the background) and two test files (`tests/sync-scale.mjs`, `tests/sync-watch-live.mjs`), 34 test files in all. Totals now 50 features and 175 criteria |
 | 27 Nov 2026 | Versions 1.3.1.0 to 1.5.0.0: epic E16 added (5 features, 11 criteria) and seven test files (`tests/engine-gaps.cjs`, `tests/model-step.cjs`, `tests/store.cjs`, `tests/shared.mjs`, `tests/brand.mjs`, `tests/layout-wide.mjs`, `tests/phone-chat.mjs`), 41 test files in all. Totals now 55 features and 186 criteria |
 | 27 Nov 2026 | Versions 1.5.0.1 to 1.6.0.1: AC-E16.F1.4 (an invented doctor, `tests/engine-doctor.cjs`) and AC-E16.F5.2 to AC-E16.F5.4 (starter cards, the slim row and the label rule, `tests/starter-cards.mjs`) added; AC-E16.F5.1, AC-E2.F4.4 and AC-E9.F3.2 corrected in place (the one row is checked after the answers; a not-sure reply carries no label). Totals now 55 features and 190 criteria |
+| 27 Nov 2026 | Version 1.7.0.0: feature E16.F6 (the desktop chat) with AC-E16.F6.1 to AC-E16.F6.3, traced to the new `tests/desk-chat.mjs`. Totals now 56 features and 193 criteria |

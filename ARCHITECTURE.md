@@ -250,7 +250,7 @@ stricter guard, engine gaps, call-back details, design".
 | Shared add-on | `shared.js` | Reads the clinic file from the server before an answer (2 s at most; an emergency never waits), so a staff edit applies from the next answer; sends every message to `/api/messages`; staff Save and Reset go to the server |
 | Brand | `brand.css` | The brand tokens over `styles.css`, no green |
 | Wide layout | `layout.css`, `layout.js` | Staff link in the top bar; the clinic information pinned on the right from 1024 px |
-| Phone chat | `compact.css`, `compact.js` | Up to 767 px: slim composer pill, quick replies in one row once the chat has begun (starter cards on an empty chat since 1.6.0.0, below), "+" menu as a bottom sheet |
+| Phone chat | `compact.css`, `compact.js` | Up to 767 px: slim composer pill, quick replies in one row once the chat has begun (starter cards on an empty chat since 1.6.0.0, below), "+" menu as a bottom sheet; from 768 px the desktop chat of 1.7.0.0 (below) |
 
 AD-7 is superseded for the shared copy: localStorage stays the working copy in each browser; the shared copy is
 in the store. The diagrams `c4-container`, `c4-component`, `deployment`, `data-model`, `j4-staff-reply` and
@@ -266,3 +266,12 @@ in the store. The diagrams `c4-container`, `c4-component`, `deployment`, `data-m
 
 No route, store or deployment part changed. The diagrams `j1-first-visit-and-ask` and `j2-safety-replies` show the
 starter cards and the label rule.
+
+## Version 1.7.0.0 changes (27 Nov 2026)
+
+| Part | File | What changed |
+| --- | --- | --- |
+| Desktop chat | `compact.css`, `compact.js` | From 768 px: the conversation and the composer in a 760 px column left of the clinic panel pinned on the right (from 1024 px, `layout.css`); answers as plain text with the round clinic mark, no card; Listen, Helpful and Not helpful as 44 px icon buttons that keep their accessible names; a slim composer bar with New chat and the microphone as round buttons in place (no "+" menu on a desktop), a 16 px input and a round Send; the emergency number as a red phone pill, the note under it one muted line; the `#quick` chips as starter cards three to a row on an empty chat, one row after the first message |
+
+No route, store or deployment part changed. The diagrams `j1-first-visit-and-ask` and `c4-component` show the
+desktop chat.

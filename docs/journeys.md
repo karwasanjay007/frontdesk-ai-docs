@@ -89,7 +89,10 @@ The clinic file `/clinic-data.json` is served with the app.
    (up to 767 px) an empty chat shows the same `#quick` chips as starter cards, two columns and full width, in
    the conversation area, under a welcome line that wraps; a slim row above holds the emergency number as a red
    phone pill and the language and theme buttons. After the first message the chips are the one row above the
-   composer again, and New chat brings the cards back. The greeting is `#greeting`,
+   composer again, and New chat brings the cards back. Since version 1.7.0.0 a desktop (768 px and up) shows the
+   same: starter cards three to a row on an empty chat, the emergency number as a red phone pill, and a slim
+   composer bar with New chat and the microphone as round buttons, a 16 px input and a round Send, in a 760 px
+   column left of the pinned clinic panel. The greeting is `#greeting`,
    a `.bot-greeting` inside `.greeting-row`, never a `.bot-msg`.
 6. With `?q=` in the address, `history.replaceState()` removes `q` first and then `send(q)` asks it, so a
    reload does not ask again.
@@ -112,9 +115,11 @@ The clinic file `/clinic-data.json` is served with the app.
     adds the user's `.user-msg` and the reply as the last `.bot-msg`. The `.src-label` "Answered from the
     clinic file" is shown whenever `source` is not `model`
     (any reply the model did not word, including the fixed templates), except on a not-sure or
-    talk-to-a-person reply (since 1.6.0.0). On a phone the answer is plain text beside the clinic mark. A
+    talk-to-a-person reply (since 1.6.0.0). On a phone (since 1.6.0.0) and on a desktop (since 1.7.0.0) the
+    answer is plain text beside the round clinic mark. A
     Listen button sits beside the reply when the browser can speak, with two feedback buttons, "Helpful"
-    and "Not helpful" (thumbs up and down on a phone since 1.6.0.0). A tap calls `FD.updateTicket(id, {feedback})` ("up" or "down"; a second tap takes
+    and "Not helpful" (thumbs up and down on a phone since 1.6.0.0; on a desktop since 1.7.0.0 all three are
+    44 px icon buttons on one line that keep their names). A tap calls `FD.updateTicket(id, {feedback})` ("up" or "down"; a second tap takes
     it back), and the staff page shows it on the ticket and in its figures.
 15. When the deployment has a ticket store, `sync.js` sends the new ticket to `/api/tickets` (J9).
 16. "New chat" (`#new-chat`) gives the patient a fresh id with `FD.newPatient()`; earlier questions stay
@@ -480,3 +485,12 @@ Source: [j9-shared-tickets.puml](diagrams/j9-shared-tickets.puml)
   "Answered from the clinic file". See the diagram `j2-safety-replies`.
 - **J1, a doctor's name.** A doctor the clinic file does not hold gets "We have no Dr. ...", with the clinic's own
   doctors, and no model call.
+
+## Changes in version 1.7.0.0 (27 Nov 2026)
+
+- **J1 First visit and ask, on a desktop.** From 768 px an empty chat shows the starter cards three to a row in a
+  760 px column left of the pinned clinic panel, above a slim composer bar: New chat and the microphone as round
+  buttons (no "+" menu), a 16 px input and a round Send, the emergency number as a red phone pill and one muted
+  note line under it. A tap on a card asks it; after the first message the chips are one row above the bar.
+  Answers are plain text with the round clinic mark; Listen, Helpful and Not helpful are 44 px icon buttons that
+  keep their names. See the diagram `j1-first-visit-and-ask`. Test: `tests/desk-chat.mjs`.

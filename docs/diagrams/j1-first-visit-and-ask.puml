@@ -29,6 +29,11 @@ v1.6: on a phone (up to 767 px) an empty chat shows
 the same #quick chips as starter cards, two columns,
 full width; after the first message they are one row
 above the composer again.
+v1.7: on a desktop (768 px and up) the cards are
+three to a row in a 760 px column left of the clinic
+panel, above a slim bar (New chat, mic, round Send)
+and the red emergency pill; one row after the first
+message.
 The greeting is #greeting (.bot-greeting in
 .greeting-row), never .bot-msg. render() keeps it
 and redraws this patient's earlier tickets.
@@ -76,7 +81,9 @@ source is not "model" and the reply is not a
 not-sure or talk-to-a-person reply (v1.6). A Listen
 button sits beside the reply when speechSynthesis
 exists, with the feedback buttons "Helpful" and
-"Not helpful" (thumbs up and down on a phone, v1.6).
+"Not helpful" (thumbs up and down on a phone, v1.6;
+on a desktop plain text with the clinic mark and
+44 px icon buttons that keep their names, v1.7).
 end note
 Chat --> Patient : one complete reply
 opt Patient taps Helpful or Not helpful

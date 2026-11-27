@@ -517,3 +517,22 @@ On the live link: brief (29 checks), phone-chat (197) and starter-cards (41) end
 Not tested: the slim row, the thumbs and the clinic mark have no check of their own (looked at by hand); the
 other live suites were not rerun, as these changes touch only the phone layout, one label condition and the
 doctor rule.
+
+## Version 1.7.0.0 (27 Nov 2026)
+
+The desktop chat polished like the phone (`compact.css`, `compact.js`, 768 px and up); nothing removed. Answers
+are plain text with the round clinic mark in a 760 px column left of the pinned clinic panel; Listen, Helpful and
+Not helpful are 44 px icon buttons that keep their names; the composer is a slim bar with New chat and the
+microphone as round buttons (no "+" menu on a desktop, as `tests/phone-chat.mjs`, `i18n.mjs` and `voice.mjs` click
+them in place), a 16 px input and a round Send; the emergency number is a red phone pill and the note under it one
+muted line; an empty chat shows the starter cards three to a row, back to one row after the first message. Test
+first: `tests/desk-chat.mjs` (138 checks, at 1024, 1280 and 1440 px, light and dark). Local: desk-chat,
+phone-chat (197), starter-cards (41), layout-wide (107), brand (92), controls, widths, contrast-true, i18n,
+extras3, brief with no key (31), bonus with the model blocked, emergency and sync end ALL PASS.
+
+On the live link: desk-chat (138 checks), brief (29), phone-chat (197) and voice (2) end ALL PASS
+(`evidence/last-desk-chat-live.txt`, `evidence/last-brief-live.txt`, `evidence/last-phone-chat-live.txt`,
+`evidence/last-voice-live.txt`).
+
+Not tested on the live link at 1.7.0.0: starter-cards, layout-wide, brand, controls, widths, contrast-true, i18n
+and extras3 (run locally only), as the change touches only the desktop layout.

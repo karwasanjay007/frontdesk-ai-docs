@@ -9,7 +9,7 @@ FrontDesk AI is the front desk chat for a dental clinic: patients get answers fr
 | Code | `frontdesk-ai` (private while a competition is open) |
 | Built by | Sanjay Karwa, Smart AI for Business |
 | Stack | Plain HTML, CSS and JavaScript with a rules engine in the browser; one Vercel function calling OpenRouter with DeepSeek V4.1 Flash (`deepseek/deepseek-v4.1-flash`), the key on the server only; localStorage |
-| Version | 1.6.0.1 (27 Nov 2026; baseline 1.0.0.0, Sanjay Karwa, 21 Nov 2026) |
+| Version | 1.7.0.0 (27 Nov 2026; baseline 1.0.0.0, Sanjay Karwa, 21 Nov 2026) |
 | Status | Built and live. Every functional test passes on the live link, with the key and with the model blocked (rerun 22 Nov 2026 after two wording fixes, see REPORT.md). No text is under 4.5:1 in light or dark (measured on 25 Nov 2026 against the background really shown, lowest 5.94:1); the older scan's flagged lines are notes about text on the teal brand colour and two misread lines, not failures. Version 1.1.0.0 (22 Nov 2026) adds four things beside the baseline: a reply and a ticket when a patient asks for a person, search and filters on the staff page, a form for the clinic file, and an assistant name and quick replies set in that file. Every earlier test passes on the live link after it, unedited |
 
 ## For the judges: FrontDesk AI in two minutes
@@ -159,10 +159,11 @@ with it blocked; "Yes" means the feature is in place. The last column is the ver
 | N/A | The model step checked on the server: temperature 0, one attempt, 8 seconds, a request limit (version 1.3.1.0) | Yes | 1.5 |
 | N/A | A doctor the clinic file does not hold is never let stand: "We have no Dr. ...", with the clinic's own doctors (version 1.5.0.1) | Yes | 1.5 |
 | N/A | Phone chat polished: starter cards on an empty chat (the quick replies in two columns, full width), a slim row with the emergency number as a red phone pill and plain language and theme buttons, thumbs up and down for feedback, answers as plain text with the clinic mark (versions 1.6.0.0 and 1.6.0.1) | Pass | 1.6 |
+| N/A | Desktop chat polished like the phone, from 768 px: answers as plain text with the round clinic mark in a 760 px column left of the pinned clinic panel; Listen, Helpful and Not helpful as 44 px icon buttons that keep their names; a slim composer bar with New chat and the mic as round buttons (no "+" menu), a 16 px input and a round Send; the emergency number as a red phone pill and the note under it one muted line; starter cards three to a row on an empty chat, one row after the first message (version 1.7.0.0) | Pass | 1.7 |
 
-All 16 rows of the brief pass, and all 26 rows beyond it are in place. The same table with three other builds of
+All 16 rows of the brief pass, and all 27 rows beyond it are in place. The same table with three other builds of
 the batch beside it is in [REPORT.md](REPORT.md), section "Requirement and feature map"; what each version added
-and how it was tested is in the sections "Version 1.1.0.0" to "Versions 1.5.0.1 to 1.6.0.1" there.
+and how it was tested is in the sections "Version 1.1.0.0" to "Version 1.7.0.0" there.
 
 ## Documentation
 
@@ -243,3 +244,14 @@ end ALL PASS (saved in `evidence/`). `engine-gaps.cjs`, `model-step.cjs` (38 che
   welcome line wraps (`compact.css`).
 
 On the live link: brief (29 checks), phone-chat (197) and starter-cards (41) end ALL PASS (saved in `evidence/`).
+
+## Version 1.7.0.0
+
+Version 1.7.0.0 (27 Nov 2026) polishes the desktop chat like the phone, in `compact.css` and `compact.js` for
+768 px and up; nothing removed. Answers are plain text with the round clinic mark, in a 760 px column left of the
+pinned clinic panel. Listen, Helpful and Not helpful are 44 px icon buttons that keep their names. The composer is
+a slim bar with New chat and the microphone as round buttons (no "+" menu on a desktop), a 16 px input and a round
+Send; the emergency number is a red phone pill and the note under it one muted line. An empty chat shows the
+starter cards three to a row; after the first message they are one row again. New test `tests/desk-chat.mjs`
+(138 checks). On the live link: desk-chat (138), brief (29), phone-chat (197) and voice (2) end ALL PASS (saved in
+`evidence/`).

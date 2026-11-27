@@ -285,3 +285,6 @@ No shape of the clinic file or the ticket changed.
 
 Versions 1.5.0.1 to 1.6.0.1: no key, table, field or schema added or changed; the thumbs on a phone write the same
 `feedback` field ("up" or "down") as the Helpful and Not helpful buttons.
+
+Version 1.7.0.0: no key, table, field or schema added or changed; the desktop icon buttons write the same
+`feedback` field.

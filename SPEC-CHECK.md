@@ -246,3 +246,7 @@ The phone chat changes (1.6.0.0, 1.6.0.1) keep every row: quick replies are stil
 empty chat), and the phone width row passes in phone-chat (197) and starter-cards (41). Item 8's label still
 marks every answer from the file with the model off; a not-sure or talk-to-a-person reply, which answers nothing
 from the file, now carries none.
+
+Version 1.7.0.0 (27 Nov 2026): the desktop chat polish keeps every row: quick replies are still buttons, the
+input, Send and accessible names are kept; brief (29), desk-chat (138), phone-chat (197) and voice (2) end ALL
+PASS on the live link.

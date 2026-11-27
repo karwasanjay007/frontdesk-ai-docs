@@ -412,9 +412,21 @@ narrows the label rule in `chat.js`; 1.6.0.1 fixes three phone layout details (`
 | Id | Requirement | Test |
 | --- | --- | --- |
 | R-16.6 | A doctor the clinic file does not hold is never let stand: the reply says the clinic has no such doctor and names its own doctors; never "Yes"; not reworded by the model | `tests/engine-doctor.cjs` |
-| R-16.7 | On a phone an empty chat shows the quick replies (the same `#quick` chips) as starter cards in two columns, full width, in the conversation area; after the first message they are the one row above the composer again; New chat brings the cards back; from 768 px they stay in the composer | `tests/starter-cards.mjs` |
+| R-16.7 | On a phone an empty chat shows the quick replies (the same `#quick` chips) as starter cards in two columns, full width, in the conversation area; after the first message they are the one row above the composer again; New chat brings the cards back; from 768 px they stay in the composer, shown three to a row on an empty chat since 1.7.0.0 (R-16.10) | `tests/starter-cards.mjs` |
 | R-16.8 | On a phone a slim row holds the emergency number as a red phone pill and borderless language and theme buttons, with the language box shown whole; the welcome line wraps; feedback is thumbs up and down; answers are plain text with the clinic mark | checked by hand; `tests/phone-chat.mjs` passes with it (no check of its own) |
 | R-16.9 | The label "Answered from the clinic file" is shown on a reply the model did not word that answers from the file; a not-sure or talk-to-a-person reply, which answers nothing from the file, carries no label | `tests/starter-cards.mjs` |
 
 Corrected in place of earlier statements: the not-sure reply no longer carries the label (G15 still holds: the
 label marks an answer that comes from the file).
+
+## Version 1.7.0.0: addition (27 Nov 2026)
+
+Version 1.7.0.0 polishes the desktop chat like the phone (`compact.css`, `compact.js`, 768 px and up). Nothing
+removed.
+
+| Id | Requirement | Test |
+| --- | --- | --- |
+| R-16.10 | From 768 px the chat looks like the phone: answers as plain text with the round clinic mark in a 760 px column left of the pinned clinic panel; Listen, Helpful and Not helpful as 44 px icon buttons that keep their names; a slim composer bar with New chat and the microphone as round buttons (no "+" menu), a 16 px input and a round Send; the emergency number as a red phone pill and the note under it one muted line; starter cards three to a row on an empty chat, one row after the first message; no sideways scroll | `tests/desk-chat.mjs` |
+
+Corrected in place of earlier statements: on a desktop, answers are no longer cards, and Listen, Helpful and Not
+helpful are no longer text buttons.
