@@ -1,44 +1,66 @@
 @startuml j6-clinic-file-edit
 !include style.iuml
-title J6 Clinic file edit: checked save and reset
+title J6 Edit the clinic file on /staff
 actor Staff
-participant "Staff page /staff\n(clinic section)" as SP
-participant "GET /api/clinic" as C
-participant "POST /api/tickets" as T
-database "Shared store" as Store
-participant "POST /api/chat" as Api
+participant "Staff page\n(staff/index.html, staff.js)" as SP
+participant "core.js" as Core
+database "localStorage" as LS
+participant "Chat page\n(index.html, chat.js)" as Chat
 actor Patient
 autonumber
 
-Staff -> SP : opens the clinic data section
-SP -> C : GET
-C -> Store : getClinicData()
-C --> SP : the clinic file in use (the shipped file when the store is down)
-Staff -> SP : edits the file and presses Save
-SP -> T : POST {clinic}
-T -> T : isStaff, then the Zod check (ClinicSchema)
-alt a needed part is missing or empty, or the file is over 100,000 characters
-  T --> SP : 400 "Invalid clinic data: <where>"
-  SP --> Staff : the save is refused; the file in use is unchanged
-else the file is whole
-  T -> Store : saveClinicData(clinic)
-  T --> SP : {ok: true, clinic}
-  SP --> Staff : saved
+Staff -> SP : opens /staff
+SP -> Core : FD.loadClinic(), then clinicEditor()
+Core -> LS : read frontdesk.clinic (else the shipped clinic-data.json)
+SP --> Staff : #clinic-json filled with the file in use, #clinic-name set
+opt v1.1: Staff use "Edit with a form" (#clinic-form, closed by default)
+  Staff -> SP : opens "Edit with a form"
+  SP -> SP : form.js builds the fields (ids cf-...) from the JSON in #clinic-json
+  note right of SP
+  v1.1. The fields follow the file's own shape, so a file
+  in another shape gets a form too. An "Assistant" section
+  holds the optional name (at most 40 characters) and the
+  quick replies (at most 8: label at most 24, question at
+  most 120 characters).
+  end note
+  Staff -> SP : changes a field
+  SP -> SP : the form writes the change into the same #clinic-json box
+  note right of SP : nothing is written unless a field was changed; the same "Save clinic file" button stores it
 end
-note right of T
-Needed: clinic name, address, phone and emergency phone;
-hours; at least one doctor; at least one service with a
-price; policies. Anything else in the file is kept as it is.
-end note
-
-Patient -> Api : asks about the edited timing or price
-Api -> Store : getClinicData()
-Api --> Patient : the reply follows the edit
-
-opt put the original back
-  Staff -> SP : Reset
-  SP -> T : POST {clinicReset: true}
-  T -> Store : saveClinicData(the file that ships with the app)
-  T --> SP : {ok: true, clinic}
+Staff -> SP : edits the JSON (or used the form, v1.1), presses #clinic-save ("Save clinic file")
+SP -> SP : JSON.parse()
+alt not valid JSON
+  SP --> Staff : "This is not valid JSON: <parser message>"
+else parsed
+  SP -> Core : FD.validateClinic(obj)
+  alt a check fails
+    Core --> SP : message
+    note right of Core
+    Must be an object with a "clinic" section (name, phone,
+    emergency_phone, whatsapp, address as text) and an "hours"
+    section with at least one text entry; "services" and
+    "doctors", when present, must be lists.
+    end note
+    SP --> Staff : the message
+  else valid
+    SP -> Core : FD.saveClinic(obj)
+    Core -> LS : write frontdesk.clinic
+    SP -> SP : clinicEditor()
+    SP --> Staff : "Saved. The chat now answers from this file."
+    LS -> Chat : storage event, key frontdesk.clinic (another tab)
+    Chat -> Core : FD.clinic()
+    Chat -> Chat : data = the edited file; side(), labels()
+    Patient -> Chat : asks a question
+    Chat -> Core : FD.answer(q, data)
+    note right of Chat : the answer, the guard and the file sent to api/chat all use the edited file
+    Chat --> Patient : reply from the edited file
+  end
+end
+opt Staff presses #clinic-reset
+  SP -> Core : FD.resetClinic()
+  Core -> LS : remove frontdesk.clinic
+  SP --> Staff : "Back to the original clinic file."
+  LS -> Chat : storage event, key frontdesk.clinic
+  Chat -> Core : FD.clinic() returns the shipped file
 end
 @enduml

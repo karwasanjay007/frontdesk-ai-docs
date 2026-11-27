@@ -1,52 +1,81 @@
 @startuml j1-first-visit-and-ask
 !include style.iuml
-title J1 First visit and ask (the order per message)
+title J1 First visit and ask
 actor Patient
-participant "Chat page /\n(ChatClient)" as Chat
-participant "POST /api/chat" as Api
-participant "answer.ts\n(answerPatient)" as Ans
-participant "AI provider\n(optional)" as Model
-database "Shared store\n(db.ts)" as Store
+participant "Chat page\n(index.html, chat.js)" as Chat
+participant "core.js" as Core
+database "localStorage" as LS
+participant "api/chat\n(Vercel)" as API
+participant "OpenRouter\n(DeepSeek)" as OR
 autonumber
 
-Patient -> Chat : opens /
-Chat -> Chat : chat id from local storage, or a new one
-Chat -> Api : GET /api/clinic (clinic name for the greeting)
-Chat --> Patient : greeting, six quick replies, question box
-note right of Chat : a question in the link (?q=) is asked on load
-
-Patient -> Chat : types a question or presses a quick reply
-Chat -> Api : POST {chatId, message}
-Api -> Store : getClinicData(); insertMessage(user)
-note right of Api
-A store fault is noted, never thrown: the clinic file
-that ships with the app is used and the reply still goes out.
+Patient -> Chat : opens / (or /?q=<question>)
+Chat -> Core : FD.getLang(), FD.patientId(), FD.applyTheme()
+Core -> LS : read frontdesk.lang, frontdesk.patient, frontdesk.theme
+Core -> LS : write a new patient id (P + 5 characters) when none is stored
+Chat -> API : GET /api/chat (warm-up; the body is read and dropped)
+API --> Chat : 200 {ok: true}
+Chat -> Core : FD.loadClinic()
+Core -> Core : fetch /clinic-data.json\n(window.FRONTDESK_CLINIC if the fetch fails)
+Core -> LS : read frontdesk.clinic
+note right of Core : an edited file with a "clinic" section wins over the shipped one
+Core --> Chat : clinic data
+Chat -> Chat : side(), labels(), render()
+note right of Chat
+side() puts the assistant name (assistant.name,
+else "FrontDesk AI") in the header. labels() fills
+the greeting line and the quick chips FD.quick().
+The greeting is #greeting (.bot-greeting in
+.greeting-row), never .bot-msg. render() keeps it
+and redraws this patient's earlier tickets.
 end note
-Api -> Ans : answerPatient(message, clinic)
-Ans -> Ans : detectLanguage (i18n.ts)
-Ans -> Ans : 1 emergency check (guards.ts)
-Ans -> Ans : 2 medical-advice and rule-break checks (guards.ts)
-Ans -> Ans : 3 booking request? (matcher.ts detectBooking)
-alt an AI key is set
-  Ans -> Model : 4 one attempt, stopped at 8 seconds, JSON asked for
-  Model --> Ans : {found, answer, ...}
-  Ans -> Ans : Zod check, then acceptAiReply and keepsFileWording
-  note right of Ans
-  Rejected: a doctor who is not in the file, a figure for
-  another service, a time for another day, a clock time
-  without am or pm. A rejected answer goes to step 5.
-  "Not found" becomes "not sure" and a needs human ticket.
+
+opt the address has ?q=
+  Chat -> Chat : history.replaceState() removes q, then send(q)
+  note right of Chat : q is removed before sending, so a reload does not ask again
+end
+
+Patient -> Chat : types a question and presses Send, or taps a quick chip
+Chat -> Chat : provisional user line, pending + 1, showTyping(true)
+note right of Chat : the typing dots are .typing-row, never .bot-msg
+Chat -> Core : FD.answer(q, data, lang)
+Core --> Chat : {kind, status, text, lang, facts, bookingTime, modelOk}
+
+alt kind "answer" and modelOk (a reply built from the file)
+  Chat -> API : POST /api/chat {draft, facts, lang, clinic}\nAbortController stops the call after 6 s
+  API -> OR : chat/completions, deepseek/deepseek-v4.1-flash,\ntemperature 0.2, reasoning off, 5 s limit
+  note right of API
+  Sent: the rules, the DRAFT and the clinic file.
+  The patient's words are never sent.
   end note
+  OR --> API : reworded answer
+  API --> Chat : 200 {text, model}
+  Chat -> Core : FD.guard(text, ruled, data)
+  alt guard passes
+    Core --> Chat : true: reply is the model text, source "model"
+  else guard fails
+    Core --> Chat : false: reply is the rules text, source "file"
+  end
+else greeting, thanks, safety reply, booking or not sure
+  note over Chat : askModel() returns null at once; no call to api/chat
 end
-opt no key, a failed or late call, or a rejected answer
-  Ans -> Ans : 5 matchClinicFile (matcher.ts)
-  note right of Ans : label "Answered from the clinic file"
+
+Chat -> Core : FD.openNow(data)
+Chat -> Core : FD.addTicket({patient, q, reply, source, kind, status, lang,\nbookingTime, afterHours, afterHoursNote, callBack})
+Core -> LS : read frontdesk.tickets, add the ticket, write frontdesk.tickets
+Core --> Chat : ticket {id, created, staffReplies: [], saved}
+Chat -> Chat : remove the provisional line; showTyping(false) when nothing is pending
+Chat -> Chat : ticketRows(t): .user-msg, then the reply as the last .bot-msg
+note right of Chat
+.src-label "Answered from the clinic file" when the
+source is not "model". A Listen button sits beside
+the reply when speechSynthesis exists, with the
+feedback buttons "Helpful" and "Not helpful".
+end note
+Chat --> Patient : one complete reply
+opt Patient taps Helpful or Not helpful
+  Chat -> Core : FD.updateTicket(id, {feedback: "up" or "down"})
+  Core -> LS : write frontdesk.tickets (staff see it on the ticket)
 end
-Ans --> Api : reply, source, label, ticket to open or none
-opt a person is needed
-  Api -> Store : insertTicket(status, priority, text)
-end
-Api -> Store : insertMessage(assistant, source)
-Api --> Chat : {reply, source, label, ticketId, ticketStatus, stored}
-Chat --> Patient : the reply, with the label when it came from the clinic file
+note over Chat, API : with a ticket store, sync.js also sends the ticket to /api/tickets (J9)
 @enduml

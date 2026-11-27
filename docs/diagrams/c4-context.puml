@@ -1,21 +1,23 @@
 @startuml c4-context
 !include <C4/C4_Context>
-title FrontDesk AI 2.0.1: system context (C4 level 1, as built)
+title FrontDesk AI: system context (C4 level 1, as built)
 
-Person(patient, "Patient", "Types a question to the clinic on a phone or desktop browser")
-Person(staff, "Front desk staff", "Opens /staff to answer tickets, call back, close tickets and edit the clinic file")
-System(frontdesk, "FrontDesk AI", "Patient chat at / and staff page at /staff. Answers only from the clinic file, opens a ticket when a person is needed")
-System_Ext(model, "AI provider (OpenAI-compatible)", "Optional. Answers one question from the clinic file as JSON; code checks the answer before it is used")
-System_Ext(redis, "Redis of the host (shared store)", "In use on the live site: clinic file, tickets and messages, keys under one prefix")
-System_Ext(postgres, "Postgres (Neon)", "Used when its address is set. Not connected on the live site")
-System_Ext(phone, "Clinic phone lines", "The clinic number and the emergency number from the clinic file")
+Person(patient, "Patient", "Asks the clinic a question on a phone or desktop browser, by typing or speaking")
+Person(staff, "Front desk staff", "Opens /staff to answer tickets, call back and edit the clinic file")
+System(frontdesk, "FrontDesk AI", "Patient chat at / and staff page at /staff. Answers only from the clinic file, opens tickets, hands hard questions to a human")
+System_Ext(model, "OpenRouter, DeepSeek V4.1 Flash", "Rewords a drafted file answer; optional. Never sees the patient's words. Also reads a reply aloud (api/tts) and, as a backup, turns a recorded voice clip into text (api/transcribe)")
+System_Ext(upstash, "Upstash Redis (ticket store)", "v1.3: tickets shared across devices, kept seven days; optional")
+System_Ext(speechsvc, "Browser speech services", "Web Speech API: recognition and synthesis in the patient's browser")
+System_Ext(whatsapp, "WhatsApp", "Chat with the clinic, opened from a wa.me link")
+System_Ext(phone, "Clinic phone lines", "040 5550 0123 and the emergency line from the clinic file")
 
-Rel(patient, frontdesk, "Asks questions, reads replies and staff replies", "HTTPS")
-Rel(staff, frontdesk, "Reads tickets, replies, closes, edits the clinic file", "HTTPS")
-Rel(frontdesk, model, "One attempt per question, stopped at 8 seconds", "HTTPS, key on the server only")
-Rel(frontdesk, redis, "Reads and writes when no Postgres address is set", "HTTPS, REST, token on the server only")
-Rel(frontdesk, postgres, "Reads and writes when its address is set", "SQL over HTTPS")
-Rel(patient, phone, "Calls in an emergency", "number shown first in the reply")
+Rel(patient, frontdesk, "Asks questions, reads replies", "HTTPS")
+Rel(staff, frontdesk, "Reads tickets, replies, edits the clinic file", "HTTPS")
+Rel(frontdesk, model, "Asks for a reworded draft, 5 s limit; reply audio, 15 s; backup transcription, 12 s", "HTTPS, key on the server only")
+Rel(frontdesk, upstash, "v1.3: stores and reads tickets", "HTTPS, REST, token on the server only")
+Rel(frontdesk, speechsvc, "Listens and speaks on request")
+Rel(patient, whatsapp, "Continues the conversation", "wa.me link")
+Rel(patient, phone, "Calls in an emergency", "number shown first")
 
 SHOW_LEGEND()
 @enduml

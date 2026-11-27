@@ -1,31 +1,41 @@
-2.0.1
+1.3.0.3
 
 # FrontDesk AI release baseline
 #
-# Version:     2.0.1
-# Released:    27 November 2026
-# Owner:       Sanjay Karwa
+# Version:     1.3.0.3
+# Released:    22 November 2026 (baseline 1.0.0.0: 21 November 2026)
+# Owner:       Sanjay Karwa, Smart AI for Business
 # Live:        https://frontdesk-ai-xi-gray.vercel.app
 # Staff:       https://frontdesk-ai-xi-gray.vercel.app/staff
 # Docs:        https://github.com/karwasanjay007/frontdesk-ai-docs
 #
-# Version 2.0.1 is the front-desk chat of a dental clinic, rebuilt as a server application with typed code.
-# Each message goes through the same order: emergency check, medical and rule-break checks, booking request to a
-# timed ticket, one checked AI attempt (8 seconds), then the keyword matcher on the clinic file with the label
-# "Answered from the clinic file". A ticket is opened only when a person is needed. Tickets, messages and the
-# clinic file are kept in a shared server store (the host's Redis today; Postgres when its address is set; Postgres
-# is not connected and not tested). The staff page has a reply box on each ticket, a fixed order, the age of each
-# ticket, a call-back list, close, and a clinic file editor with a checked save and a reset. The AI key stays on
-# the server.
+# This file marks the first public baseline of the dental front-desk chat
+# submitted for the Freedom With AI Batch 10 build project. Answers come
+# from the clinic file; anything else becomes a staff ticket. The model
+# key stays on the server.
 #
-# Not rebuilt from 1.3.0.3: voice, the language menu, patient name and phone, the clinic info panel, staff search
-# and filters, CSV export, ready-made replies, staff notes, patient feedback, background-tab sync.
+# Version 1.1.0.0 adds, beside the baseline and without changing what it does:
+# a reply and a ticket when a patient asks for a person, with a seventh quick
+# reply; search, status filter, sort and opt-in urgent alerts on the staff
+# page; a form for the clinic file that writes into the same JSON box; an
+# optional assistant name and the clinic's own quick replies in the file.
 #
-# Earlier versions (a static app with one server function; that code no longer runs):
-# 1.0.0.0  21 November 2026  First public baseline, submitted for a build competition.
-# 1.1.0.0  22 November 2026  Ask for a person; staff search, filter, sort and alerts; a form for the clinic file.
-# 1.2.0.0  22 November 2026  Queue figures, CSV export, ready-made replies, type filter, staff note.
-# 1.3.0.0  22 November 2026  Ticket numbers, chat thread in a ticket, feedback, tickets shared across devices.
-# 1.3.0.1  23 November 2026  Every tap target at least 44 px.
-# 1.3.0.2  25 November 2026  Mixed timing and price question; theme button says the theme; skip link.
-# 1.3.0.3  25 November 2026  A reply or a question is sent even when its tab goes to the background.
+# Version 1.2.0.0 (22 November 2026, evening) adds to the staff page: the queue
+# at a glance, CSV export, ready-made replies, a filter by ticket type and a
+# private staff note; and a booking reply that states the named day's hours.
+#
+# Version 1.3.0.0 (22 November 2026, late evening) adds ticket numbers, the
+# patient's chat thread inside a ticket, feedback on a reply, and tickets shared
+# across devices through a server store (a private key per browser, a desk code
+# for staff).
+#
+# Version 1.3.0.1 (23 November 2026): every tap target on both pages is at least 44 px (it was 40 on
+# chips, some buttons and the clinic form fields); the width test checks 44 on both pages.
+#
+# Version 1.3.0.2 (25 November 2026), after the project feedback: a question that mixes timings with prices
+# ("What are your timings and prices?") is answered from the clinic file with both; the light and dark button
+# says which theme is on; the skip link puts the cursor in the message box in every browser.
+#
+# Version 1.3.0.3 (25 November 2026, late evening): a staff reply or a patient question is sent to the shared
+# ticket store even when its tab goes to the background straight after (it used to wait until the tab was
+# looked at again).

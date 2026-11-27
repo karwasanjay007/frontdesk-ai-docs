@@ -2,44 +2,83 @@
 !include style.iuml
 title J4 Staff reply into the patient's chat
 actor Staff
-participant "Staff page /staff\n(StaffClient)" as SP
-participant "/api/tickets" as T
-participant "desk.ts\n(isStaff)" as D
-database "Shared store\n(db.ts)" as Store
-participant "GET /api/messages" as Msg
-participant "Chat page /\n(ChatClient)" as Chat
+participant "Staff page\n(staff/index.html, staff.js)" as SP
+participant "core.js" as Core
+database "localStorage" as LS
+participant "Chat page\n(index.html, chat.js)" as Chat
 actor Patient
 autonumber
 
-Staff -> SP : opens /staff
-SP -> T : GET (reloaded every 4 seconds)
-T -> D : isStaff(request)
-note right of D
-The desk lock is optional and off on the live site.
-When it is on, the code travels in the x-desk-code
-header; without it the answer is 401 and the page asks for it.
+Staff -> SP : opens /staff in the same browser as the chat
+SP -> Core : FD.loadClinic(), then clinicEditor() and render()
+SP -> Core : FD.tickets().sort(FD.byPriority)
+Core -> LS : read frontdesk.tickets
+note right of Core
+Priority: urgent, needs human, answered, closed;
+newest first within a status.
 end note
-T -> Store : listTickets()
-T --> SP : tickets without their chat ids, shared: true or false
-SP --> Staff : order urgent, needs human, answered, closed;\na reply box on each ticket; the "To call back" list
-note right of SP : a waiting ticket older than 2 hours is marked overdue
-
-Staff -> SP : types a reply on a ticket and sends it
-SP -> T : POST {ticketId, reply}
-T -> Store : replyToTicket: reply saved, status answered,\nmessage added to that chat with role staff
-T --> SP : the ticket, again without its chat id
-SP --> Staff : "Reply sent"
-
-loop every 3 seconds
-  Chat -> Msg : GET ?chatId=<this browser's chat id>
-  Msg -> Store : listMessages(chatId)
-  Msg --> Chat : messages
+SP -> SP : open ticket = the one chosen, else the first in the list
+note right of SP
+Every ticket's [data-ticket] row has its own #staff-reply
+and #staff-send. "Needs human" older than 2 h shows
+"over 2 h". Call list: needs human, or a booking not
+closed, oldest first. Unknown list: "not sure" questions.
+end note
+note right of SP
+v1.2. Every ticket shows a number, T-001 and up, in the
+order opened. The open ticket has "Chat so far": the
+patient's other questions and replies, folded.
+end note
+opt Staff opens another ticket
+  Staff -> SP : clicks its heading [data-open]
+  SP -> SP : openId = that ticket, draft cleared, render()
 end
-Chat --> Patient : the staff reply, in that patient's chat and only there
-
-opt nothing more is owed
-  Staff -> SP : Close
-  SP -> T : POST {ticketId, close: true}
-  T -> Store : closeTicket: status closed
+opt Staff read "Chat so far" (v1.2)
+  Staff -> SP : unfolds "Chat so far" on the open ticket
+  SP --> Staff : the patient's other questions and replies, read only
 end
+opt Staff use the queue tools (tools.js)
+  Staff -> SP : search #queue-search, status and type filters, sort
+  SP --> Staff : rows hidden or reordered, never removed
+  note right of SP
+  Also: figures (open, urgent, over 2 hours, answered,
+  average wait, helpful or not), Alerts (off by default,
+  frontdesk.alerts) and Export CSV.
+  end note
+end
+opt Staff use a ready-made reply (v1.2)
+  Staff -> SP : picks a ready-made reply
+  SP -> SP : fills #staff-reply with its text; nothing is sent yet
+end
+opt Staff keep a private note (v1.2)
+  Staff -> SP : unfolds the private note box, types, saves
+  SP -> LS : write frontdesk.notes (ticket id to note)
+  note right of SP
+  The private note is a separate folded box.
+  It is never sent and never shown to the patient.
+  end note
+end
+Staff -> SP : types in #staff-reply, presses #staff-send (or Ctrl+Enter)
+alt the box is empty
+  SP --> Staff : "Type a reply first."
+else text entered
+  SP -> Core : FD.replyToTicket(openId, text)
+  Core -> LS : add {text, at} to staffReplies, set status, write frontdesk.tickets
+  note right of Core
+  Status after a reply: urgent and needs human
+  become answered; answered becomes closed;
+  closed stays closed.
+  end note
+  SP -> SP : render()
+  SP --> Staff : "Sent. The patient sees it in their chat."
+  LS -> Chat : storage event, key frontdesk.tickets (another tab; also checked every 2 s)
+  Chat -> Chat : render() when no question is pending
+  Chat --> Patient : .bot-msg marked "From the clinic team" (no Listen button)
+end
+opt Staff closes the ticket
+  Staff -> SP : "Close ticket" [data-close] (shown unless closed)
+  SP -> Core : FD.setStatus(id, "closed")
+  Core -> LS : write frontdesk.tickets
+end
+note over SP, LS : a new patient question raises a storage event that redraws /staff; it also redraws every 30 s unless #staff-reply has focus
 @enduml

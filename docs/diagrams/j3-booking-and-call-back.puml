@@ -2,30 +2,47 @@
 !include style.iuml
 title J3 Booking request and call-back
 actor Patient
-participant "Chat page /" as Chat
-participant "POST /api/chat" as Api
-participant "matcher.ts\n(detectBooking)" as M
-participant "booking-time.ts" as B
-database "Shared store" as Store
-participant "Staff page /staff" as SP
-actor Staff
+participant "Chat page\n(index.html, chat.js)" as Chat
+participant "core.js" as Core
+database "localStorage" as LS
+participant "WhatsApp" as WA
 autonumber
 
-Patient -> Chat : "Can I book a cleaning tomorrow at 5 pm?"
-Chat -> Api : POST {chatId, message}
-Api -> M : through answerPatient, after the guards: detectBooking(message, clinic)
-M --> Api : day, time and the booking reply
-note right of M : code makes the ticket; the AI step is not asked
-Api -> B : requestedLabel(day, time)
-B --> Api : "requested tomorrow, <calendar date in India>, 5:00 pm"
-Api -> Store : insertTicket(needs human, P2, question + label)
-Api -> Store : insertMessage(assistant)
-Api --> Chat : reply: the clinic will call back to confirm
-Chat --> Patient : the booking reply
+Patient -> Chat : "I want to book a check-up tomorrow at 5 pm"
+Chat -> Core : FD.answer(q, data)
+Core -> Core : bookingWhen(t): day (today, tomorrow, a weekday or "12 Nov")\nand time ("5:00 pm", morning, afternoon, evening)
+note right of Core
+Booking needs a booking word, not a how-to-book,
+cancel or walk-in question, and a time or a wish
+("I want", "please", "need"). Emergency, discount
+and medical are checked first.
+end note
+Core --> Chat : kind "booking", status "needs human",\nT[lang].booking(data, when) + bookingDayNote(): that day's hours\nwhen one weekday is named; bookingTime (or "not given"), bookingDate
+note over Chat : no model call for a booking
+Chat -> Core : FD.openNow(data)
+alt the clinic is closed now
+  Chat -> Core : FD.nextOpening(data)
+  Core --> Chat : "today at 9:00 am", "tomorrow at ..." or "<Day> at ..."
+  Chat -> Chat : afterHoursNote = UI[lang].closedNote(next)
+end
+Chat -> Core : FD.addTicket({... kind "booking", bookingTime, afterHours, callBack: true})
+Core -> LS : write frontdesk.tickets
+Chat --> Patient : reply "passed your request for <time> ... call you back within 2 working hours",\n"Continue on WhatsApp", after-hours note when closed, call-back form
+note right of Chat : the note and the form sit beside the .bot-msg, never inside it
 
-Staff -> SP : opens /staff
-SP -> Store : GET /api/tickets
-SP --> Staff : "To call back" list and the ticket with day, date and time
-Staff -> SP : calls the patient, then replies on the ticket or presses Close
-SP -> Store : POST /api/tickets {ticketId, reply} or {ticketId, close: true}
+opt Patient leaves a name and phone
+  Patient -> Chat : name (optional), country code and phone, presses Save
+  Chat -> Chat : intlNumber(code, phone): length checked for that country,\na leading 0 dropped, result +<code><number>
+  alt the number does not fit the country
+    Chat --> Patient : "Check the number for the country you chose ..."
+  else it fits
+    Chat -> Core : FD.updateTicket(id, {contactName, contactPhone})
+    Core -> LS : write frontdesk.tickets
+    Chat --> Patient : form replaced by "Thank you, <name>. We will call <phone>."
+  end
+end
+opt Patient taps Continue on WhatsApp
+  Patient -> WA : wa.me/91<whatsapp digits>?text=<the request>
+end
+note over Chat, LS : on /staff the ticket shows "requested <time>", "after hours" and sits in the call list (J4)
 @enduml
