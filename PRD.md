@@ -426,7 +426,18 @@ removed.
 
 | Id | Requirement | Test |
 | --- | --- | --- |
-| R-16.10 | From 768 px the chat looks like the phone: answers as plain text with the round clinic mark in a 760 px column left of the pinned clinic panel; Listen, Helpful and Not helpful as 44 px icon buttons that keep their names; a slim composer bar with New chat and the microphone as round buttons (no "+" menu), a 16 px input and a round Send; the emergency number as a red phone pill and the note under it one muted line; starter cards three to a row on an empty chat, one row after the first message; no sideways scroll | `tests/desk-chat.mjs` |
+| R-16.10 | From 768 px the chat looks like the phone: answers as plain text with the round clinic mark in a 760 px column left of the pinned clinic panel; Listen, Helpful and Not helpful as 44 px icon buttons that keep their names; a slim composer bar reading "+", a 16 px input and a round Send, with New chat and the microphone in the "+" menu (since 1.7.1.0, R-16.11; round buttons in the bar at 1.7.0.0); the emergency number as a red phone pill and the note under it one muted line; starter cards three to a row on an empty chat, one row after the first message; no sideways scroll | `tests/desk-chat.mjs` |
 
 Corrected in place of earlier statements: on a desktop, answers are no longer cards, and Listen, Helpful and Not
 helpful are no longer text buttons.
+
+## Version 1.7.1.0: addition (27 Nov 2026)
+
+Version 1.7.1.0 brings the "+" menu to the desktop (768 px and up). Nothing removed.
+
+| Id | Requirement | Test |
+| --- | --- | --- |
+| R-16.11 | From 768 px New chat and the microphone are in the "+" menu, opened as a small popover above the "+"; the composer reads "+", the input, Send; the top-bar staff link is worded in Hindi and Telugu as well as English | `tests/desk-chat.mjs` |
+
+Corrected in place of earlier statements: on a desktop New chat and the microphone are no longer round buttons in
+the composer bar, and there is a "+" menu on a desktop.

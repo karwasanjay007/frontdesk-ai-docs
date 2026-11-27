@@ -4,8 +4,20 @@ PASS 1024x768 light the composer pill is at most 72 px tall | 54
 PASS 1024x768 light #chat-input text is 16 px | 16
 PASS 1024x768 light Send is a round 44 px button | 44x44
 PASS 1024x768 light #chat-send keeps the accessible name "Send"
-PASS 1024x768 light New chat is reachable in the pill, 44 px
-PASS 1024x768 light the microphone is in the pill (44 px when the browser can listen) | hidden false
+PASS 1024x768 light the pill starts with a round 44 px "+" | {"l":21,"r":65,"t":657,"b":701,"w":44,"h":44}
+PASS 1024x768 light New chat and the microphone are not shown in the pill (they are in the "+" menu)
+PASS 1024x768 light the pill reads "+", the question box, Send
+PASS 1024x768 light Enter on "+" opens the menu and sets aria-expanded | true
+PASS 1024x768 light the menu opens as a popover above the composer, in view | {"l":21,"r":241,"t":545,"b":649,"w":220,"h":104}
+PASS 1024x768 light it is a small popover, not a full-width sheet, with no scrim | 220 px
+PASS 1024x768 light the menu holds New chat and the microphone | new-chat,mic
+PASS 1024x768 light each menu item is at least 44 px tall | 44,44
+PASS 1024x768 light focus moves to the first item | new-chat
+PASS 1024x768 light the New chat item is named | New chat
+PASS 1024x768 light arrow keys move between the items | mic then new-chat
+PASS 1024x768 light Escape closes the menu and returns focus to "+" | compose-plus
+PASS 1024x768 light Space on "+" opens the menu
+PASS 1024x768 light a tap outside closes the menu
 PASS 1024x768 light the emergency number is a visible pill, 44 px, with its border | {"h":44,"border":1,"shown":true}
 PASS 1024x768 light the note under the pill is one short line | 44 px
 PASS 1024x768 light no sideways scroll | 0
@@ -19,7 +31,8 @@ PASS 1024x768 light after three answers the pill, #chat-input and Send are in vi
 PASS 1024x768 light after the first answer the quick questions are one row above the pill | 1 row
 PASS 1024x768 light the conversation stays left of the clinic panel
 PASS 1024x768 light no sideways scroll after three answers | 0
-PASS 1024x768 light New chat starts a new chat and the starter cards come back | replies 0
+PASS 1024x768 light New chat from the "+" menu starts a new chat and the starter cards come back | replies 0
+PASS 1024x768 light the menu closes after New chat
 PASS 1024x768 light no page error | 
 PASS 1280x800 light the clinic panel is pinned on the right and does not overlap the chat
 PASS 1280x800 light empty chat: starter cards in a grid | 7 cards, 3 columns, 3 rows
@@ -27,8 +40,20 @@ PASS 1280x800 light the composer pill is at most 72 px tall | 54
 PASS 1280x800 light #chat-input text is 16 px | 16
 PASS 1280x800 light Send is a round 44 px button | 44x44
 PASS 1280x800 light #chat-send keeps the accessible name "Send"
-PASS 1280x800 light New chat is reachable in the pill, 44 px
-PASS 1280x800 light the microphone is in the pill (44 px when the browser can listen) | hidden false
+PASS 1280x800 light the pill starts with a round 44 px "+" | {"l":85.796875,"r":129.796875,"t":689,"b":733,"w":44,"h":44}
+PASS 1280x800 light New chat and the microphone are not shown in the pill (they are in the "+" menu)
+PASS 1280x800 light the pill reads "+", the question box, Send
+PASS 1280x800 light Enter on "+" opens the menu and sets aria-expanded | true
+PASS 1280x800 light the menu opens as a popover above the composer, in view | {"l":85.796875,"r":305.796875,"t":577,"b":681,"w":220,"h":104}
+PASS 1280x800 light it is a small popover, not a full-width sheet, with no scrim | 220 px
+PASS 1280x800 light the menu holds New chat and the microphone | new-chat,mic
+PASS 1280x800 light each menu item is at least 44 px tall | 44,44
+PASS 1280x800 light focus moves to the first item | new-chat
+PASS 1280x800 light the New chat item is named | New chat
+PASS 1280x800 light arrow keys move between the items | mic then new-chat
+PASS 1280x800 light Escape closes the menu and returns focus to "+" | compose-plus
+PASS 1280x800 light Space on "+" opens the menu
+PASS 1280x800 light a tap outside closes the menu
 PASS 1280x800 light the emergency number is a visible pill, 44 px, with its border | {"h":44,"border":1,"shown":true}
 PASS 1280x800 light the note under the pill is one short line | 44 px
 PASS 1280x800 light no sideways scroll | 0
@@ -42,7 +67,12 @@ PASS 1280x800 light after three answers the pill, #chat-input and Send are in vi
 PASS 1280x800 light after the first answer the quick questions are one row above the pill | 1 row
 PASS 1280x800 light the conversation stays left of the clinic panel
 PASS 1280x800 light no sideways scroll after three answers | 0
-PASS 1280x800 light New chat starts a new chat and the starter cards come back | replies 0
+PASS 1280x800 light New chat from the "+" menu starts a new chat and the starter cards come back | replies 0
+PASS 1280x800 light the menu closes after New chat
+PASS 1280x800 light English: #staff-link-top reads "Staff page" | {"text":"Staff page","title":"Staff page","name":"Staff page","drawer":"Staff page"}
+PASS 1280x800 light hi: #staff-link-top text, title and name follow the language, as #staff-link | {"text":"स्टाफ पेज","title":"स्टाफ पेज","name":"स्टाफ पेज","drawer":"स्टाफ पेज"}
+PASS 1280x800 light te: #staff-link-top text, title and name follow the language, as #staff-link | {"text":"స్టాఫ్ పేజీ","title":"స్టాఫ్ పేజీ","name":"స్టాఫ్ పేజీ","drawer":"స్టాఫ్ పేజీ"}
+PASS 1280x800 light back to English: "Staff page" again | {"text":"Staff page","title":"Staff page","name":"Staff page","drawer":"Staff page"}
 PASS 1280x800 light no page error | 
 PASS 1440x900 light the clinic panel is pinned on the right and does not overlap the chat
 PASS 1440x900 light empty chat: starter cards in a grid | 7 cards, 3 columns, 3 rows
@@ -50,8 +80,20 @@ PASS 1440x900 light the composer pill is at most 72 px tall | 54
 PASS 1440x900 light #chat-input text is 16 px | 16
 PASS 1440x900 light Send is a round 44 px button | 44x44
 PASS 1440x900 light #chat-send keeps the accessible name "Send"
-PASS 1440x900 light New chat is reachable in the pill, 44 px
-PASS 1440x900 light the microphone is in the pill (44 px when the browser can listen) | hidden false
+PASS 1440x900 light the pill starts with a round 44 px "+" | {"l":145,"r":189,"t":789,"b":833,"w":44,"h":44}
+PASS 1440x900 light New chat and the microphone are not shown in the pill (they are in the "+" menu)
+PASS 1440x900 light the pill reads "+", the question box, Send
+PASS 1440x900 light Enter on "+" opens the menu and sets aria-expanded | true
+PASS 1440x900 light the menu opens as a popover above the composer, in view | {"l":145,"r":365,"t":677,"b":781,"w":220,"h":104}
+PASS 1440x900 light it is a small popover, not a full-width sheet, with no scrim | 220 px
+PASS 1440x900 light the menu holds New chat and the microphone | new-chat,mic
+PASS 1440x900 light each menu item is at least 44 px tall | 44,44
+PASS 1440x900 light focus moves to the first item | new-chat
+PASS 1440x900 light the New chat item is named | New chat
+PASS 1440x900 light arrow keys move between the items | mic then new-chat
+PASS 1440x900 light Escape closes the menu and returns focus to "+" | compose-plus
+PASS 1440x900 light Space on "+" opens the menu
+PASS 1440x900 light a tap outside closes the menu
 PASS 1440x900 light the emergency number is a visible pill, 44 px, with its border | {"h":44,"border":1,"shown":true}
 PASS 1440x900 light the note under the pill is one short line | 44 px
 PASS 1440x900 light no sideways scroll | 0
@@ -65,7 +107,8 @@ PASS 1440x900 light after three answers the pill, #chat-input and Send are in vi
 PASS 1440x900 light after the first answer the quick questions are one row above the pill | 1 row
 PASS 1440x900 light the conversation stays left of the clinic panel
 PASS 1440x900 light no sideways scroll after three answers | 0
-PASS 1440x900 light New chat starts a new chat and the starter cards come back | replies 0
+PASS 1440x900 light New chat from the "+" menu starts a new chat and the starter cards come back | replies 0
+PASS 1440x900 light the menu closes after New chat
 PASS 1440x900 light no page error | 
 PASS 1024x768 dark the clinic panel is pinned on the right and does not overlap the chat
 PASS 1024x768 dark empty chat: starter cards in a grid | 7 cards, 3 columns, 3 rows
@@ -73,8 +116,20 @@ PASS 1024x768 dark the composer pill is at most 72 px tall | 54
 PASS 1024x768 dark #chat-input text is 16 px | 16
 PASS 1024x768 dark Send is a round 44 px button | 44x44
 PASS 1024x768 dark #chat-send keeps the accessible name "Send"
-PASS 1024x768 dark New chat is reachable in the pill, 44 px
-PASS 1024x768 dark the microphone is in the pill (44 px when the browser can listen) | hidden false
+PASS 1024x768 dark the pill starts with a round 44 px "+" | {"l":21,"r":65,"t":657,"b":701,"w":44,"h":44}
+PASS 1024x768 dark New chat and the microphone are not shown in the pill (they are in the "+" menu)
+PASS 1024x768 dark the pill reads "+", the question box, Send
+PASS 1024x768 dark Enter on "+" opens the menu and sets aria-expanded | true
+PASS 1024x768 dark the menu opens as a popover above the composer, in view | {"l":21,"r":241,"t":545,"b":649,"w":220,"h":104}
+PASS 1024x768 dark it is a small popover, not a full-width sheet, with no scrim | 220 px
+PASS 1024x768 dark the menu holds New chat and the microphone | new-chat,mic
+PASS 1024x768 dark each menu item is at least 44 px tall | 44,44
+PASS 1024x768 dark focus moves to the first item | new-chat
+PASS 1024x768 dark the New chat item is named | New chat
+PASS 1024x768 dark arrow keys move between the items | mic then new-chat
+PASS 1024x768 dark Escape closes the menu and returns focus to "+" | compose-plus
+PASS 1024x768 dark Space on "+" opens the menu
+PASS 1024x768 dark a tap outside closes the menu
 PASS 1024x768 dark the emergency number is a visible pill, 44 px, with its border | {"h":44,"border":1,"shown":true}
 PASS 1024x768 dark the note under the pill is one short line | 44 px
 PASS 1024x768 dark no sideways scroll | 0
@@ -88,7 +143,8 @@ PASS 1024x768 dark after three answers the pill, #chat-input and Send are in vie
 PASS 1024x768 dark after the first answer the quick questions are one row above the pill | 1 row
 PASS 1024x768 dark the conversation stays left of the clinic panel
 PASS 1024x768 dark no sideways scroll after three answers | 0
-PASS 1024x768 dark New chat starts a new chat and the starter cards come back | replies 0
+PASS 1024x768 dark New chat from the "+" menu starts a new chat and the starter cards come back | replies 0
+PASS 1024x768 dark the menu closes after New chat
 PASS 1024x768 dark no page error | 
 PASS 1280x800 dark the clinic panel is pinned on the right and does not overlap the chat
 PASS 1280x800 dark empty chat: starter cards in a grid | 7 cards, 3 columns, 3 rows
@@ -96,8 +152,20 @@ PASS 1280x800 dark the composer pill is at most 72 px tall | 54
 PASS 1280x800 dark #chat-input text is 16 px | 16
 PASS 1280x800 dark Send is a round 44 px button | 44x44
 PASS 1280x800 dark #chat-send keeps the accessible name "Send"
-PASS 1280x800 dark New chat is reachable in the pill, 44 px
-PASS 1280x800 dark the microphone is in the pill (44 px when the browser can listen) | hidden false
+PASS 1280x800 dark the pill starts with a round 44 px "+" | {"l":85.796875,"r":129.796875,"t":689,"b":733,"w":44,"h":44}
+PASS 1280x800 dark New chat and the microphone are not shown in the pill (they are in the "+" menu)
+PASS 1280x800 dark the pill reads "+", the question box, Send
+PASS 1280x800 dark Enter on "+" opens the menu and sets aria-expanded | true
+PASS 1280x800 dark the menu opens as a popover above the composer, in view | {"l":85.796875,"r":305.796875,"t":577,"b":681,"w":220,"h":104}
+PASS 1280x800 dark it is a small popover, not a full-width sheet, with no scrim | 220 px
+PASS 1280x800 dark the menu holds New chat and the microphone | new-chat,mic
+PASS 1280x800 dark each menu item is at least 44 px tall | 44,44
+PASS 1280x800 dark focus moves to the first item | new-chat
+PASS 1280x800 dark the New chat item is named | New chat
+PASS 1280x800 dark arrow keys move between the items | mic then new-chat
+PASS 1280x800 dark Escape closes the menu and returns focus to "+" | compose-plus
+PASS 1280x800 dark Space on "+" opens the menu
+PASS 1280x800 dark a tap outside closes the menu
 PASS 1280x800 dark the emergency number is a visible pill, 44 px, with its border | {"h":44,"border":1,"shown":true}
 PASS 1280x800 dark the note under the pill is one short line | 44 px
 PASS 1280x800 dark no sideways scroll | 0
@@ -111,7 +179,8 @@ PASS 1280x800 dark after three answers the pill, #chat-input and Send are in vie
 PASS 1280x800 dark after the first answer the quick questions are one row above the pill | 1 row
 PASS 1280x800 dark the conversation stays left of the clinic panel
 PASS 1280x800 dark no sideways scroll after three answers | 0
-PASS 1280x800 dark New chat starts a new chat and the starter cards come back | replies 0
+PASS 1280x800 dark New chat from the "+" menu starts a new chat and the starter cards come back | replies 0
+PASS 1280x800 dark the menu closes after New chat
 PASS 1280x800 dark no page error | 
 PASS 1440x900 dark the clinic panel is pinned on the right and does not overlap the chat
 PASS 1440x900 dark empty chat: starter cards in a grid | 7 cards, 3 columns, 3 rows
@@ -119,8 +188,20 @@ PASS 1440x900 dark the composer pill is at most 72 px tall | 54
 PASS 1440x900 dark #chat-input text is 16 px | 16
 PASS 1440x900 dark Send is a round 44 px button | 44x44
 PASS 1440x900 dark #chat-send keeps the accessible name "Send"
-PASS 1440x900 dark New chat is reachable in the pill, 44 px
-PASS 1440x900 dark the microphone is in the pill (44 px when the browser can listen) | hidden false
+PASS 1440x900 dark the pill starts with a round 44 px "+" | {"l":145,"r":189,"t":789,"b":833,"w":44,"h":44}
+PASS 1440x900 dark New chat and the microphone are not shown in the pill (they are in the "+" menu)
+PASS 1440x900 dark the pill reads "+", the question box, Send
+PASS 1440x900 dark Enter on "+" opens the menu and sets aria-expanded | true
+PASS 1440x900 dark the menu opens as a popover above the composer, in view | {"l":145,"r":365,"t":677,"b":781,"w":220,"h":104}
+PASS 1440x900 dark it is a small popover, not a full-width sheet, with no scrim | 220 px
+PASS 1440x900 dark the menu holds New chat and the microphone | new-chat,mic
+PASS 1440x900 dark each menu item is at least 44 px tall | 44,44
+PASS 1440x900 dark focus moves to the first item | new-chat
+PASS 1440x900 dark the New chat item is named | New chat
+PASS 1440x900 dark arrow keys move between the items | mic then new-chat
+PASS 1440x900 dark Escape closes the menu and returns focus to "+" | compose-plus
+PASS 1440x900 dark Space on "+" opens the menu
+PASS 1440x900 dark a tap outside closes the menu
 PASS 1440x900 dark the emergency number is a visible pill, 44 px, with its border | {"h":44,"border":1,"shown":true}
 PASS 1440x900 dark the note under the pill is one short line | 44 px
 PASS 1440x900 dark no sideways scroll | 0
@@ -134,6 +215,7 @@ PASS 1440x900 dark after three answers the pill, #chat-input and Send are in vie
 PASS 1440x900 dark after the first answer the quick questions are one row above the pill | 1 row
 PASS 1440x900 dark the conversation stays left of the clinic panel
 PASS 1440x900 dark no sideways scroll after three answers | 0
-PASS 1440x900 dark New chat starts a new chat and the starter cards come back | replies 0
+PASS 1440x900 dark New chat from the "+" menu starts a new chat and the starter cards come back | replies 0
+PASS 1440x900 dark the menu closes after New chat
 PASS 1440x900 dark no page error | 
-ALL PASS (138 checks)
+ALL PASS (220 checks)

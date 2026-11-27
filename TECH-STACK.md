@@ -148,3 +148,5 @@ PlantUML source (SVG only), embedded in ARCHITECTURE.md.
   `compact.css` and `compact.js`, the doctor rule in `core.js`.
 - Version 1.7.0.0: no new technology, package or environment name; the desktop chat polish is in `compact.css`
   and `compact.js` (768 px and up).
+- Version 1.7.1.0: no new technology, package or environment name; the desktop "+" menu and the staff link words are
+  in `compact.css` and `compact.js`.

@@ -271,7 +271,17 @@ starter cards and the label rule.
 
 | Part | File | What changed |
 | --- | --- | --- |
-| Desktop chat | `compact.css`, `compact.js` | From 768 px: the conversation and the composer in a 760 px column left of the clinic panel pinned on the right (from 1024 px, `layout.css`); answers as plain text with the round clinic mark, no card; Listen, Helpful and Not helpful as 44 px icon buttons that keep their accessible names; a slim composer bar with New chat and the microphone as round buttons in place (no "+" menu on a desktop), a 16 px input and a round Send; the emergency number as a red phone pill, the note under it one muted line; the `#quick` chips as starter cards three to a row on an empty chat, one row after the first message |
+| Desktop chat | `compact.css`, `compact.js` | From 768 px: the conversation and the composer in a 760 px column left of the clinic panel pinned on the right (from 1024 px, `layout.css`); answers as plain text with the round clinic mark, no card; Listen, Helpful and Not helpful as 44 px icon buttons that keep their accessible names; a slim composer bar with New chat and the microphone as round buttons in place (moved into the "+" menu in 1.7.1.0, below), a 16 px input and a round Send; the emergency number as a red phone pill, the note under it one muted line; the `#quick` chips as starter cards three to a row on an empty chat, one row after the first message |
 
 No route, store or deployment part changed. The diagrams `j1-first-visit-and-ask` and `c4-component` show the
 desktop chat.
+
+## Version 1.7.1.0 changes (27 Nov 2026)
+
+| Part | File | What changed |
+| --- | --- | --- |
+| Desktop "+" menu | `compact.css`, `compact.js` | From 768 px New chat and the microphone stay behind the "+"; its menu opens as a small popover placed above the "+" (`place()`, again on resize), with no scrim; on a phone it is still the bottom sheet. The composer reads "+", the input, Send |
+| Staff link words | `compact.js` | The top-bar `#staff-link-top` copies the words of the drawer's `#staff-link` (text, title, accessible name), so it reads in English, Hindi or Telugu; the short form is "Staff", "स्टाफ" or "స్టాఫ్" |
+
+No route, store or deployment part changed. The diagrams `j1-first-visit-and-ask` and `c4-component` show the
+desktop "+" menu.

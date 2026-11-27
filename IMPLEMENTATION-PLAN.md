@@ -214,6 +214,7 @@ test; no earlier test was edited.
 | 1.6.0.0 | Phone chat polished: starter cards on an empty chat, a slim row (red emergency pill, language, theme), thumbs for feedback, plain answers with the clinic mark; no label on a not-sure or talk-to-a-person reply | `compact.css`, `compact.js`, `chat.js` | `tests/starter-cards.mjs`; `tests/phone-chat.mjs` |
 | 1.6.0.1 | Starter cards full width, the language box whole, the welcome line wraps | `compact.css` | `tests/starter-cards.mjs`, `tests/phone-chat.mjs` |
 | 1.7.0.0 | Desktop chat polished like the phone from 768 px: plain answers with the clinic mark, icon buttons, a slim bar with New chat, mic and a round Send, the red emergency pill, starter cards three to a row | `compact.css`, `compact.js` | `tests/desk-chat.mjs` |
+| 1.7.1.0 | The "+" menu on desktop too: New chat and the mic in it, a popover above the "+"; the top-bar staff link in Hindi and Telugu | `compact.css`, `compact.js` | `tests/desk-chat.mjs` (220); `tests/phone-chat.mjs`, `tests/i18n.mjs`, `tests/voice.mjs` changed at Sanjay's word |
 
 Each was added beside the earlier files. One earlier test was edited, at Sanjay's word, in 1.6.0.0:
 `tests/phone-chat.mjs` checks the one row of chips after the answers, since an empty chat now shows cards.

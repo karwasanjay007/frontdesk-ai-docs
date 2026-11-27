@@ -91,8 +91,8 @@ The clinic file `/clinic-data.json` is served with the app.
    phone pill and the language and theme buttons. After the first message the chips are the one row above the
    composer again, and New chat brings the cards back. Since version 1.7.0.0 a desktop (768 px and up) shows the
    same: starter cards three to a row on an empty chat, the emergency number as a red phone pill, and a slim
-   composer bar with New chat and the microphone as round buttons, a 16 px input and a round Send, in a 760 px
-   column left of the pinned clinic panel. The greeting is `#greeting`,
+   composer bar with a "+", a 16 px input and a round Send, in a 760 px column left of the pinned clinic panel;
+   since 1.7.1.0 New chat and the microphone are in the "+" menu, a small popover above the "+". The greeting is `#greeting`,
    a `.bot-greeting` inside `.greeting-row`, never a `.bot-msg`.
 6. With `?q=` in the address, `history.replaceState()` removes `q` first and then `send(q)` asks it, so a
    reload does not ask again.
@@ -489,8 +489,16 @@ Source: [j9-shared-tickets.puml](diagrams/j9-shared-tickets.puml)
 ## Changes in version 1.7.0.0 (27 Nov 2026)
 
 - **J1 First visit and ask, on a desktop.** From 768 px an empty chat shows the starter cards three to a row in a
-  760 px column left of the pinned clinic panel, above a slim composer bar: New chat and the microphone as round
-  buttons (no "+" menu), a 16 px input and a round Send, the emergency number as a red phone pill and one muted
+  760 px column left of the pinned clinic panel, above a slim composer bar: a "+" (New chat and the microphone
+  were round buttons here at 1.7.0.0; since 1.7.1.0 they are in its menu), a 16 px input and a round Send, the emergency number as a red phone pill and one muted
   note line under it. A tap on a card asks it; after the first message the chips are one row above the bar.
   Answers are plain text with the round clinic mark; Listen, Helpful and Not helpful are 44 px icon buttons that
   keep their names. See the diagram `j1-first-visit-and-ask`. Test: `tests/desk-chat.mjs`.
+
+## Changes in version 1.7.1.0 (27 Nov 2026)
+
+- **J1 First visit and ask, on a desktop.** From 768 px the composer reads "+", the input, Send. New chat and the
+  microphone are in the "+" menu, which opens as a small popover above the "+". Test: `tests/desk-chat.mjs`.
+- **J7 Languages and voice.** The top-bar staff link follows the chosen language, Hindi and Telugu included. On a
+  desktop the microphone is reached through the "+" menu, as on a phone. Tests: `tests/i18n.mjs`,
+  `tests/voice.mjs`.

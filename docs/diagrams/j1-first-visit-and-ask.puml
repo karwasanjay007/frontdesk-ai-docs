@@ -31,7 +31,8 @@ full width; after the first message they are one row
 above the composer again.
 v1.7: on a desktop (768 px and up) the cards are
 three to a row in a 760 px column left of the clinic
-panel, above a slim bar (New chat, mic, round Send)
+panel, above a slim bar (+, input, round Send;
+v1.7.1: New chat and mic in the + menu)
 and the red emergency pill; one row after the first
 message.
 The greeting is #greeting (.bot-greeting in

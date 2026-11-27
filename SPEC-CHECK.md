@@ -250,3 +250,6 @@ from the file, now carries none.
 Version 1.7.0.0 (27 Nov 2026): the desktop chat polish keeps every row: quick replies are still buttons, the
 input, Send and accessible names are kept; brief (29), desk-chat (138), phone-chat (197) and voice (2) end ALL
 PASS on the live link.
+
+Version 1.7.1.0 (27 Nov 2026): the desktop "+" menu keeps every row: New chat and the microphone are still named
+buttons, reached through the menu; the staff link reads in the chosen language. No row changed.

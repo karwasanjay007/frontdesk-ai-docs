@@ -288,3 +288,6 @@ Versions 1.5.0.1 to 1.6.0.1: no key, table, field or schema added or changed; th
 
 Version 1.7.0.0: no key, table, field or schema added or changed; the desktop icon buttons write the same
 `feedback` field.
+
+Version 1.7.1.0: no key, table, field or schema added or changed; the desktop "+" menu and the staff link words
+store nothing.

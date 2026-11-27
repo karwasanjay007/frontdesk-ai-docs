@@ -523,8 +523,8 @@ doctor rule.
 The desktop chat polished like the phone (`compact.css`, `compact.js`, 768 px and up); nothing removed. Answers
 are plain text with the round clinic mark in a 760 px column left of the pinned clinic panel; Listen, Helpful and
 Not helpful are 44 px icon buttons that keep their names; the composer is a slim bar with New chat and the
-microphone as round buttons (no "+" menu on a desktop, as `tests/phone-chat.mjs`, `i18n.mjs` and `voice.mjs` click
-them in place), a 16 px input and a round Send; the emergency number is a red phone pill and the note under it one
+microphone as round buttons (at 1.7.0.0; since 1.7.1.0 they are in the "+" menu, below), a 16 px input and a
+round Send; the emergency number is a red phone pill and the note under it one
 muted line; an empty chat shows the starter cards three to a row, back to one row after the first message. Test
 first: `tests/desk-chat.mjs` (138 checks, at 1024, 1280 and 1440 px, light and dark). Local: desk-chat,
 phone-chat (197), starter-cards (41), layout-wide (107), brand (92), controls, widths, contrast-true, i18n,
@@ -536,3 +536,21 @@ On the live link: desk-chat (138 checks), brief (29), phone-chat (197) and voice
 
 Not tested on the live link at 1.7.0.0: starter-cards, layout-wide, brand, controls, widths, contrast-true, i18n
 and extras3 (run locally only), as the change touches only the desktop layout.
+
+## Version 1.7.1.0 (27 Nov 2026)
+
+The "+" menu on the desktop too (`compact.css`, `compact.js`, 768 px and up); nothing removed. New chat and the
+microphone moved into the menu, a small popover above the "+"; the composer reads "+", the input, Send. The
+top-bar staff link is translated in Hindi and Telugu. `tests/desk-chat.mjs` now has 220 checks.
+
+Three earlier tests were changed, at Sanjay's word, to open the "+" menu first, as New chat and the microphone are
+no longer buttons in the bar on a desktop: `tests/phone-chat.mjs`, `tests/i18n.mjs` and `tests/voice.mjs`.
+
+Local: desk-chat (220), phone-chat (197), i18n, layout-wide (107), starter-cards (41), controls, brand (92), brief
+with no key (31) and bonus with the model blocked end ALL PASS.
+
+On the live link: desk-chat (220 checks), phone-chat (197), brief (29), i18n (11) and voice (2) end ALL PASS
+(`evidence/last-desk-chat-live.txt`, `evidence/last-phone-chat-live.txt`, `evidence/last-brief-live.txt`,
+`evidence/last-i18n-live.txt`, `evidence/last-voice-live.txt`).
+
+Not tested on the live link at 1.7.1.0: layout-wide, starter-cards, controls, brand and bonus (run locally only).

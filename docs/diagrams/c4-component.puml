@@ -112,7 +112,7 @@ Container_Boundary(storeb, "Shared store and routes (v1.4)") {
   Component(healthr, "api/health.js core()", "Node.js", "{ ok, store, ai }")
 }
 Component(sharedjs, "shared.js", "JavaScript", "v1.4: clinic file from the server before an answer; messages to the server; staff Save and Reset to the server")
-Component(lookjs, "brand.css, layout.css, layout.js, compact.css, compact.js", "CSS, JavaScript", "v1.4 to v1.7: brand look; staff link and clinic panel from 1024 px; phone chat with a + menu; v1.7 desktop chat from 768 px: plain answers, icon buttons, slim bar with New chat, mic and round Send")
+Component(lookjs, "brand.css, layout.css, layout.js, compact.css, compact.js", "CSS, JavaScript", "v1.4 to v1.7: brand look; staff link and clinic panel from 1024 px; phone chat with a + menu; v1.7 desktop chat from 768 px: plain answers, icon buttons, slim bar with +, input and round Send; v1.7.1 New chat and mic in the + menu, staff link in Hindi and Telugu")
 ContainerDb_Ext(neon, "Postgres on Neon", "SQL", "tables messages, tickets, clinic_data")
 Rel(ticketscore, storemod, "v1.4: reads and writes through")
 Rel(clinicr, storemod, "clinic_data")

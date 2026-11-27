@@ -191,8 +191,8 @@ PASS 412x915 dark New chat from the menu starts a new chat | replies 0
 PASS 412x915 dark a quick question chip still sends and is answered
 PASS 412x915 dark no page error | 
 PASS 1280 the clinic panel is still pinned on the right
-PASS 1280 language, theme, new chat and the small print are where they were
-PASS 1280 the phone "+" is not shown on the desktop
+PASS 1280 language, theme and the small print are where they were
+PASS 1280 the "+" is shown and New chat is reachable through it
 PASS 1280 the chat is usable: a question is answered
 PASS 1280 no page error | 
 ALL PASS (197 checks)
