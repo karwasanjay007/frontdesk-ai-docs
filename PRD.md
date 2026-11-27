@@ -375,3 +375,30 @@ Acceptance criteria for each are in `docs/epics.md`, epics E10 to E15; those of 
   quick replies. The form never writes unless a field was changed.
 - Feedback buttons sit beside the reply, never inside it. The chat thread is folded by default.
 - If the server store is missing, blocked or slow, the chat and the staff page behave as they did.
+
+## Version 1.3.1.0 to 1.5.0.0: additions (27 Nov 2026)
+
+Version 1.5.0.0 (27 Nov 2026) adds, on top of 1.3.0.3 and with nothing removed: engine fixes in `core.js` (the
+emergency reply begins with the clinic's number in every language; more emergencies and Hinglish requests to break
+the rules are caught; a qualifier such as "laser" gives "not sure"); a stricter model step in `api/chat.js`
+(temperature 0, one attempt, 8 seconds in all, its text checked on the server by the same guard, a request limit
+per minute set by `FRONTDESK_CHAT_PER_MINUTE`); a shared store `api/_store.js` (Postgres on Neon through
+`@neondatabase/serverless` when `DATABASE_URL` is set, plain SQL, tables `messages`, `tickets` and
+`clinic_data`; else the host's Redis) with the routes `api/clinic.js`, `api/messages.js` and `api/health.js`;
+`shared.js` (tickets shared by default, a staff edit of the clinic file applies from the next answer on every
+device, every message stored); `brand.css` (the brand look, no green); `layout.css` and `layout.js` (the staff
+link in the top bar, the clinic information on the right from 1024 px); `compact.css` and `compact.js` (the phone
+chat: a slim composer pill, the quick replies in one row, a "+" menu as a bottom sheet).
+
+Requirements added, each traced to epic E16 in [docs/epics.md](docs/epics.md):
+
+| Id | Requirement | Test |
+| --- | --- | --- |
+| R-16.1 | The emergency reply begins with the clinic's number in English, Hindi and Telugu; more emergencies and Hinglish requests to break the rules are caught; a qualified service ("laser whitening") gives not sure and no price | `tests/engine-gaps.cjs` |
+| R-16.2 | The model step uses temperature 0, one attempt and 8 seconds in all; its text passes the guard on the server; requests over the limit get 429 | `tests/model-step.cjs` |
+| R-16.3 | Tickets, messages and the clinic file are kept in one shared store; with no store every page works as before | `tests/store.cjs`, `tests/shared.mjs` |
+| R-16.4 | The brand look, with no green; the staff link in the top bar; the clinic information on the right from 1024 px | `tests/brand.mjs`, `tests/layout-wide.mjs` |
+| R-16.5 | On a phone the conversation takes most of the screen: a slim composer, the quick replies in one row, a "+" menu | `tests/phone-chat.mjs` |
+
+Corrected in place of earlier statements: the staff page no longer shows only this browser's tickets when the
+store and the desk code are there; the model call is no longer at temperature 0.2 with a 5 second limit.

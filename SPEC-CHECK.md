@@ -230,3 +230,10 @@ Features the brief does not ask for. Each is kept apart from what the tester rea
 | A reply or a question is sent even when its tab goes to the background | 1.3.0.3 | What is sent, who may read it and the desk code rule are unchanged; with no store both pages behave as before | `last-sync-scale-live.txt` (9), `last-sync-live.txt` (31), `last-tickets-api-live.txt` (11) |
 
 All evidence files are in `evidence/`.
+
+## Versions 1.3.1.0 to 1.5.0.0 (27 Nov 2026)
+
+Checked again against the brief: every row still passes on the live link. The staff step no longer needs the
+same browser when the store and the desk code are there; the same browser still works without them. The
+emergency reply now begins with the number in every language, which the brief's safety rows ask for first.
+The guideline checklist and its results are in the code's READINESS.md, section 4.

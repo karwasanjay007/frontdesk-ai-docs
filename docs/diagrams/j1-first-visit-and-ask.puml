@@ -43,7 +43,7 @@ Core --> Chat : {kind, status, text, lang, facts, bookingTime, modelOk}
 
 alt kind "answer" and modelOk (a reply built from the file)
   Chat -> API : POST /api/chat {draft, facts, lang, clinic}\nAbortController stops the call after 6 s
-  API -> OR : chat/completions, deepseek/deepseek-v4.1-flash,\ntemperature 0.2, reasoning off, 5 s limit
+  API -> OR : chat/completions, deepseek/deepseek-v4.1-flash,\ntemperature 0, reasoning off, one attempt, 8 s limit
   note right of API
   Sent: the rules, the DRAFT and the clinic file.
   The patient's words are never sent.

@@ -63,4 +63,13 @@ opt Staff presses #clinic-reset
   LS -> Chat : storage event, key frontdesk.clinic
   Chat -> Core : FD.clinic() returns the shipped file
 end
+participant "Shared store\n(api/clinic.js, api/_store.js,\nPostgres clinic_data)" as Store
+group v1.4: the file for every device (shared.js)
+  SP -> Store : POST /api/clinic { clinic } or { reset: true }, x-desk-code
+  Store --> SP : saved for every device, or the part that failed
+  Patient -> Chat : asks the next question, on any device
+  Chat -> Store : GET /api/clinic (2 s at most; an emergency never waits)
+  Store --> Chat : the saved file
+  Chat -> Core : FD.saveClinic, then the answer from the saved file
+end
 @enduml

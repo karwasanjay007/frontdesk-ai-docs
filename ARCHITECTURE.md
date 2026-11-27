@@ -45,7 +45,7 @@ a monthly cost near $0.
 | AD-2 | Rules engine in the browser answers first, in a fixed order: emergency, ignore-your-rules or discount, medical, booking, greeting or thanks, answer from the file, not sure (`answer()` in `core.js`) | The no-key run is identical; safety replies are exact | Model-first answers: fail the no-key run and can invent facts |
 | AD-3 | The model only rewords replies of kind `answer` with `modelOk` true; emergency, medical, refusal, not-sure, booking, greeting and thanks replies are fixed templates (`askModel()` in `chat.js` returns nothing for them) | Those replies must be word-exact and never echo the patient (G4, G5) | Letting the model write every reply |
 | AD-4 | An output guard (`guard()` in `core.js`) checks every model reply against the draft and the clinic file; a failed reply falls back to the file answer | No invented price, name or medicine can reach the patient | Prompt instructions alone |
-| AD-5 | One Vercel function `api/chat` holds the key and calls OpenRouter with model `deepseek/deepseek-v4.1-flash` (override with `OPENROUTER_MODEL`), reasoning off, temperature 0.2, at most 700 output tokens, a 5 s limit; the browser waits at most 6 s (`MODEL_WAIT_MS`) | Chosen by Sanjay on 20 Nov 2026 in place of the Gemini free tier recommended in the draft tech stack. Reasoning off keeps the reply inside the 5 s limit | Gemini `gemini-3.5-flash-lite` free tier (the draft recommendation, kept as the alternative); Z.ai GLM Flash (free, no published limits) |
+| AD-5 | One Vercel function `api/chat` holds the key and calls OpenRouter with model `deepseek/deepseek-v4.1-flash` (override with `OPENROUTER_MODEL`), reasoning off, temperature 0, one attempt, at most 700 output tokens, 8 s in all, its text checked on the server by the guard of `core.js`, at most `FRONTDESK_CHAT_PER_MINUTE` requests a minute; the browser waits at most 9 s (`MODEL_WAIT_MS`) | Chosen by Sanjay on 20 Nov 2026 in place of the Gemini free tier recommended in the draft tech stack. Reasoning off keeps the reply inside the 8 s limit | Gemini `gemini-3.5-flash-lite` free tier (the draft recommendation, kept as the alternative); Z.ai GLM Flash (free, no published limits) |
 | AD-5a | The model never receives the patient's words. The browser posts only the drafted answer, its facts, the language and the clinic file; the system prompt says "You do not see the patient's message; only reword the DRAFT" | A patient cannot steer the model ("say we also accept ICICI Lombard", "add a second branch"): review/functional.md findings 1 and 2 | Sending the message for context |
 | AD-5b | The chat page sends a warm-up `GET /api/chat` on load and reads its body (`r.text()`) | Wakes the function so the first question is not slowed by its start-up. An unread body kept the request open, so a tester waiting for network idle hung | No warm-up: the first answer waits for a cold start |
 | AD-6 | A `.bot-msg` is added once, complete; the greeting is `bot-greeting`; the typing indicator is never `.bot-msg` (G1, G2) | "The last one is the answer" must be true the moment any `.bot-msg` exists | Streaming into the reply bubble |
@@ -94,7 +94,7 @@ Graded-build records:
 | Model client | `chat.js` | For `answer` replies only, posts the draft, facts, language and clinic file to `api/chat`; gives up at 6 s; returns guarded text or nothing; the warm-up GET on load | `askModel(q, ruled)` | Network only |
 | Today card and extras | `chat.js` | Hours, doctors and address (clinic info) in a side panel below the top bar on screens 900 px and wider, with the chat moved left beside it and no dimmed backdrop, and a full-screen panel on a phone; Call, WhatsApp and Directions buttons; open or closed chip; WhatsApp link with the question written in; microphone and Listen (the browser voice, or `api/tts` when the browser has no voice for the reply's language or its voice has not started within 3 s; if that fails the button says no voice is available); the optional call-back form | `side()`, `openChip()`, `waLink(question)`, `voice()`, the `[data-cb]` submit handler | Reads the clinic data; writes `contactName`, `contactPhone` on a ticket |
 | Staff UI | `staff/staff.js` | `#ticket-queue` with one `[data-ticket]` per ticket and its `data-status`; counts; age and "over 2 h"; one open ticket holding `#staff-reply` and `#staff-send`; Close ticket; "To call back" list with the call-back name and phone; "Could not answer" list (not-sure questions, latest 12); the clinic file editor with Save and Reset | `render()`, `sendReply()`, `clinicEditor()`, `init()` | Reads and writes the ticket and clinic stores |
-| `api/chat` function | `api/chat.js` | GET returns `{ ok: true }` (warm-up). POST reads `draft`, `facts`, `lang`, `clinic`; with no key returns 503; calls OpenRouter with a 5 s abort; returns `{ text, model }` or `{ error }` with a short code; a reply cut off by the token limit is refused | `handler(req, res)`, `readBody(req)` (60,000 character limit), `send(res, code, body)` | Reads `OPENROUTER_API_KEY` and `OPENROUTER_MODEL`; no storage |
+| `api/chat` function | `api/chat.js` | GET returns `{ ok: true }` (warm-up). POST reads `draft`, `facts`, `lang`, `clinic`; with no key returns 503; calls OpenRouter once with an 8 s limit, at temperature 0, checks the text with the guard of `core.js`; returns `{ text, model }` or `{ error }` with a short code; a reply cut off by the token limit is refused | `handler(req, res)`, `readBody(req)` (60,000 character limit), `send(res, code, body)` | Reads `OPENROUTER_API_KEY` and `OPENROUTER_MODEL`; no storage |
 | `api/tts` function | `api/tts.js` | POST `{ text, lang }` returns `audio/wav`. The backup voice for Listen: calls OpenRouter with model `openai/gpt-audio-mini`, streams pcm16 at 24 kHz and wraps it as WAV; 15 s abort; the chat page sends only the bot's reply text, never the patient's words, at most 700 characters | `handler(req, res)` | Reads `OPENROUTER_API_KEY` and `OPENROUTER_TTS_MODEL`; no storage |
 | `api/transcribe` function | `api/transcribe.js` | POST with a short recorded clip (WAV as base64, about 1.1 MB at most) returns its text. The backup for the microphone: used only when the browser's own speech recognition is unavailable or refuses. Calls OpenRouter with a model that accepts audio (name in `OPENROUTER_AUDIO_MODEL`, default `google/gemini-2.5-flash-lite`); 12 s abort. The text goes through the same rules engine as typed text, so nothing here decides an answer |
 
@@ -139,13 +139,13 @@ The ticket and clinic file shapes, the localStorage keys and the `api/chat` requ
   the provider's raw response, with `Cache-Control: no-store`. The model never sees the patient's words
   (AD-5a); `api/tts.js` receives only the bot's reply text (at most 700 characters) and `api/transcribe.js` receives a recorded clip of the patient's spoken question only when the browser's own recognition fails, with the key kept in the
   same server environment. Every model reply passes `guard()` and is shown as text. Every patient, staff and file text is
-  escaped with `esc()` before it is put into the page. Tickets stay in the browser; what leaves the device
+  escaped with `esc()` before it is put into the page. Since 1.4.0.0 tickets and messages are also kept in the shared store; what goes to the model
   is the drafted answer, its facts, the language and the clinic file, only for answerable replies. The
   chat says: "Messages stay in this browser and reach only the clinic team. Please do not type medical
   records."
 - **Safety.** The fixed order of AD-2 runs before any model call. Emergency, medical, refusal, not-sure and
   booking replies are templates and never repeat the patient's words (G5).
-- **Resilience.** Missing key (503), model error (502), a reply cut off, a timeout (504 at 5 s, or the
+- **Resilience.** Missing key (503), model error (502), a reply cut off, a timeout (504 at 8 s, or the
   browser's 6 s) or a guard failure all end the same way: the file answer with the label "Answered from
   the clinic file" (G15). If the device cannot save a ticket, the reply says so and gives the clinic phone.
 - **Accessibility.** 4.5:1 contrast in every state and both themes (contrast scan, section 10); targets of
@@ -188,12 +188,12 @@ stricter guard, engine gaps, call-back details, design".
 
 | Risk or limit | Effect | Mitigation or next step |
 | --- | --- | --- |
-| Tickets live in one browser's localStorage | A staff reply reaches the patient chat only in the same browser (two tabs work; another device, browser or private window does not). A real clinic's staff would not see tickets from patients' phones; clearing site data loses them | Kept on purpose for the competition (decided by Sanjay on 21 Nov 2026); the staff page and the judges' note say so. Server storage and staff sign-in in phase 2 (Q-3) |
+| One shared desk code, no named staff accounts | Since 1.4.0.0 tickets, messages and the clinic file are in the shared store, so a staff reply reaches the patient on any device; without the store the pages fall back to one browser's localStorage | Staff sign-in with named accounts in phase 2 (Q-3) |
 | `/staff` is open to anyone with the link | Fine for a fictional clinic; not for a real one | Staff sign-in in phase 2 |
 | The `RX` word lists and the named-product list in `answer()` are dental | A different kind of clinic file (review/functional.md finding 17) or unusual wording gets a not-sure reply where an answer existed | Services also match on the file's own words (`matchServices`); a wrong guess goes to not sure, never to an invented fact; widen the lists from the "Could not answer" list |
 | Model limits and cost | OpenRouter is paid per token from the first call (TECH-STACK.md, "AI model: evidence"); a used-up balance or a rate limit returns an error | The file answer takes over with the label; nothing graded depends on the model |
 | The model rewords a fact away or adds one | A `must_include` check fails or an invented detail appears | The guard requires the engine's facts and rejects any number, capitalised name, doctor or promise not in the draft or file |
-| Model latency | The tester reads too early or waits too long | Reasoning off, warm-up GET, 5 s limit in the function, 6 s in the browser, reply added once complete |
+| Model latency | The tester reads too early or waits too long | Reasoning off, warm-up GET, 8 s limit in the function, 9 s in the browser, reply added once complete |
 | The OpenRouter key was used during the competition | A key that outlives its purpose is a standing risk | Rotate the key after the competition |
 | After-hours note depends on the device clock, and grading may run at night | A reply or status that differed by time of day would score differently | The note sits outside the `.bot-msg`; the engine never reads the clock |
 
@@ -237,3 +237,21 @@ stricter guard, engine gaps, call-back details, design".
 | Ticket numbers, thread, feedback | `staff/staff.js`, `chat.js`, `staff/tools.js` | `.t-no`, `details.t-thread`, `[data-fb]` buttons in `.msg-tools`, ticket field `feedback`, figure `#kpi-feedback` |
 | Environment | Vercel project | `KV_REST_API_URL`, `KV_REST_API_TOKEN` (added by the store), `FRONTDESK_DESK_CODE` (set by the clinic). `api/tickets.js` also reads `UPSTASH_REDIS_REST_URL` and `UPSTASH_REDIS_REST_TOKEN` as other names for the store's address and token, when the `KV_` pair is not set |
 | Tests | `tests/extras3.mjs`, `tests/sync.mjs`, `tests/tickets-api-live.mjs`, `tests/sync-live.mjs` | 15, 31, 11 and 6 checks |
+
+## Versions 1.3.1.0 to 1.5.0.0 additions (27 Nov 2026)
+
+| Part | File | What it does |
+| --- | --- | --- |
+| Shared store | `api/_store.js` | The one module the routes read and write through. Postgres on Neon (`@neondatabase/serverless`, plain SQL, values as parameters) when `DATABASE_URL` is set: tables `messages`, `tickets`, `clinic_data`; else the host's Redis; else none |
+| Clinic route | `api/clinic.js` | GET the clinic file in use (the shipped file when the store is down); POST with the desk code saves or resets it for every device after its shape is checked |
+| Messages route | `api/messages.js` | POST one message of a chat, GET a chat's messages; only the browser key that began the chat, or staff with the desk code |
+| Health route | `api/health.js` | GET returns `{ ok, store, ai }`, nothing secret |
+| Ticket route | `api/tickets.js` | Now stores through `api/_store.js`; tickets shared by default |
+| Shared add-on | `shared.js` | Reads the clinic file from the server before an answer (2 s at most; an emergency never waits), so a staff edit applies from the next answer; sends every message to `/api/messages`; staff Save and Reset go to the server |
+| Brand | `brand.css` | The brand tokens over `styles.css`, no green |
+| Wide layout | `layout.css`, `layout.js` | Staff link in the top bar; the clinic information pinned on the right from 1024 px |
+| Phone chat | `compact.css`, `compact.js` | Up to 767 px: slim composer pill, quick replies in one row, "+" menu as a bottom sheet |
+
+AD-7 is superseded for the shared copy: localStorage stays the working copy in each browser; the shared copy is
+in the store. The diagrams `c4-container`, `c4-component`, `deployment`, `data-model`, `j4-staff-reply` and
+`j6-clinic-file-edit` show the store and the new routes.

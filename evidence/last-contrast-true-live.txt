@@ -1,11 +1,11 @@
-PASS light chat at rest: 18 texts, lowest 6.54 (div#greeting "Ask about timings, prices, doctors, insu" text 74,91,95 on 243,246,246)
-PASS light chat: #fine-text 7.07 span#fine-text "Messages stay in this browser and reach " text 74,91,95 on 254,254,254
-PASS light chat: #emg-link 7.56 a#emg-link "98000 00123" text 11,93,99 on 254,254,254
-PASS light chat after an urgent question: 22 texts, lowest 6.10 (small "Answered from the clinic file" text 74,91,95 on 232,239,239)
-PASS light staff page with the urgent ticket: 71 texts, lowest 6.10 (span "Needs human 0" text 74,91,95 on 232,239,239)
-PASS dark chat at rest: 18 texts, lowest 7.66 (a#emg-link "98000 00123" text 70,194,184 on 20,32,35)
-PASS dark chat: #fine-text 8.42 span#fine-text "Messages stay in this browser and reach " text 169,188,190 on 20,32,35
-PASS dark chat: #emg-link 7.66 a#emg-link "98000 00123" text 70,194,184 on 20,32,35
-PASS dark chat after an urgent question: 22 texts, lowest 5.94 (div "My face is swelling and I cannot breathe" text 255,255,255 on 31,111,105)
-PASS dark staff page with the urgent ticket: 71 texts, lowest 7.41 (span "Needs human 0" text 169,188,190 on 28,43,46)
+PASS light chat at rest: 53 texts, lowest 5.32 (a "040 5550 0123" text 136,80,20 on 236,231,221)
+PASS light chat: #fine-text 6.94 span#fine-text "Messages stay in this browser and reach " text 62,92,118 on 254,254,253
+PASS light chat: #emg-link 7.75 a#emg-link "98000 00123" text 161,29,29 on 255,255,255
+PASS light chat after an urgent question: 57 texts, lowest 5.32 (a "040 5550 0123" text 136,80,20 on 236,231,221)
+PASS light staff page with the urgent ticket: 74 texts, lowest 5.52 (button#staff-send "Send reply" text 18,20,23 on 201,122,29)
+PASS dark chat at rest: 53 texts, lowest 5.52 (span "Send" text 18,20,23 on 201,122,29)
+PASS dark chat: #fine-text 6.72 span#fine-text "Messages stay in this browser and reach " text 159,178,197 on 23,42,62
+PASS dark chat: #emg-link 7.14 a#emg-link "98000 00123" text 255,155,155 on 24,43,64
+PASS dark chat after an urgent question: 57 texts, lowest 5.52 (a "Call" text 18,20,23 on 201,122,29)
+PASS dark staff page with the urgent ticket: 74 texts, lowest 5.52 (button#staff-send "Send reply" text 18,20,23 on 201,122,29)
 ALL PASS (10 checks)

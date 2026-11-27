@@ -204,4 +204,31 @@ note left of ClinicFile
   file. Reset removes frontdesk.clinic.
 end note
 
+package "Shared store on the server (v1.4, Postgres on Neon; else Redis)" {
+  entity messages {
+    {field} id : BIGSERIAL, primary key
+    {field} chat_id : text
+    {field} role : patient | bot | staff
+    {field} text : text, at most 6,000 characters
+    {field} source : text
+    {field} owner : hash of the browser key
+    {field} created_at : bigint
+  }
+  entity tickets {
+    {field} id : text, primary key
+    {field} patient : text
+    {field} owner : hash of the browser key
+    {field} status : text
+    {field} priority : text
+    {field} text : text
+    {field} reply : text
+    {field} data : JSONB, the whole ticket
+    {field} created_at, updated_at : bigint
+  }
+  entity clinic_data {
+    {field} id : 1, the only row
+    {field} data : JSONB, the clinic file
+    {field} updated_at : bigint
+  }
+}
 @enduml

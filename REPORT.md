@@ -466,3 +466,27 @@ it needs a person at the staff page with the clinic's desk code, and four waitin
 with nobody replying. It stands as proven on 22 Nov 2026 (`evidence/last-sync-staff-real-store-live.txt`). The
 other suites were not rerun, because the change is in the ticket sync only. A patient's tab in the background
 still does not fetch a staff reply until it is looked at again.
+
+## Version 1.5.0.0 (27 Nov 2026)
+
+Version 1.5.0.0 (27 Nov 2026) adds, on top of 1.3.0.3 and with nothing removed: engine fixes in `core.js` (the
+emergency reply begins with the clinic's number in every language; more emergencies and Hinglish requests to break
+the rules are caught; a qualifier such as "laser" gives "not sure"); a stricter model step in `api/chat.js`
+(temperature 0, one attempt, 8 seconds in all, its text checked on the server by the same guard, a request limit
+per minute set by `FRONTDESK_CHAT_PER_MINUTE`); a shared store `api/_store.js` (Postgres on Neon through
+`@neondatabase/serverless` when `DATABASE_URL` is set, plain SQL, tables `messages`, `tickets` and
+`clinic_data`; else the host's Redis) with the routes `api/clinic.js`, `api/messages.js` and `api/health.js`;
+`shared.js` (tickets shared by default, a staff edit of the clinic file applies from the next answer on every
+device, every message stored); `brand.css` (the brand look, no green); `layout.css` and `layout.js` (the staff
+link in the top bar, the clinic information on the right from 1024 px); `compact.css` and `compact.js` (the phone
+chat: a slim composer pill, the quick replies in one row, a "+" menu as a bottom sheet).
+
+New tests: `tests/engine-gaps.cjs`, `tests/model-step.cjs`, `tests/store.cjs`, `tests/shared.mjs`,
+`tests/brand.mjs`, `tests/layout-wide.mjs`, `tests/phone-chat.mjs`. On the live link on 27 Nov 2026:
+`/api/health` answers ok with store postgres and ai true; phone-chat (189 checks), brief (29), emergency (12),
+layout-wide (107), brand (92), controls (20), widths (25), person (16), bonus (15) and voice with its recording (2)
+end ALL PASS (saved in `evidence/`). `engine-gaps.cjs`, `model-step.cjs` (38 checks), `store.cjs` and
+`shared.mjs` were run locally and end ALL PASS; they have no live file.
+
+Not tested on the live link: `store.cjs` and `shared.mjs` use a stand-in database; the live store was checked
+through `/api/health` and the shared-ticket runs.

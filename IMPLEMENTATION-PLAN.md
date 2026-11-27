@@ -201,3 +201,14 @@ test; no earlier test was edited.
   marked `keepalive` so it outlives the page.
 - Tests: `tests/sync-scale.mjs` (9 checks, three failing before the change), `tests/sync-watch-live.mjs` for the
   staff side on the real store with a person replying.
+
+## Versions 1.3.1.0 to 1.5.0.0, as built (27 Nov 2026)
+
+| Version | Built | Files | Tests first |
+| --- | --- | --- | --- |
+| 1.3.1.0 | Engine gaps closed; the model step at temperature 0, one attempt, 8 s, checked on the server, a request limit | `core.js`, `api/chat.js`, `chat.js` | `tests/engine-gaps.cjs`, `tests/model-step.cjs` |
+| 1.4.0.0 | Shared store on Postgres (Neon), the clinic file and messages on the server, tickets shared by default; brand look; staff link in the top bar; clinic information on the right from 1024 px | `api/_store.js`, `api/clinic.js`, `api/messages.js`, `api/health.js`, `shared.js`, `brand.css`, `layout.css`, `layout.js` | `tests/store.cjs`, `tests/shared.mjs`, `tests/brand.mjs`, `tests/layout-wide.mjs` |
+| 1.4.0.1 | No green anywhere: the answered status and the open-now sign in slate blue | `brand.css` | `tests/brand.mjs` |
+| 1.5.0.0 | Phone chat: slim pill, quick replies in one row, "+" menu as a bottom sheet | `compact.css`, `compact.js` | `tests/phone-chat.mjs` |
+
+Each was added beside the earlier files; no earlier test was edited.

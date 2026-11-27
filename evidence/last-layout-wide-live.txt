@@ -1,0 +1,108 @@
+PASS 1280 light the clinic panel is shown on load, with its details, without a click | text 811
+PASS 1280 light the panel is not marked hidden for assistive technology | hidden false
+PASS 1280 light the panel is to the right of the chat and does not overlap it | chat ends 922, panel starts 922
+PASS 1280 light the panel is 300 px or wider and the chat keeps 600 px or more | 358 / 922
+PASS 1280 light the chat column is capped for reading | 760
+PASS 1280 light the Clinic info button and the close button are not shown while the panel is pinned
+PASS 1280 light nothing is dimmed or laid over the chat box and Send
+PASS 1280 light a question is sent and answered; the chat box and Send are in view | replies 1
+PASS 1280 light Tab from the chat box reaches Send, not the panel | chat-send
+PASS 1280 light Escape leaves the panel shown
+PASS 1280 light Escape does not move focus out of the chat box | chat-input
+PASS 1280 light no sideways scroll | 0
+PASS 1280 light #staff-link-top is visible in the top bar and can be pressed | {"shown":true,"inTop":true,"box":{"l":1019.046875,"r":1143,"t":14,"b":58,"w":123.953125,"h":44},"href":"/staff","target":"_blank","hit":true,"inView":true}
+PASS 1280 light #staff-link-top is at least 44 px tall and wide | 124 x 44
+PASS 1280 light #staff-link-top has the accessible name "Staff page" | staff-link-top,staff-link
+PASS 1280 light #staff-link-top has the address and target of #staff-link
+PASS 1280 light #staff-link is still in the drawer, worded as before
+PASS 1280 light no page error | 
+PASS 1440 light the clinic panel is shown on load, with its details, without a click | text 811
+PASS 1440 light the panel is not marked hidden for assistive technology | hidden false
+PASS 1440 light the panel is to the right of the chat and does not overlap it | chat ends 1040, panel starts 1040
+PASS 1440 light the panel is 300 px or wider and the chat keeps 600 px or more | 400 / 1040
+PASS 1440 light the chat column is capped for reading | 760
+PASS 1440 light the Clinic info button and the close button are not shown while the panel is pinned
+PASS 1440 light nothing is dimmed or laid over the chat box and Send
+PASS 1440 light a question is sent and answered; the chat box and Send are in view | replies 1
+PASS 1440 light Tab from the chat box reaches Send, not the panel | chat-send
+PASS 1440 light Escape leaves the panel shown
+PASS 1440 light Escape does not move focus out of the chat box | chat-input
+PASS 1440 light no sideways scroll | 0
+PASS 1440 light #staff-link-top is visible in the top bar and can be pressed | {"shown":true,"inTop":true,"box":{"l":1179.046875,"r":1303,"t":14,"b":58,"w":123.953125,"h":44},"href":"/staff","target":"_blank","hit":true,"inView":true}
+PASS 1440 light #staff-link-top is at least 44 px tall and wide | 124 x 44
+PASS 1440 light #staff-link-top has the accessible name "Staff page" | staff-link-top,staff-link
+PASS 1440 light #staff-link-top has the address and target of #staff-link
+PASS 1440 light #staff-link is still in the drawer, worded as before
+PASS 1440 light no page error | 
+PASS 1280 dark the clinic panel is shown on load, with its details, without a click | text 811
+PASS 1280 dark the panel is not marked hidden for assistive technology | hidden false
+PASS 1280 dark the panel is to the right of the chat and does not overlap it | chat ends 922, panel starts 922
+PASS 1280 dark the panel is 300 px or wider and the chat keeps 600 px or more | 358 / 922
+PASS 1280 dark the chat column is capped for reading | 760
+PASS 1280 dark the Clinic info button and the close button are not shown while the panel is pinned
+PASS 1280 dark nothing is dimmed or laid over the chat box and Send
+PASS 1280 dark a question is sent and answered; the chat box and Send are in view | replies 1
+PASS 1280 dark Tab from the chat box reaches Send, not the panel | chat-send
+PASS 1280 dark Escape leaves the panel shown
+PASS 1280 dark Escape does not move focus out of the chat box | chat-input
+PASS 1280 dark no sideways scroll | 0
+PASS 1280 dark #staff-link-top is visible in the top bar and can be pressed | {"shown":true,"inTop":true,"box":{"l":1019.046875,"r":1143,"t":14,"b":58,"w":123.953125,"h":44},"href":"/staff","target":"_blank","hit":true,"inView":true}
+PASS 1280 dark #staff-link-top is at least 44 px tall and wide | 124 x 44
+PASS 1280 dark #staff-link-top has the accessible name "Staff page" | staff-link-top,staff-link
+PASS 1280 dark #staff-link-top has the address and target of #staff-link
+PASS 1280 dark #staff-link is still in the drawer, worded as before
+PASS 1280 dark no page error | 
+PASS 1440 dark the clinic panel is shown on load, with its details, without a click | text 811
+PASS 1440 dark the panel is not marked hidden for assistive technology | hidden false
+PASS 1440 dark the panel is to the right of the chat and does not overlap it | chat ends 1040, panel starts 1040
+PASS 1440 dark the panel is 300 px or wider and the chat keeps 600 px or more | 400 / 1040
+PASS 1440 dark the chat column is capped for reading | 760
+PASS 1440 dark the Clinic info button and the close button are not shown while the panel is pinned
+PASS 1440 dark nothing is dimmed or laid over the chat box and Send
+PASS 1440 dark a question is sent and answered; the chat box and Send are in view | replies 1
+PASS 1440 dark Tab from the chat box reaches Send, not the panel | chat-send
+PASS 1440 dark Escape leaves the panel shown
+PASS 1440 dark Escape does not move focus out of the chat box | chat-input
+PASS 1440 dark no sideways scroll | 0
+PASS 1440 dark #staff-link-top is visible in the top bar and can be pressed | {"shown":true,"inTop":true,"box":{"l":1179.046875,"r":1303,"t":14,"b":58,"w":123.953125,"h":44},"href":"/staff","target":"_blank","hit":true,"inView":true}
+PASS 1440 dark #staff-link-top is at least 44 px tall and wide | 124 x 44
+PASS 1440 dark #staff-link-top has the accessible name "Staff page" | staff-link-top,staff-link
+PASS 1440 dark #staff-link-top has the address and target of #staff-link
+PASS 1440 dark #staff-link is still in the drawer, worded as before
+PASS 1440 dark no page error | 
+PASS 1023 the panel is not shown on load and the Clinic info button is there
+PASS 1023 #staff-link-top is visible in the top bar and can be pressed | {"shown":true,"inTop":true,"box":{"l":762.046875,"r":886,"t":14,"b":58,"w":123.953125,"h":44},"href":"/staff","target":"_blank","hit":true,"inView":true}
+PASS 1023 #staff-link-top is at least 44 px tall and wide | 124 x 44
+PASS 1023 #staff-link-top has the accessible name "Staff page" | staff-link-top
+PASS 1023 #staff-link-top has the address and target of #staff-link
+PASS 1023 #staff-link is still in the drawer, worded as before
+PASS 1023 the Clinic info button opens the drawer | expanded true
+PASS 1023 focus moves to the close button as before | clinic-info-close
+PASS 1023 the close button closes it | expanded false
+PASS 1023 Escape still closes the drawer below 1024 px
+PASS 1023 after three messages the chat box and Send are inside the viewport | replies 3
+PASS 1023 no sideways scroll | 0
+PASS 1023 no page error | 
+PASS 375 the panel is not shown on load and the Clinic info button is there
+PASS 375 #staff-link-top is visible in the top bar and can be pressed | {"shown":true,"inTop":true,"box":{"l":321,"r":365,"t":6,"b":50,"w":44,"h":44},"href":"/staff","target":"_blank","hit":true,"inView":true}
+PASS 375 #staff-link-top is at least 44 px tall and wide | 44 x 44
+PASS 375 #staff-link-top has the accessible name "Staff page" | staff-link-top
+PASS 375 #staff-link-top has the address and target of #staff-link
+PASS 375 #staff-link is still in the drawer, worded as before
+PASS 375 the clinic name in the top bar is whole and takes at most two lines | 1
+PASS 375 the top bar is at most 66 px tall | 56
+PASS 375 the Clinic info button opens the drawer | expanded true
+PASS 375 focus moves to the close button as before | clinic-info-close
+PASS 375 the close button closes it | expanded false
+PASS 375 Escape still closes the drawer below 1024 px
+PASS 375 after three messages the chat box and Send are inside the viewport | replies 3
+PASS 375 no sideways scroll | 0
+PASS 375 no page error | 
+PASS resize at 800 the panel unpins: closed, the Clinic info button back, nothing dimmed
+PASS resize at 800 the chat box and Send are in view, no sideways scroll | 0
+PASS resize at 800 the drawer opens from the button
+PASS resize back at 1280 the panel pins again beside the chat (the drawer was left open)
+PASS resize back at 1280 a question is sent and answered | replies 2
+PASS resize narrowed once more the panel is closed and the chat is free
+PASS resize no page error | 
+ALL PASS (107 checks)

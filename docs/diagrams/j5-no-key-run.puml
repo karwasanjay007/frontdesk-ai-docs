@@ -25,7 +25,7 @@ else empty text, or cut off (finish_reason "length")
   API -> OR : chat/completions
   OR --> API : no usable text
   API --> Chat : 502 {error: "empty" or "cut off"}
-else OpenRouter takes more than 5 s
+else OpenRouter takes more than 8 s
   API -> OR : chat/completions
   API -> API : AbortController stops the call
   API --> Chat : 504 {error: "timeout"}

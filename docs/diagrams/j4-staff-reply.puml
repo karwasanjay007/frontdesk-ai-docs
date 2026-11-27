@@ -9,7 +9,7 @@ participant "Chat page\n(index.html, chat.js)" as Chat
 actor Patient
 autonumber
 
-Staff -> SP : opens /staff in the same browser as the chat
+Staff -> SP : opens /staff (v1.4: any device, with the desk code; the same browser works with no store)
 SP -> Core : FD.loadClinic(), then clinicEditor() and render()
 SP -> Core : FD.tickets().sort(FD.byPriority)
 Core -> LS : read frontdesk.tickets
@@ -81,4 +81,11 @@ opt Staff closes the ticket
   Core -> LS : write frontdesk.tickets
 end
 note over SP, LS : a new patient question raises a storage event that redraws /staff; it also redraws every 30 s unless #staff-reply has focus
+participant "Shared store\n(api/tickets.js, api/messages.js,\napi/_store.js, Postgres)" as Store
+group v1.4: tickets shared by default
+  SP -> Store : the reply, with x-desk-code (sync.js)
+  Chat -> Store : fetches this patient's tickets with its private key (sync.js)
+  Store --> Chat : the staff reply, on any device
+  Chat -> Store : POST /api/messages, the reply kept with the chat (shared.js)
+end
 @enduml

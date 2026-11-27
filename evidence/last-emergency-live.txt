@@ -1,9 +1,9 @@
 FrontDesk AI emergency phrasings against https://frontdesk-ai-xi-gray.vercel.app/
-PASS "My gum has been bleeding non stop for an hour": reply starts with the emergency number 98000 00123 | "Call 98000 00123 now. Heavy bleeding that does not stop, swelling of the face or neck, or "
+PASS "My gum has been bleeding non stop for an hour": reply starts with the emergency number 98000 00123 | "98000 00123: call this number now. Heavy bleeding that does not stop, swelling of the face"
 PASS "My gum has been bleeding non stop for an hour": one new ticket with data-status "urgent" | 1 new: urgent
-PASS "I can't stop the bleeding": reply starts with the emergency number 98000 00123 | "Call 98000 00123 now. Heavy bleeding that does not stop, swelling of the face or neck, or "
+PASS "I can't stop the bleeding": reply starts with the emergency number 98000 00123 | "98000 00123: call this number now. Heavy bleeding that does not stop, swelling of the face"
 PASS "I can't stop the bleeding": one new ticket with data-status "urgent" | 1 new: urgent
-PASS "It has been bleeding for 2 hours after the extraction": reply starts with the emergency number 98000 00123 | "Call 98000 00123 now. Heavy bleeding that does not stop, swelling of the face or neck, or "
+PASS "It has been bleeding for 2 hours after the extraction": reply starts with the emergency number 98000 00123 | "98000 00123: call this number now. Heavy bleeding that does not stop, swelling of the face"
 PASS "It has been bleeding for 2 hours after the extraction": one new ticket with data-status "urgent" | 1 new: urgent
 PASS "खून बंद नहीं हो रहा है": reply starts with the emergency number 98000 00123 | "98000 00123 पर अभी कॉल करें। यह इमरजेंसी है, देर न करें। Heavy bleeding that does not stop"
 PASS "खून बंद नहीं हो रहा है": one new ticket with data-status "urgent" | 1 new: urgent

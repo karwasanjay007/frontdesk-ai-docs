@@ -9,7 +9,7 @@ FrontDesk AI is the front desk chat for a dental clinic: patients get answers fr
 | Code | `frontdesk-ai` (private while a competition is open) |
 | Built by | Sanjay Karwa, Smart AI for Business |
 | Stack | Plain HTML, CSS and JavaScript with a rules engine in the browser; one Vercel function calling OpenRouter with DeepSeek V4.1 Flash (`deepseek/deepseek-v4.1-flash`), the key on the server only; localStorage |
-| Version | 1.3.0.3 (25 Nov 2026; baseline 1.0.0.0, Sanjay Karwa, 21 Nov 2026) |
+| Version | 1.5.0.0 (27 Nov 2026; baseline 1.0.0.0, Sanjay Karwa, 21 Nov 2026) |
 | Status | Built and live. Every functional test passes on the live link, with the key and with the model blocked (rerun 22 Nov 2026 after two wording fixes, see REPORT.md). No text is under 4.5:1 in light or dark (measured on 25 Nov 2026 against the background really shown, lowest 5.94:1); the older scan's flagged lines are notes about text on the teal brand colour and two misread lines, not failures. Version 1.1.0.0 (22 Nov 2026) adds four things beside the baseline: a reply and a ticket when a patient asks for a person, search and filters on the staff page, a form for the clinic file, and an assistant name and quick replies set in that file. Every earlier test passes on the live link after it, unedited |
 
 ## For the judges: FrontDesk AI in two minutes
@@ -21,10 +21,10 @@ ticket, not a made-up reply.
 "not sure" use fixed templates and never wait on the model. The model may only reword a real file answer;
 a guard rejects invented prices or promises. With the key blocked, the same facts still show.
 
-**Same browser for the staff step.** The staff page opens with the tickets of this browser. Open the
-patient chat and `/staff` as two tabs in the **same browser**. A different browser, device or private
-window opens with an empty queue. Since version 1.3.0.0 staff can also turn on "Show tickets from all
-devices" there, which needs the clinic's desk code; without the code another device still shows nothing.
+**The staff step on any device.** Since version 1.4.0.0 tickets are shared by default: the staff page, opened
+from the "Staff" link in the top bar on any device, shows every device's tickets once the clinic's desk code is
+entered. Without the code, or with no store, the staff page shows the tickets of this browser, so two tabs in the
+same browser still work as before.
 
 **Try it in two minutes (five steps).**
 
@@ -152,10 +152,14 @@ with it blocked; "Yes" means the feature is in place. The last column is the ver
 | N/A | Patient feedback on a reply ("Helpful" or "Not helpful") | Yes | 1.3 |
 | N/A | Tickets shared across devices: a staff device can see and answer tickets from any phone | Yes, behind the clinic's desk code | 1.3 |
 | N/A | The light and dark button says which theme is on, in its own state and in a line for screen readers (version 1.3.0.2) | Yes | 1.3 |
+| N/A | Tickets shared by default; the clinic file edited once applies on every device from the next answer; chat messages stored on the server (version 1.4.0.0) | Yes, Postgres on Neon, desk code for staff | 1.4 |
+| N/A | Brand look (Warm Cream, Deep Navy, Slate Blue, Signal Amber; no green), staff link in the top bar, clinic information on the right from 1024 px (versions 1.4.0.0 and 1.4.0.1) | Yes | 1.4 |
+| N/A | Phone chat: a slim composer pill, the quick replies in one row, a "+" menu as a bottom sheet (version 1.5.0.0) | Yes | 1.5 |
+| N/A | The model step checked on the server: temperature 0, one attempt, 8 seconds, a request limit (version 1.3.1.0) | Yes | 1.5 |
 
 All 16 rows of the brief pass, and all 24 rows beyond it are in place. The same table with three other builds of
 the batch beside it is in [REPORT.md](REPORT.md), section "Requirement and feature map"; what each version added
-and how it was tested is in the sections "Version 1.1.0.0" to "Version 1.3.0.3" there.
+and how it was tested is in the sections "Version 1.1.0.0" to "Version 1.5.0.0" there.
 
 ## Documentation
 
@@ -179,10 +183,10 @@ Every diagram is PlantUML source plus SVG. No PNG or JPG anywhere in this reposi
 
 ## Privacy
 
-- Messages and tickets are kept in the browser's localStorage on the device, and the staff page opens with
-  the tickets of its own browser. Since version 1.3.0.0 a patient's tickets (the question, the reply, and a name
-  and phone if the patient left them) are also mirrored to the clinic's server store, so staff on another
-  device can answer. They are deleted there after seven days.
+- The browser keeps a working copy in localStorage. Since version 1.4.0.0 a patient's tickets (the question, the
+  reply, and a name and phone if the patient left them) and the chat's messages are stored in the clinic's shared
+  store (Postgres, tables `tickets` and `messages`), so staff on any device can answer. They are kept for seven
+  days. The clinic file saved by staff is in the table `clinic_data` and applies on every device.
 - On the server, a ticket can be read or changed only with the private key of the browser that created it, or
   by staff with the clinic's desk code. A ticket id or a patient id alone opens nothing. Until the clinic sets a
   desk code, the list of every device's tickets is closed to everyone.
@@ -198,3 +202,24 @@ Every diagram is PlantUML source plus SVG. No PNG or JPG anywhere in this reposi
 - The fine print says who sees the messages (the clinic's front desk, once a chat is stored on the server; this
   browser and the clinic team before that), and asks patients not to type medical records.
 - The model key is kept in the Vercel environment and never reaches the page.
+
+## Version 1.5.0.0
+
+Version 1.5.0.0 (27 Nov 2026) adds, on top of 1.3.0.3 and with nothing removed: engine fixes in `core.js` (the
+emergency reply begins with the clinic's number in every language; more emergencies and Hinglish requests to break
+the rules are caught; a qualifier such as "laser" gives "not sure"); a stricter model step in `api/chat.js`
+(temperature 0, one attempt, 8 seconds in all, its text checked on the server by the same guard, a request limit
+per minute set by `FRONTDESK_CHAT_PER_MINUTE`); a shared store `api/_store.js` (Postgres on Neon through
+`@neondatabase/serverless` when `DATABASE_URL` is set, plain SQL, tables `messages`, `tickets` and
+`clinic_data`; else the host's Redis) with the routes `api/clinic.js`, `api/messages.js` and `api/health.js`;
+`shared.js` (tickets shared by default, a staff edit of the clinic file applies from the next answer on every
+device, every message stored); `brand.css` (the brand look, no green); `layout.css` and `layout.js` (the staff
+link in the top bar, the clinic information on the right from 1024 px); `compact.css` and `compact.js` (the phone
+chat: a slim composer pill, the quick replies in one row, a "+" menu as a bottom sheet).
+
+New tests: `tests/engine-gaps.cjs`, `tests/model-step.cjs`, `tests/store.cjs`, `tests/shared.mjs`,
+`tests/brand.mjs`, `tests/layout-wide.mjs`, `tests/phone-chat.mjs`. On the live link on 27 Nov 2026:
+`/api/health` answers ok with store postgres and ai true; phone-chat (189 checks), brief (29), emergency (12),
+layout-wide (107), brand (92), controls (20), widths (25), person (16), bonus (15) and voice with its recording (2)
+end ALL PASS (saved in `evidence/`). `engine-gaps.cjs`, `model-step.cjs` (38 checks), `store.cjs` and
+`shared.mjs` were run locally and end ALL PASS; they have no live file.

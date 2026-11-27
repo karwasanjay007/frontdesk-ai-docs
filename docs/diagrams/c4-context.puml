@@ -13,7 +13,7 @@ System_Ext(phone, "Clinic phone lines", "040 5550 0123 and the emergency line fr
 
 Rel(patient, frontdesk, "Asks questions, reads replies", "HTTPS")
 Rel(staff, frontdesk, "Reads tickets, replies, edits the clinic file", "HTTPS")
-Rel(frontdesk, model, "Asks for a reworded draft, 5 s limit; reply audio, 15 s; backup transcription, 12 s", "HTTPS, key on the server only")
+Rel(frontdesk, model, "Asks for a reworded draft, 8 s limit; reply audio, 15 s; backup transcription, 12 s", "HTTPS, key on the server only")
 Rel(frontdesk, upstash, "v1.3: stores and reads tickets", "HTTPS, REST, token on the server only")
 Rel(frontdesk, speechsvc, "Listens and speaks on request")
 Rel(patient, whatsapp, "Continues the conversation", "wa.me link")

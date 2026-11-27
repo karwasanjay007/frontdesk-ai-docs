@@ -52,6 +52,14 @@ was saved by hand.
 | `tests/form.mjs` | The clinic file form | `last-form-live.txt` | E12 |
 | `tests/sync.mjs`, `tests/sync-live.mjs`, `tests/sync-wait-live.mjs`, `tests/tickets-api-live.mjs`, `tests/tickets-redis.cjs` | Tickets shared across devices and the ticket store's rules | `last-sync-live.txt`, `last-sync-real-store-live.txt`, `last-sync-staff-real-store-live.txt`, `last-tickets-api-live.txt`, `last-tickets-redis.txt` | E13 |
 | `tests/sync-scale.mjs` | Shared tickets with 300 tickets already in the store; a reply and a question sent just before the tab goes to the background | `last-sync-scale-live.txt`: "ALL PASS (9 checks)" | AC-E13.F3.4, AC-E13.F3.7, AC-E13.F1.5 |
+| `tests/engine-gaps.cjs` | Emergency reply begins with the number in every language; more emergencies and Hinglish rule-breaks; qualifiers give not sure | local run: "ALL PASS" | AC-E16.F1.1, AC-E16.F1.2, AC-E16.F1.3 |
+| `tests/engine-doctor.cjs` | A doctor the clinic file does not hold is named as not at the clinic, with its own doctors (from the fresh review of 27 Nov 2026) | local run: "ALL PASS" | AC-E16.F1.4 |
+| `tests/model-step.cjs` | Temperature 0, one attempt, 8 s, the guard on the server, the request limit | local run: "ALL PASS (38 checks)" | AC-E16.F2.1, AC-E16.F2.2 |
+| `tests/store.cjs` | The store module with a stand-in Postgres and with Redis: tables, tickets, messages, clinic file | local run: "ALL PASS" | AC-E16.F3.1 |
+| `tests/shared.mjs` | A staff edit of the clinic file applies from the next answer; messages stored; no store, no change | local run: "ALL PASS" | AC-E16.F3.2, AC-E16.F3.3 |
+| `tests/brand.mjs` | Brand tokens on both pages, no green, contrast kept | `last-brand-live.txt`: "ALL PASS (92 checks)" | AC-E16.F4.1 |
+| `tests/layout-wide.mjs` | Staff link in the top bar; clinic information on the right from 1024 px | `last-layout-wide-live.txt`: "ALL PASS (107 checks)" | AC-E16.F4.2 |
+| `tests/phone-chat.mjs` | Phone chat: slim pill, quick replies in one row, "+" menu | `last-phone-chat-live.txt`: "ALL PASS (189 checks)" | AC-E16.F5.1 |
 | `tests/sync-watch-live.mjs` | The staff side on the real store, waiting for a person's reply and printing the ticket as the store holds it | none saved yet; the last proof is `last-sync-staff-real-store-live.txt` | AC-E13.F3.4 |
 | `tests/extras3.mjs` | Ticket numbers, the thread and feedback | `last-extras3-live.txt` | AC-E14.F1.1 to AC-E14.F3.4 |
 | `tests/i18n.mjs` | The language menu and New chat | `last-i18n-live.txt`, `last-i18n-blocked-live.txt` | AC-E15.F1.1 to AC-E15.F1.4 |
@@ -78,7 +86,8 @@ was saved by hand.
 | E13 | Tickets shared across devices (1.3) | 4 | 22 | V-14, V-22 | built, behind the clinic's desk code (`last-sync-live.txt`, `last-tickets-api-live.txt`, `last-tickets-redis.txt`) |
 | E14 | Ticket numbers, thread, feedback and the booking day note (1.2 and 1.3) | 4 | 14 | V-10 to V-13 | built (`last-extras3-live.txt`, `last-booking-day.txt`) |
 | E15 | Language menu, New chat, clinic info panel and Clear all (1.3) | 3 | 10 | V-15 to V-17 | built; the clinic info panel and the empty-queue message are not covered by a test (`last-i18n-live.txt`, `last-staffclear-live.txt`) |
-| **Total** | | **50** | **175** | | |
+| E16 | Shared store, a stricter model step, brand and phone chat (1.3.1 to 1.5) | 5 | 12 | Test | built; live: `last-brand-live.txt`, `last-layout-wide-live.txt`, `last-phone-chat-live.txt`; engine-gaps, model-step, store and shared run locally |
+| **Total** | | **55** | **187** | | |
 
 ---
 
@@ -801,6 +810,45 @@ mistake so that I can start a clean round.
 | AC-E15.F3.2 | The tickets were cleared | The patient chat in the same browser is read | It is empty too | V-17 | `tests/staffclear.mjs` |
 | AC-E15.F3.3 | The tickets were cleared | Staff press Undo within about 10 seconds | The ticket and the patient chat come back | V-17 | `tests/staffclear.mjs` |
 
+## E16 Shared store, a stricter model step, brand and phone chat (versions 1.3.1.0 to 1.5.0.0)
+
+### E16.F1 Engine gaps closed
+
+| Id | Given | When | Then | Planned check | Test |
+| --- | --- | --- | --- | --- | --- |
+| AC-E16.F1.1 | Any language | A patient writes an emergency | The reply begins with the clinic's number | Test | `tests/engine-gaps.cjs` |
+| AC-E16.F1.2 | Hinglish | A patient asks for a discount or a rule break ("kuch chhoot milegi kya") | A refusal, no price change | Test | `tests/engine-gaps.cjs` |
+| AC-E16.F1.3 | The file lists teeth whitening | A patient asks for "laser teeth whitening" | Not sure, no price | Test | `tests/engine-gaps.cjs` |
+| AC-E16.F1.4 | The file lists three doctors | A patient names a doctor who is not in it ("Is Dr. Ramesh Gupta available on Monday?") | "We have no Dr. Ramesh Gupta", with the clinic's own doctors; never "Yes"; not reworded by the model | Test | `tests/engine-doctor.cjs` |
+
+### E16.F2 The model step
+
+| Id | Given | When | Then | Planned check | Test |
+| --- | --- | --- | --- | --- | --- |
+| AC-E16.F2.1 | The key is set | An answerable reply is reworded | One call at temperature 0, ended at 8 s; a text that fails the guard on the server is not returned | Test | `tests/model-step.cjs` |
+| AC-E16.F2.2 | More requests than the limit in a minute | Another request arrives | 429, and the browser shows the engine's answer | Test | `tests/model-step.cjs` |
+
+### E16.F3 Shared store
+
+| Id | Given | When | Then | Planned check | Test |
+| --- | --- | --- | --- | --- | --- |
+| AC-E16.F3.1 | `DATABASE_URL` is set | A route first runs | Tables `messages`, `tickets`, `clinic_data` exist; values travel as parameters; with no store the routes answer as before | Test | `tests/store.cjs` |
+| AC-E16.F3.2 | Staff save the clinic file with the desk code | A patient on another device asks next | The answer uses the saved file | Test | `tests/shared.mjs` |
+| AC-E16.F3.3 | A chat is open | A patient, bot or staff message is shown | It is stored through `/api/messages`, readable only by its browser key or staff | Test | `tests/shared.mjs` |
+
+### E16.F4 Brand and wide layout
+
+| Id | Given | When | Then | Planned check | Test |
+| --- | --- | --- | --- | --- | --- |
+| AC-E16.F4.1 | Either page, light or dark | It is shown | Brand colours, no green, every text at 4.5:1 or more | Test | `tests/brand.mjs` |
+| AC-E16.F4.2 | A window 1024 px or wider | The chat is shown | The clinic information is on the right and the staff link is in the top bar | Test | `tests/layout-wide.mjs` |
+
+### E16.F5 Phone chat
+
+| Id | Given | When | Then | Planned check | Test |
+| --- | --- | --- | --- | --- | --- |
+| AC-E16.F5.1 | A phone, up to 767 px | The chat is shown | A slim composer pill, the quick replies in one row, every other action in the "+" menu; nothing removed | Test | `tests/phone-chat.mjs` |
+
 ## Revisions
 
 | Date | Change |
@@ -813,3 +861,4 @@ mistake so that I can start a clean round.
 | 25 Nov 2026 | Version 1.3.0.2, after the project feedback: three criteria added (AC-E2.F1.7 a question that mixes timings and prices, AC-E7.F2.2 the theme button says which theme is on, AC-E7.F3.3 the skip link) and two test files (`tests/mixed.cjs`, `tests/controls.mjs`), 31 test files in all. Totals now 50 features and 173 criteria |
 | 25 Nov 2026 | Contrast and voice rerun on the live link. `tests/contrast-true.mjs` added beside `tests/contrast.mjs`, which misreads a part-transparent background; 32 test files in all. The E7.F2 status line corrected. No criterion added |
 | 25 Nov 2026 | Version 1.3.0.3: two criteria added (AC-E13.F1.5, AC-E13.F3.7: a question or a reply sent just before the tab goes to the background) and two test files (`tests/sync-scale.mjs`, `tests/sync-watch-live.mjs`), 34 test files in all. Totals now 50 features and 175 criteria |
+| 27 Nov 2026 | Versions 1.3.1.0 to 1.5.0.0: epic E16 added (5 features, 11 criteria) and seven test files (`tests/engine-gaps.cjs`, `tests/model-step.cjs`, `tests/store.cjs`, `tests/shared.mjs`, `tests/brand.mjs`, `tests/layout-wide.mjs`, `tests/phone-chat.mjs`), 41 test files in all. Totals now 55 features and 186 criteria |

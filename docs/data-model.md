@@ -1,8 +1,9 @@
 # FrontDesk AI data model
 
 FrontDesk AI keeps its working copy in the browser. The clinic's facts come from one JSON file, and the
-tickets, the staff replies and the edited clinic file live in `localStorage`, shared by the chat page
-(`/`) and the staff page (`/staff`) of the same browser. Since version 1.3.0.0 a patient's tickets are also
+tickets, the staff replies and the edited clinic file are kept in `localStorage` as the working copy of the chat
+page (`/`) and the staff page (`/staff`). Since version 1.4.0.0 the shared copy of tickets, messages and the
+clinic file is in Postgres (see "Added in version 1.4.0.0 to 1.5.0.0" below). Since version 1.3.0.0 a patient's tickets are also
 mirrored to a server store for seven days (see "Added in version 1.3.0.0" below). One server function
 only rewords a reply (see [schema/api-chat.md](schema/api-chat.md)); a second, `api/tickets.js`, keeps the
 shared tickets. The source of truth is `core.js`,
@@ -250,3 +251,34 @@ Rules the function applies:
 | A staff browser without the code, or before the clinic has set a code on the server | only the tickets of its own browser |
 
 On the server every ticket is deleted after seven days.
+
+## Added in version 1.4.0.0 to 1.5.0.0 (27 Nov 2026)
+
+The shared store, `api/_store.js`: Postgres on Neon when `DATABASE_URL` is set (plain SQL, values as
+parameters, each query limited to 6 s), else the host's Redis under the 1.3 keys, else none.
+
+| Table | Columns | Kept |
+| --- | --- | --- |
+| `messages` | `id` BIGSERIAL key, `chat_id`, `role` (patient, bot, staff), `text` (at most 6,000 characters), `source`, `owner` (hash of the browser key), `created_at`; index on (`chat_id`, `id`) | seven days, at most 400 a chat |
+| `tickets` | `id` key, `patient`, `owner`, `status`, `priority`, `text`, `reply`, `data` JSONB (the whole ticket, shape in [schema/tickets.schema.json](schema/tickets.schema.json)), `created_at`, `updated_at`; index on `owner` | seven days, at most 300 in the shared list |
+| `clinic_data` | `id` (always 1), `data` JSONB (the clinic file, shape in [schema/clinic-file.schema.json](schema/clinic-file.schema.json), at most 100,000 characters), `updated_at` | until reset |
+
+| Route | Method | Who | Answer |
+| --- | --- | --- | --- |
+| `/api/clinic` | GET | anyone | `{ clinic, saved, store }`; the shipped file when the store is down |
+| `/api/clinic` | POST `{ clinic }` or `{ reset: true }` | staff, `x-desk-code` | `{ ok, clinic, saved }`; 400 with the failing part, 401, 403, 429, 503 |
+| `/api/messages` | POST `{ chatId, role, text, source }` | the browser key in `x-patient-key` | `{ message }` |
+| `/api/messages?chat=<id>` | GET | that browser key, or staff | `{ messages }`, oldest first |
+| `/api/health` | GET | anyone | `{ ok, store: "postgres" \| "redis" \| "none", ai }` |
+
+New browser keys, all written by `shared.js`:
+
+| Key | Where | What |
+| --- | --- | --- |
+| `frontdesk.clinic.server` | localStorage | the clinic file in this browser came from the server |
+| `frontdesk.clinic.own` | localStorage | staff saved or reset on this device only; the server copy is not applied over it |
+| `frontdesk.msgseen` | localStorage | which messages were already sent to `/api/messages` |
+
+`frontdesk-urgent` is not a stored key: it is the tag of the urgent-ticket notification in `staff/tools.js`.
+`frontdesk.alldevices` now defaults to on: the shared view is off only when staff untick it on that device.
+No shape of the clinic file or the ticket changed.

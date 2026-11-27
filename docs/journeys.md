@@ -448,3 +448,17 @@ Source: [j9-shared-tickets.puml](diagrams/j9-shared-tickets.puml)
 - A stranger with a ticket id and a patient id but another key can read nothing and change nothing (403).
 - No store configured, or the call blocked: both pages work as before and the add-on goes quiet.
 - A ticket's question, reply and patient never change once stored; a record is kept for seven days.
+
+## Changes in version 1.4.0.0 to 1.5.0.0 (27 Nov 2026)
+
+- **J4 Staff reply.** Staff no longer need the same browser: the reply goes to the shared store through
+  `api/tickets.js` and reaches the patient's chat on any device; it is also kept in `messages` through
+  `/api/messages`. The same browser still works with no store. See the diagram `j4-staff-reply`.
+- **J6 Clinic file edit.** Save and Reset on `/staff` go to `POST /api/clinic` with the desk code; the chat page
+  on every device reads `GET /api/clinic` before its next answer (2 s at most; an emergency never waits) and
+  answers from the saved file. The line under the editor says whether the change reached every device or this
+  device only. See the diagram `j6-clinic-file-edit`.
+- **J1 First visit and ask.** The model call is at temperature 0, one attempt, 8 s, checked on the server. On a
+  phone the composer is a slim pill with a "+" menu; from 1024 px the clinic information is on the right.
+- **J2 Safety replies.** The emergency reply begins with the clinic's number in every language.
+- **J9 Shared tickets.** Shared by default since 1.4.0.0; the store is Postgres.

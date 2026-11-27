@@ -52,7 +52,7 @@ Container_Boundary(ticketsapi, "api/tickets.js, Vercel function (v1.3)") {
 }
 
 Container_Boundary(api, "api/chat.js, Vercel function") {
-  Component(handler, "handler(req, res)", "Node.js", "GET: ok. POST: reads draft, facts, lang, clinic; 5 s limit; returns { text, model } or { error }")
+  Component(handler, "handler(req, res)", "Node.js", "GET: ok. POST: reads draft, facts, lang, clinic; one attempt, temperature 0, 8 s limit, guard on the server, request limit; returns { text, model } or { error }")
 }
 
 Container_Boundary(voiceapi, "api/tts.js and api/transcribe.js, Vercel functions") {
@@ -105,4 +105,20 @@ Rel(ticketscore, redisdb, "v1.3: reads and writes through the store")
 Rel(redisdb, upstash, "v1.3: Redis commands", "HTTPS, REST, address and token on the server")
 
 SHOW_LEGEND()
+Container_Boundary(storeb, "Shared store and routes (v1.4)") {
+  Component(storemod, "api/_store.js", "Node.js", "mode(): postgres, redis or none; tickets, messages, clinic file; plain SQL, values as parameters, 6 s per query")
+  Component(clinicr, "api/clinic.js core()", "Node.js", "GET the file in use; POST save or reset with the desk code")
+  Component(msgr, "api/messages.js core()", "Node.js", "POST and GET a chat's messages; browser key or desk code")
+  Component(healthr, "api/health.js core()", "Node.js", "{ ok, store, ai }")
+}
+Component(sharedjs, "shared.js", "JavaScript", "v1.4: clinic file from the server before an answer; messages to the server; staff Save and Reset to the server")
+Component(lookjs, "brand.css, layout.css, layout.js, compact.css, compact.js", "CSS, JavaScript", "v1.4 to v1.5: brand look; staff link and clinic panel from 1024 px; phone chat with a + menu")
+ContainerDb_Ext(neon, "Postgres on Neon", "SQL", "tables messages, tickets, clinic_data")
+Rel(ticketscore, storemod, "v1.4: reads and writes through")
+Rel(clinicr, storemod, "clinic_data")
+Rel(msgr, storemod, "messages")
+Rel(healthr, storemod, "ping")
+Rel(storemod, neon, "SQL", "@neondatabase/serverless")
+Rel(sharedjs, clinicr, "GET and POST /api/clinic", "HTTPS")
+Rel(sharedjs, msgr, "POST /api/messages", "HTTPS")
 @enduml

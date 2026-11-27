@@ -1,0 +1,93 @@
+PASS 375 light chat: quick question buttons in a row are evenly spaced | [0]
+PASS 375 light chat: the top bar is the brand navy | rgb(18, 38, 58)
+PASS 375 light chat: the Send button is the brand action colour | rgb(201, 122, 29)
+PASS 375 light chat: body begins with Inter and the heading with Fraunces | Inter, "Noto Sans", "Noto Sans / Fraunces, "Baloo 2", "Noto San
+PASS 375 light chat: the Hindi and Telugu fonts are still in the stack
+PASS 375 light chat: the emergency link is a button at least 44 px tall with 14 px text | {"h":44,"fs":15.2,"border":2}
+PASS 375 light chat: the brand mark is shown, 32 px or wider, with half its width clear | w 32 pad 16 gap 16 bar 56
+PASS 375 light chat: the clinic name is not cut | {"sw":162,"cw":162,"shown":true,"ell":"clip","ws":"nowrap","lines":1}
+PASS 375 light chat: no sideways scroll | 0
+PASS 375 light chat: #chat-input, #chat-send, .bot-msg, #emg-link and the theme button are there and visible
+PASS 375 light chat: buttons under a reply are evenly spaced | [0,0]
+PASS 375 light staff: the top bar is the brand navy | rgb(18, 38, 58)
+PASS 375 light staff: the Send reply button is the brand action colour | rgb(201, 122, 29)
+PASS 375 light staff: body begins with Inter and the heading with Fraunces | Inter, "Noto Sans", "Noto Sans / Fraunces, "Baloo 2", "Noto San
+PASS 375 light staff: the clinic name is read whole, no ellipsis | {"sw":94,"cw":94,"shown":true,"ell":"clip","ws":"normal","lines":2}
+PASS 375 light staff: the brand mark is shown with its clear space | w 32 pad 16 gap 16
+PASS 375 light staff: no sideways scroll | 0
+PASS 375 light staff: #ticket-queue, [data-ticket], #staff-reply and #staff-send are there and visible | {"#chat-input":false,"#chat-send":false,".bot-msg":false,"#ticket-queue":true,"[data-ticket]":true,"#staff-reply":true,"#staff-send":true,"#clear-all":true,"#emg-link":false,"#theme-toggle":true}
+PASS 375 light staff: tickets carry data-status and the urgent one says urgent | urgent,answered
+PASS 375 light staff: Clear all tickets is outlined, sits after the queue and stays where it was in the page | {"below":true,"bg":"rgba(0, 0, 0, 0)","border":1,"inHead":true}
+PASS 375 light staff: the note says the same thing without the word demo
+PASS 375 light staff: the empty ticket list carries a line on what appears there | "Each question asked in the patient chat is listed
+PASS 375 light no page error | 
+PASS 1280 light chat: quick question buttons in a row are evenly spaced | [0]
+PASS 1280 light chat: the top bar is the brand navy | rgb(18, 38, 58)
+PASS 1280 light chat: the Send button is the brand action colour | rgb(201, 122, 29)
+PASS 1280 light chat: body begins with Inter and the heading with Fraunces | Inter, "Noto Sans", "Noto Sans / Fraunces, "Baloo 2", "Noto San
+PASS 1280 light chat: the Hindi and Telugu fonts are still in the stack
+PASS 1280 light chat: the emergency link is a button at least 44 px tall with 14 px text | {"h":44,"fs":15.2,"border":2}
+PASS 1280 light chat: the brand mark is shown, 32 px or wider, with half its width clear | w 38 pad 19 gap 19 bar 73
+PASS 1280 light chat: the clinic name is not cut | {"sw":142,"cw":142,"shown":true,"ell":"clip","ws":"normal","lines":1}
+PASS 1280 light chat: no sideways scroll | 0
+PASS 1280 light chat: #chat-input, #chat-send, .bot-msg, #emg-link and the theme button are there and visible
+PASS 1280 light chat: buttons under a reply are evenly spaced | [0,0]
+PASS 1280 light staff: the top bar is the brand navy | rgb(18, 38, 58)
+PASS 1280 light staff: the Send reply button is the brand action colour | rgb(201, 122, 29)
+PASS 1280 light staff: body begins with Inter and the heading with Fraunces | Inter, "Noto Sans", "Noto Sans / Fraunces, "Baloo 2", "Noto San
+PASS 1280 light staff: the clinic name is read whole, no ellipsis | {"sw":119,"cw":119,"shown":true,"ell":"clip","ws":"normal","lines":1}
+PASS 1280 light staff: the brand mark is shown with its clear space | w 38 pad 19 gap 19
+PASS 1280 light staff: no sideways scroll | 0
+PASS 1280 light staff: #ticket-queue, [data-ticket], #staff-reply and #staff-send are there and visible | {"#chat-input":false,"#chat-send":false,".bot-msg":false,"#ticket-queue":true,"[data-ticket]":true,"#staff-reply":true,"#staff-send":true,"#clear-all":true,"#emg-link":false,"#theme-toggle":true}
+PASS 1280 light staff: tickets carry data-status and the urgent one says urgent | urgent,answered
+PASS 1280 light staff: Clear all tickets is outlined, sits after the queue and stays where it was in the page | {"below":true,"bg":"rgba(0, 0, 0, 0)","border":1,"inHead":true}
+PASS 1280 light staff: the note says the same thing without the word demo
+PASS 1280 light staff: the empty ticket list carries a line on what appears there | "Each question asked in the patient chat is listed
+PASS 1280 light no page error | 
+PASS 375 dark chat: quick question buttons in a row are evenly spaced | [0]
+PASS 375 dark chat: the top bar is the brand navy | rgb(18, 38, 58)
+PASS 375 dark chat: the Send button is the brand action colour | rgb(201, 122, 29)
+PASS 375 dark chat: body begins with Inter and the heading with Fraunces | Inter, "Noto Sans", "Noto Sans / Fraunces, "Baloo 2", "Noto San
+PASS 375 dark chat: the Hindi and Telugu fonts are still in the stack
+PASS 375 dark chat: the emergency link is a button at least 44 px tall with 14 px text | {"h":44,"fs":15.2,"border":2}
+PASS 375 dark chat: the brand mark is shown, 32 px or wider, with half its width clear | w 32 pad 16 gap 16 bar 56
+PASS 375 dark chat: the clinic name is not cut | {"sw":162,"cw":162,"shown":true,"ell":"clip","ws":"nowrap","lines":1}
+PASS 375 dark chat: no sideways scroll | 0
+PASS 375 dark chat: #chat-input, #chat-send, .bot-msg, #emg-link and the theme button are there and visible
+PASS 375 dark chat: buttons under a reply are evenly spaced | [0,0]
+PASS 375 dark staff: the top bar is the brand navy | rgb(18, 38, 58)
+PASS 375 dark staff: the Send reply button is the brand action colour | rgb(201, 122, 29)
+PASS 375 dark staff: body begins with Inter and the heading with Fraunces | Inter, "Noto Sans", "Noto Sans / Fraunces, "Baloo 2", "Noto San
+PASS 375 dark staff: the clinic name is read whole, no ellipsis | {"sw":94,"cw":94,"shown":true,"ell":"clip","ws":"normal","lines":2}
+PASS 375 dark staff: the brand mark is shown with its clear space | w 32 pad 16 gap 16
+PASS 375 dark staff: no sideways scroll | 0
+PASS 375 dark staff: #ticket-queue, [data-ticket], #staff-reply and #staff-send are there and visible | {"#chat-input":false,"#chat-send":false,".bot-msg":false,"#ticket-queue":true,"[data-ticket]":true,"#staff-reply":true,"#staff-send":true,"#clear-all":true,"#emg-link":false,"#theme-toggle":true}
+PASS 375 dark staff: tickets carry data-status and the urgent one says urgent | urgent,answered
+PASS 375 dark staff: Clear all tickets is outlined, sits after the queue and stays where it was in the page | {"below":true,"bg":"rgba(0, 0, 0, 0)","border":1,"inHead":true}
+PASS 375 dark staff: the note says the same thing without the word demo
+PASS 375 dark staff: the empty ticket list carries a line on what appears there | "Each question asked in the patient chat is listed
+PASS 375 dark no page error | 
+PASS 1280 dark chat: quick question buttons in a row are evenly spaced | [0]
+PASS 1280 dark chat: the top bar is the brand navy | rgb(18, 38, 58)
+PASS 1280 dark chat: the Send button is the brand action colour | rgb(201, 122, 29)
+PASS 1280 dark chat: body begins with Inter and the heading with Fraunces | Inter, "Noto Sans", "Noto Sans / Fraunces, "Baloo 2", "Noto San
+PASS 1280 dark chat: the Hindi and Telugu fonts are still in the stack
+PASS 1280 dark chat: the emergency link is a button at least 44 px tall with 14 px text | {"h":44,"fs":15.2,"border":2}
+PASS 1280 dark chat: the brand mark is shown, 32 px or wider, with half its width clear | w 38 pad 19 gap 19 bar 73
+PASS 1280 dark chat: the clinic name is not cut | {"sw":142,"cw":142,"shown":true,"ell":"clip","ws":"normal","lines":1}
+PASS 1280 dark chat: no sideways scroll | 0
+PASS 1280 dark chat: #chat-input, #chat-send, .bot-msg, #emg-link and the theme button are there and visible
+PASS 1280 dark chat: buttons under a reply are evenly spaced | [0,0]
+PASS 1280 dark staff: the top bar is the brand navy | rgb(18, 38, 58)
+PASS 1280 dark staff: the Send reply button is the brand action colour | rgb(201, 122, 29)
+PASS 1280 dark staff: body begins with Inter and the heading with Fraunces | Inter, "Noto Sans", "Noto Sans / Fraunces, "Baloo 2", "Noto San
+PASS 1280 dark staff: the clinic name is read whole, no ellipsis | {"sw":119,"cw":119,"shown":true,"ell":"clip","ws":"normal","lines":1}
+PASS 1280 dark staff: the brand mark is shown with its clear space | w 38 pad 19 gap 19
+PASS 1280 dark staff: no sideways scroll | 0
+PASS 1280 dark staff: #ticket-queue, [data-ticket], #staff-reply and #staff-send are there and visible | {"#chat-input":false,"#chat-send":false,".bot-msg":false,"#ticket-queue":true,"[data-ticket]":true,"#staff-reply":true,"#staff-send":true,"#clear-all":true,"#emg-link":false,"#theme-toggle":true}
+PASS 1280 dark staff: tickets carry data-status and the urgent one says urgent | urgent,answered
+PASS 1280 dark staff: Clear all tickets is outlined, sits after the queue and stays where it was in the page | {"below":true,"bg":"rgba(0, 0, 0, 0)","border":1,"inHead":true}
+PASS 1280 dark staff: the note says the same thing without the word demo
+PASS 1280 dark staff: the empty ticket list carries a line on what appears there | "Each question asked in the patient chat is listed
+PASS 1280 dark no page error | 
+ALL PASS (92 checks)
