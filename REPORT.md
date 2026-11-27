@@ -490,3 +490,30 @@ end ALL PASS (saved in `evidence/`). `engine-gaps.cjs`, `model-step.cjs` (38 che
 
 Not tested on the live link: `store.cjs` and `shared.mjs` use a stand-in database; the live store was checked
 through `/api/health` and the shared-ticket runs.
+
+## Versions 1.5.0.1 to 1.6.0.1 (27 Nov 2026)
+
+- **1.5.0.1.** A fresh review found an invented doctor let stand: "Is Dr. Ramesh Gupta available on Monday?" got
+  "Yes" and Dr. Meera Nair. `core.js` now answers "We have no Dr. Ramesh Gupta" with the clinic's own doctors,
+  not reworded by the model. Test first: `tests/engine-doctor.cjs` (4 checks failed before the fix). Local:
+  engine-doctor, engine, engine-gaps, sweep (386 questions), person, mixed, other-clinic, booking-day and
+  model-step end ALL PASS.
+- **1.6.0.0.** The phone chat polished like the leading chat apps (`compact.css`, `compact.js`): starter cards
+  on an empty chat (the same `#quick` chips as a two-column grid, back to one row after the first message), a
+  slim row with the emergency number as a red phone pill and borderless language and theme buttons, thumbs up
+  and down for feedback, answers as plain text with the clinic mark. In `chat.js` a not-sure or talk-to-a-person
+  reply no longer carries the label "Answered from the clinic file" (one condition). Test first:
+  `tests/starter-cards.mjs` (41 checks). `tests/phone-chat.mjs` checks the one row of chips after the answers,
+  since the empty chat now shows cards. Local: starter-cards, phone-chat (197), controls, contrast-true, person,
+  bonus with the model blocked, brief with no key (31), questions with no key, layout-wide, brand, i18n, extras3
+  and sync end ALL PASS.
+- **1.6.0.1.** The starter cards take the full width, the language box shows "EN" whole, the welcome line wraps
+  (`compact.css`). Local: starter-cards, phone-chat (197), controls and person end ALL PASS.
+
+On the live link: brief (29 checks), phone-chat (197) and starter-cards (41) end ALL PASS
+(`evidence/last-brief-live.txt`, `evidence/last-phone-chat-live.txt`, `evidence/last-starter-cards-live.txt`).
+`engine-doctor.cjs` runs on the engine only and has no live file.
+
+Not tested: the slim row, the thumbs and the clinic mark have no check of their own (looked at by hand); the
+other live suites were not rerun, as these changes touch only the phone layout, one label condition and the
+doctor rule.

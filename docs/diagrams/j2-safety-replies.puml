@@ -35,7 +35,7 @@ end
 note over Chat : modelOk is false, so askModel() returns null: no model call
 Chat -> Core : FD.openNow(data), FD.addTicket(...)
 Core -> LS : write frontdesk.tickets (callBack true when "needs human")
-Chat -> Chat : ticketRows(t), with the label "Answered from the clinic file"
+Chat -> Chat : ticketRows(t), with the label "Answered from the clinic file"\n(v1.6: not on a not-sure reply, which answers nothing from the file)
 alt emergency
   Chat --> Patient : reply and a tel: button "Call <emergency_phone>"; no after-hours note
 else refuse

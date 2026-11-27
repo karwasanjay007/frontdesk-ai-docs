@@ -91,7 +91,7 @@ exactly. The rows below were settled on 20 Nov 2026 (draft list G1 to G25).
 | G12 | Where tickets live | On the device, shared by the chat page and /staff of the same site; the chat page shows a staff reply within a second. From 1.3.0.0 they can also be shared across devices (V-14) | The tester uses one browser; a real clinic needs a server (Q-3) |
 | G13 | The staff address | A real address, /staff, tested on the live link | "A staff page at /staff" |
 | G14 | Ask on load | When the page address carries `?q=`, that question is sent once, exactly as if typed, and its answer is the last bot reply | "?q=<question> in the page URL asks that question when the page opens" |
-| G15 | The label | Whenever the answer comes from the file (model missing, failed, too slow or rejected by the check), the reply shows a small label: "Answered from the clinic file" | Spec item 8, exact words |
+| G15 | The label | Whenever the answer comes from the file (model missing, failed, too slow or rejected by the check), the reply shows a small label: "Answered from the clinic file". Since 1.6.0.0 a not-sure or talk-to-a-person reply, which answers nothing from the file, carries none | Spec item 8, exact words |
 | G16 | Input checks | Nothing is refused except an empty message. Any language, any length (trimmed to a sensible limit) | Never stricter than the spec |
 | G17 | Nothing in front of graded elements | No confirmation box, alert, login, cookie banner or tour on the chat page or /staff | Lesson from the previous graded build |
 | G18 | Hidden data | Every answer is worked out from the current clinic file. Staff can paste or edit the file on /staff, and answers follow the edit at once | "A good build works out every number from the data it is given"; Q-1 |
@@ -398,7 +398,23 @@ Requirements added, each traced to epic E16 in [docs/epics.md](docs/epics.md):
 | R-16.2 | The model step uses temperature 0, one attempt and 8 seconds in all; its text passes the guard on the server; requests over the limit get 429 | `tests/model-step.cjs` |
 | R-16.3 | Tickets, messages and the clinic file are kept in one shared store; with no store every page works as before | `tests/store.cjs`, `tests/shared.mjs` |
 | R-16.4 | The brand look, with no green; the staff link in the top bar; the clinic information on the right from 1024 px | `tests/brand.mjs`, `tests/layout-wide.mjs` |
-| R-16.5 | On a phone the conversation takes most of the screen: a slim composer, the quick replies in one row, a "+" menu | `tests/phone-chat.mjs` |
+| R-16.5 | On a phone the conversation takes most of the screen: a slim composer, the quick replies in one row once the chat has begun (starter cards on an empty chat since 1.6.0.0, R-16.7), a "+" menu | `tests/phone-chat.mjs` |
 
 Corrected in place of earlier statements: the staff page no longer shows only this browser's tickets when the
 store and the desk code are there; the model call is no longer at temperature 0.2 with a 5 second limit.
+
+## Versions 1.5.0.1 to 1.6.0.1: additions (27 Nov 2026)
+
+Version 1.5.0.1 closes a finding of a fresh review: a doctor the clinic file does not hold was let stand
+(`core.js`). Version 1.6.0.0 polishes the phone chat like the leading chat apps (`compact.css`, `compact.js`) and
+narrows the label rule in `chat.js`; 1.6.0.1 fixes three phone layout details (`compact.css`). Nothing removed.
+
+| Id | Requirement | Test |
+| --- | --- | --- |
+| R-16.6 | A doctor the clinic file does not hold is never let stand: the reply says the clinic has no such doctor and names its own doctors; never "Yes"; not reworded by the model | `tests/engine-doctor.cjs` |
+| R-16.7 | On a phone an empty chat shows the quick replies (the same `#quick` chips) as starter cards in two columns, full width, in the conversation area; after the first message they are the one row above the composer again; New chat brings the cards back; from 768 px they stay in the composer | `tests/starter-cards.mjs` |
+| R-16.8 | On a phone a slim row holds the emergency number as a red phone pill and borderless language and theme buttons, with the language box shown whole; the welcome line wraps; feedback is thumbs up and down; answers are plain text with the clinic mark | checked by hand; `tests/phone-chat.mjs` passes with it (no check of its own) |
+| R-16.9 | The label "Answered from the clinic file" is shown on a reply the model did not word that answers from the file; a not-sure or talk-to-a-person reply, which answers nothing from the file, carries no label | `tests/starter-cards.mjs` |
+
+Corrected in place of earlier statements: the not-sure reply no longer carries the label (G15 still holds: the
+label marks an answer that comes from the file).

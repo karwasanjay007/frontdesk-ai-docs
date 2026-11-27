@@ -237,3 +237,12 @@ Checked again against the brief: every row still passes on the live link. The st
 same browser when the store and the desk code are there; the same browser still works without them. The
 emergency reply now begins with the number in every language, which the brief's safety rows ask for first.
 The guideline checklist and its results are in the code's READINESS.md, section 4.
+
+## Versions 1.5.0.1 to 1.6.0.1 (27 Nov 2026)
+
+Checked again against the brief: brief (29 checks) ends ALL PASS on the live link at 1.6.0.x. A doctor the clinic
+file does not hold is no longer let stand (1.5.0.1), which the brief's "only from the clinic file" row asks for.
+The phone chat changes (1.6.0.0, 1.6.0.1) keep every row: quick replies are still buttons (starter cards on an
+empty chat), and the phone width row passes in phone-chat (197) and starter-cards (41). Item 8's label still
+marks every answer from the file with the model off; a not-sure or talk-to-a-person reply, which answers nothing
+from the file, now carries none.

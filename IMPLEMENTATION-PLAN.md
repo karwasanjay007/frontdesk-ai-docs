@@ -210,5 +210,9 @@ test; no earlier test was edited.
 | 1.4.0.0 | Shared store on Postgres (Neon), the clinic file and messages on the server, tickets shared by default; brand look; staff link in the top bar; clinic information on the right from 1024 px | `api/_store.js`, `api/clinic.js`, `api/messages.js`, `api/health.js`, `shared.js`, `brand.css`, `layout.css`, `layout.js` | `tests/store.cjs`, `tests/shared.mjs`, `tests/brand.mjs`, `tests/layout-wide.mjs` |
 | 1.4.0.1 | No green anywhere: the answered status and the open-now sign in slate blue | `brand.css` | `tests/brand.mjs` |
 | 1.5.0.0 | Phone chat: slim pill, quick replies in one row, "+" menu as a bottom sheet | `compact.css`, `compact.js` | `tests/phone-chat.mjs` |
+| 1.5.0.1 | A doctor the clinic file does not hold is never let stand | `core.js` | `tests/engine-doctor.cjs` |
+| 1.6.0.0 | Phone chat polished: starter cards on an empty chat, a slim row (red emergency pill, language, theme), thumbs for feedback, plain answers with the clinic mark; no label on a not-sure or talk-to-a-person reply | `compact.css`, `compact.js`, `chat.js` | `tests/starter-cards.mjs`; `tests/phone-chat.mjs` |
+| 1.6.0.1 | Starter cards full width, the language box whole, the welcome line wraps | `compact.css` | `tests/starter-cards.mjs`, `tests/phone-chat.mjs` |
 
-Each was added beside the earlier files; no earlier test was edited.
+Each was added beside the earlier files. One earlier test was edited, at Sanjay's word, in 1.6.0.0:
+`tests/phone-chat.mjs` checks the one row of chips after the answers, since an empty chat now shows cards.

@@ -20,7 +20,8 @@ Three things hold in every journey:
   `deepseek/deepseek-v4.1-flash`) the rules, the drafted answer and the clinic file. The browser then
   checks the reworded text with `FD.guard()`; anything it rejects, and any failure or delay, falls back to
   the drafted file answer with the label "Answered from the clinic file". Every reply the model did not word carries
-  that label, including the fixed emergency, refuse, medical, booking, greeting and not-sure templates.
+  that label, including the fixed emergency, refuse, medical, booking and greeting templates; since version
+  1.6.0.0 a not-sure or talk-to-a-person reply, which answers nothing from the file, carries none.
 - **The browser holds the working copy.** Tickets (`frontdesk.tickets`), an edited clinic file
   (`frontdesk.clinic`), the patient id (`frontdesk.patient`), the language (`frontdesk.lang`) and the theme
   (`frontdesk.theme`) live in `localStorage`. In the same browser the staff page reaches the patient's chat
@@ -50,7 +51,7 @@ voice).
 | ID | Name | Who | Trigger | Outcome | Epics |
 | --- | --- | --- | --- | --- | --- |
 | J1 | First visit and ask | Patient (or a tester) | Opens the chat, optionally with `?q=`, and asks a question | Greeting shown; one complete reply as the last `.bot-msg`, worded by the model and checked, or from the file with the label when the model path failed or was skipped; a ticket saved | E1, E2, E4, E7, E8 |
-| J2 | Safety replies | Patient | Asks about an emergency, a discount or rule change, a medical problem, or something the file does not cover | Fixed reply with no model call, shown with the "Answered from the clinic file" label; ticket saved as urgent, answered or needs human; emergency call button, or WhatsApp and call-back offers | E3, E4, E9 |
+| J2 | Safety replies | Patient | Asks about an emergency, a discount or rule change, a medical problem, or something the file does not cover | Fixed reply with no model call, shown with the "Answered from the clinic file" label (none on a not-sure reply since 1.6.0.0); ticket saved as urgent, answered or needs human; emergency call button, or WhatsApp and call-back offers | E3, E4, E9 |
 | J3 | Booking and call-back | Patient | Asks to book, with or without a day and time | Booking ticket with the requested time, needs human; optional name and phone saved on the ticket; after-hours note when closed | E4, E9 |
 | J4 | Staff reply | Clinic staff | Opens `/staff`, picks a ticket and sends a reply | Reply stored on the ticket, status moved on, the reply appears in the patient's chat as "From the clinic team" | E4, E9 |
 | J5 | No-key run | Patient (or a tester) | Asks a question while the key is missing, the model fails, is slow, or its text is rejected | The same answers from the file, with "Answered from the clinic file" | E2, E8 |
@@ -84,7 +85,11 @@ The clinic file `/clinic-data.json` is served with the app.
    assistant's name (the clinic file's `assistant.name`, else "FrontDesk AI") in the header, the welcome
    title and the page title; `labels()` sets the language labels, the greeting line ("Ask about timings,
    prices, doctors, insurance or how to reach us.") and the quick chips (`FD.quick()`, the seven built-in
-   ones or the clinic's own); `render()` draws this patient's earlier tickets. The greeting is `#greeting`,
+   ones or the clinic's own); `render()` draws this patient's earlier tickets. Since version 1.6.0.0, on a phone
+   (up to 767 px) an empty chat shows the same `#quick` chips as starter cards, two columns and full width, in
+   the conversation area, under a welcome line that wraps; a slim row above holds the emergency number as a red
+   phone pill and the language and theme buttons. After the first message the chips are the one row above the
+   composer again, and New chat brings the cards back. The greeting is `#greeting`,
    a `.bot-greeting` inside `.greeting-row`, never a `.bot-msg`.
 6. With `?q=` in the address, `history.replaceState()` removes `q` first and then `send(q)` asks it, so a
    reload does not ask again.
@@ -106,9 +111,10 @@ The clinic file `/clinic-data.json` is served with the app.
 14. The provisional line is removed, the typing dots go when nothing else is pending, and `ticketRows()`
     adds the user's `.user-msg` and the reply as the last `.bot-msg`. The `.src-label` "Answered from the
     clinic file" is shown whenever `source` is not `model`
-    (any reply the model did not word, including the fixed templates). A
+    (any reply the model did not word, including the fixed templates), except on a not-sure or
+    talk-to-a-person reply (since 1.6.0.0). On a phone the answer is plain text beside the clinic mark. A
     Listen button sits beside the reply when the browser can speak, with two feedback buttons, "Helpful"
-    and "Not helpful". A tap calls `FD.updateTicket(id, {feedback})` ("up" or "down"; a second tap takes
+    and "Not helpful" (thumbs up and down on a phone since 1.6.0.0). A tap calls `FD.updateTicket(id, {feedback})` ("up" or "down"; a second tap takes
     it back), and the staff page shows it on the ticket and in its figures.
 15. When the deployment has a ticket store, `sync.js` sends the new ticket to `/api/tickets` (J9).
 16. "New chat" (`#new-chat`) gives the patient a fresh id with `FD.newPatient()`; earlier questions stay
@@ -154,7 +160,7 @@ gets medical advice, and nothing is guessed.
 6. None of these has `modelOk`, so `askModel()` returns at once and `api/chat` is not called.
 7. `FD.addTicket()` stores the ticket; `callBack` is true when the status is `needs human`.
 8. `ticketRows()` shows the fixed reply **with** the "Answered from the clinic file" label (every reply the
-   model did not word carries it). An emergency gets a `tel:` button "Call
+   model did not word carries it), except a not-sure reply, which since 1.6.0.0 carries none. An emergency gets a `tel:` button "Call
    <emergency_phone>" and no after-hours note. Medical and not sure get "Continue on WhatsApp" (a `wa.me`
    link with the question as text), the optional call-back form (J3) and the after-hours note when the
    clinic is closed.
@@ -462,3 +468,15 @@ Source: [j9-shared-tickets.puml](diagrams/j9-shared-tickets.puml)
   phone the composer is a slim pill with a "+" menu; from 1024 px the clinic information is on the right.
 - **J2 Safety replies.** The emergency reply begins with the clinic's number in every language.
 - **J9 Shared tickets.** Shared by default since 1.4.0.0; the store is Postgres.
+
+## Changes in version 1.5.0.1 to 1.6.0.1 (27 Nov 2026)
+
+- **J1 First visit and ask, on a phone.** An empty chat shows starter cards (the quick replies in two columns,
+  full width) under a welcome line that wraps, with a slim row above: the emergency number as a red phone pill,
+  the language box shown whole and the theme button. A tap on a card asks it; after the first message the chips
+  are one row above the composer. Answers are plain text with the clinic mark; feedback is thumbs up and down.
+  See the diagram `j1-first-visit-and-ask`.
+- **J2 Safety replies and J8 Ask for a person.** A not-sure or talk-to-a-person reply no longer carries the label
+  "Answered from the clinic file". See the diagram `j2-safety-replies`.
+- **J1, a doctor's name.** A doctor the clinic file does not hold gets "We have no Dr. ...", with the clinic's own
+  doctors, and no model call.

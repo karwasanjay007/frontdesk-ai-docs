@@ -250,8 +250,19 @@ stricter guard, engine gaps, call-back details, design".
 | Shared add-on | `shared.js` | Reads the clinic file from the server before an answer (2 s at most; an emergency never waits), so a staff edit applies from the next answer; sends every message to `/api/messages`; staff Save and Reset go to the server |
 | Brand | `brand.css` | The brand tokens over `styles.css`, no green |
 | Wide layout | `layout.css`, `layout.js` | Staff link in the top bar; the clinic information pinned on the right from 1024 px |
-| Phone chat | `compact.css`, `compact.js` | Up to 767 px: slim composer pill, quick replies in one row, "+" menu as a bottom sheet |
+| Phone chat | `compact.css`, `compact.js` | Up to 767 px: slim composer pill, quick replies in one row once the chat has begun (starter cards on an empty chat since 1.6.0.0, below), "+" menu as a bottom sheet |
 
 AD-7 is superseded for the shared copy: localStorage stays the working copy in each browser; the shared copy is
 in the store. The diagrams `c4-container`, `c4-component`, `deployment`, `data-model`, `j4-staff-reply` and
 `j6-clinic-file-edit` show the store and the new routes.
+
+## Versions 1.5.0.1 to 1.6.0.1 changes (27 Nov 2026)
+
+| Part | File | What changed |
+| --- | --- | --- |
+| Rules engine | `core.js` | A doctor the clinic file does not hold gets "We have no Dr. ...", with the clinic's own doctors; not reworded by the model (1.5.0.1) |
+| Phone chat | `compact.css`, `compact.js` | Up to 767 px: an empty chat shows the `#quick` chips as starter cards, two columns, full width, in the conversation area; after the first message they move back to the one row above the pill; a slim row with the emergency number as a red phone pill and borderless language and theme buttons (the language box shown whole); the welcome line wraps; thumbs up and down for feedback; answers as plain text with the clinic mark (1.6.0.0, 1.6.0.1) |
+| Chat page | `chat.js` | The label "Answered from the clinic file" is no longer added to a not-sure or talk-to-a-person reply (one condition, 1.6.0.0) |
+
+No route, store or deployment part changed. The diagrams `j1-first-visit-and-ask` and `j2-safety-replies` show the
+starter cards and the label rule.

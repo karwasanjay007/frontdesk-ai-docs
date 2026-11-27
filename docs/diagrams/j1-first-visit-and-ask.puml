@@ -25,6 +25,10 @@ note right of Chat
 side() puts the assistant name (assistant.name,
 else "FrontDesk AI") in the header. labels() fills
 the greeting line and the quick chips FD.quick().
+v1.6: on a phone (up to 767 px) an empty chat shows
+the same #quick chips as starter cards, two columns,
+full width; after the first message they are one row
+above the composer again.
 The greeting is #greeting (.bot-greeting in
 .greeting-row), never .bot-msg. render() keeps it
 and redraws this patient's earlier tickets.
@@ -68,9 +72,11 @@ Chat -> Chat : remove the provisional line; showTyping(false) when nothing is pe
 Chat -> Chat : ticketRows(t): .user-msg, then the reply as the last .bot-msg
 note right of Chat
 .src-label "Answered from the clinic file" when the
-source is not "model". A Listen button sits beside
-the reply when speechSynthesis exists, with the
-feedback buttons "Helpful" and "Not helpful".
+source is not "model" and the reply is not a
+not-sure or talk-to-a-person reply (v1.6). A Listen
+button sits beside the reply when speechSynthesis
+exists, with the feedback buttons "Helpful" and
+"Not helpful" (thumbs up and down on a phone, v1.6).
 end note
 Chat --> Patient : one complete reply
 opt Patient taps Helpful or Not helpful

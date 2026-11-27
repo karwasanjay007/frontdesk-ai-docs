@@ -9,7 +9,7 @@ FrontDesk AI is the front desk chat for a dental clinic: patients get answers fr
 | Code | `frontdesk-ai` (private while a competition is open) |
 | Built by | Sanjay Karwa, Smart AI for Business |
 | Stack | Plain HTML, CSS and JavaScript with a rules engine in the browser; one Vercel function calling OpenRouter with DeepSeek V4.1 Flash (`deepseek/deepseek-v4.1-flash`), the key on the server only; localStorage |
-| Version | 1.5.0.0 (27 Nov 2026; baseline 1.0.0.0, Sanjay Karwa, 21 Nov 2026) |
+| Version | 1.6.0.1 (27 Nov 2026; baseline 1.0.0.0, Sanjay Karwa, 21 Nov 2026) |
 | Status | Built and live. Every functional test passes on the live link, with the key and with the model blocked (rerun 22 Nov 2026 after two wording fixes, see REPORT.md). No text is under 4.5:1 in light or dark (measured on 25 Nov 2026 against the background really shown, lowest 5.94:1); the older scan's flagged lines are notes about text on the teal brand colour and two misread lines, not failures. Version 1.1.0.0 (22 Nov 2026) adds four things beside the baseline: a reply and a ticket when a patient asks for a person, search and filters on the staff page, a form for the clinic file, and an assistant name and quick replies set in that file. Every earlier test passes on the live link after it, unedited |
 
 ## For the judges: FrontDesk AI in two minutes
@@ -100,7 +100,8 @@ link. Every diagram is PlantUML source plus SVG.
 - Gives staff a ticket list in priority order with ages, a call-back list, a reply box whose reply reaches
   the patient's chat, and an editor for the clinic file.
 - Still answers when no AI key works; every reply the model did not word carries the label "Answered from the clinic file"
-  (the fixed emergency, refusal, medical, booking and not-sure replies included).
+  (the fixed emergency, refusal, medical and booking replies included). Since version 1.6.0.0 a not-sure or
+  talk-to-a-person reply carries no label: it answers nothing from the file and opens a ticket.
 - Works on a 375 px phone and on wide screens, in light and dark.
 
 ## What FrontDesk AI supports
@@ -154,12 +155,14 @@ with it blocked; "Yes" means the feature is in place. The last column is the ver
 | N/A | The light and dark button says which theme is on, in its own state and in a line for screen readers (version 1.3.0.2) | Yes | 1.3 |
 | N/A | Tickets shared by default; the clinic file edited once applies on every device from the next answer; chat messages stored on the server (version 1.4.0.0) | Yes, Postgres on Neon, desk code for staff | 1.4 |
 | N/A | Brand look (Warm Cream, Deep Navy, Slate Blue, Signal Amber; no green), staff link in the top bar, clinic information on the right from 1024 px (versions 1.4.0.0 and 1.4.0.1) | Yes | 1.4 |
-| N/A | Phone chat: a slim composer pill, the quick replies in one row, a "+" menu as a bottom sheet (version 1.5.0.0) | Yes | 1.5 |
+| N/A | Phone chat: a slim composer pill, the quick replies in one row once the chat has begun, a "+" menu as a bottom sheet (version 1.5.0.0) | Yes | 1.5 |
 | N/A | The model step checked on the server: temperature 0, one attempt, 8 seconds, a request limit (version 1.3.1.0) | Yes | 1.5 |
+| N/A | A doctor the clinic file does not hold is never let stand: "We have no Dr. ...", with the clinic's own doctors (version 1.5.0.1) | Yes | 1.5 |
+| N/A | Phone chat polished: starter cards on an empty chat (the quick replies in two columns, full width), a slim row with the emergency number as a red phone pill and plain language and theme buttons, thumbs up and down for feedback, answers as plain text with the clinic mark (versions 1.6.0.0 and 1.6.0.1) | Pass | 1.6 |
 
-All 16 rows of the brief pass, and all 24 rows beyond it are in place. The same table with three other builds of
+All 16 rows of the brief pass, and all 26 rows beyond it are in place. The same table with three other builds of
 the batch beside it is in [REPORT.md](REPORT.md), section "Requirement and feature map"; what each version added
-and how it was tested is in the sections "Version 1.1.0.0" to "Version 1.5.0.0" there.
+and how it was tested is in the sections "Version 1.1.0.0" to "Versions 1.5.0.1 to 1.6.0.1" there.
 
 ## Documentation
 
@@ -223,3 +226,20 @@ New tests: `tests/engine-gaps.cjs`, `tests/model-step.cjs`, `tests/store.cjs`, `
 layout-wide (107), brand (92), controls (20), widths (25), person (16), bonus (15) and voice with its recording (2)
 end ALL PASS (saved in `evidence/`). `engine-gaps.cjs`, `model-step.cjs` (38 checks), `store.cjs` and
 `shared.mjs` were run locally and end ALL PASS; they have no live file.
+
+## Versions 1.5.0.1 to 1.6.0.1
+
+- **1.5.0.1** (27 Nov 2026): a doctor the clinic file does not hold is never let stand. "Is Dr. Ramesh Gupta
+  available on Monday?" used to get "Yes" and another doctor; `core.js` now answers "We have no Dr. Ramesh Gupta"
+  with the clinic's own doctors, and the model does not reword it. Test: `tests/engine-doctor.cjs`.
+- **1.6.0.0** (27 Nov 2026): the phone chat polished like the leading chat apps (`compact.css`, `compact.js`). An
+  empty chat shows starter cards: the same `#quick` chips as a two-column grid in the conversation area; after
+  the first message they are the one row above the composer again. A slim row holds the emergency number as a
+  red phone pill and borderless language and theme buttons; feedback is thumbs up and down; answers are plain
+  text with the clinic mark. In `chat.js` a not-sure or talk-to-a-person reply no longer carries the label
+  "Answered from the clinic file". New test `tests/starter-cards.mjs` (41 checks); `tests/phone-chat.mjs` checks
+  the one row after the answers, since the empty chat now shows cards (197 checks).
+- **1.6.0.1** (27 Nov 2026): the starter cards take the full width, the language box shows "EN" whole, the
+  welcome line wraps (`compact.css`).
+
+On the live link: brief (29 checks), phone-chat (197) and starter-cards (41) end ALL PASS (saved in `evidence/`).

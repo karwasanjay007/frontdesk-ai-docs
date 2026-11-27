@@ -282,3 +282,6 @@ New browser keys, all written by `shared.js`:
 `frontdesk-urgent` is not a stored key: it is the tag of the urgent-ticket notification in `staff/tools.js`.
 `frontdesk.alldevices` now defaults to on: the shared view is off only when staff untick it on that device.
 No shape of the clinic file or the ticket changed.
+
+Versions 1.5.0.1 to 1.6.0.1: no key, table, field or schema added or changed; the thumbs on a phone write the same
+`feedback` field ("up" or "down") as the Helpful and Not helpful buttons.

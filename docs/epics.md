@@ -59,7 +59,8 @@ was saved by hand.
 | `tests/shared.mjs` | A staff edit of the clinic file applies from the next answer; messages stored; no store, no change | local run: "ALL PASS" | AC-E16.F3.2, AC-E16.F3.3 |
 | `tests/brand.mjs` | Brand tokens on both pages, no green, contrast kept | `last-brand-live.txt`: "ALL PASS (92 checks)" | AC-E16.F4.1 |
 | `tests/layout-wide.mjs` | Staff link in the top bar; clinic information on the right from 1024 px | `last-layout-wide-live.txt`: "ALL PASS (107 checks)" | AC-E16.F4.2 |
-| `tests/phone-chat.mjs` | Phone chat: slim pill, quick replies in one row, "+" menu | `last-phone-chat-live.txt`: "ALL PASS (189 checks)" | AC-E16.F5.1 |
+| `tests/phone-chat.mjs` | Phone chat: slim pill, quick replies in one row after the answers, "+" menu | `last-phone-chat-live.txt`: "ALL PASS (197 checks)" | AC-E16.F5.1 |
+| `tests/starter-cards.mjs` | Phone chat: starter cards in two columns on an empty chat, the one row after the first message, the cards back after New chat, the row kept in the composer from 768 px; the not-sure reply without the label, a file answer with it | `last-starter-cards-live.txt`: "ALL PASS (41 checks)" | AC-E16.F5.2, AC-E16.F5.4 |
 | `tests/sync-watch-live.mjs` | The staff side on the real store, waiting for a person's reply and printing the ticket as the store holds it | none saved yet; the last proof is `last-sync-staff-real-store-live.txt` | AC-E13.F3.4 |
 | `tests/extras3.mjs` | Ticket numbers, the thread and feedback | `last-extras3-live.txt` | AC-E14.F1.1 to AC-E14.F3.4 |
 | `tests/i18n.mjs` | The language menu and New chat | `last-i18n-live.txt`, `last-i18n-blocked-live.txt` | AC-E15.F1.1 to AC-E15.F1.4 |
@@ -86,8 +87,8 @@ was saved by hand.
 | E13 | Tickets shared across devices (1.3) | 4 | 22 | V-14, V-22 | built, behind the clinic's desk code (`last-sync-live.txt`, `last-tickets-api-live.txt`, `last-tickets-redis.txt`) |
 | E14 | Ticket numbers, thread, feedback and the booking day note (1.2 and 1.3) | 4 | 14 | V-10 to V-13 | built (`last-extras3-live.txt`, `last-booking-day.txt`) |
 | E15 | Language menu, New chat, clinic info panel and Clear all (1.3) | 3 | 10 | V-15 to V-17 | built; the clinic info panel and the empty-queue message are not covered by a test (`last-i18n-live.txt`, `last-staffclear-live.txt`) |
-| E16 | Shared store, a stricter model step, brand and phone chat (1.3.1 to 1.5) | 5 | 12 | Test | built; live: `last-brand-live.txt`, `last-layout-wide-live.txt`, `last-phone-chat-live.txt`; engine-gaps, model-step, store and shared run locally |
-| **Total** | | **55** | **187** | | |
+| E16 | Shared store, a stricter model step, brand and phone chat (1.3.1 to 1.6) | 5 | 15 | Test | built; live: `last-brand-live.txt`, `last-layout-wide-live.txt`, `last-phone-chat-live.txt`, `last-starter-cards-live.txt`; engine-gaps, engine-doctor, model-step, store and shared run locally; AC-E16.F5.3 checked by hand |
+| **Total** | | **55** | **190** | | |
 
 ---
 
@@ -191,7 +192,7 @@ without a reply.
 | AC-E2.F4.1 | The key is removed | The patient asks "What time do you open on Saturday?" | The reply says 9:00 am to 8:00 pm and shows the small label "Answered from the clinic file" | S-8, F-10 | `brief.mjs [R8 no key]` |
 | AC-E2.F4.2 | The key is removed | Every sample question is asked | Each meets its must include and must not include, as in the run with the key | S-10 to S-17 | `questions.mjs` (no-key run) |
 | AC-E2.F4.3 | The key is set and the model's text was used | The reply shows | It does not carry the label | G15 | manual |
-| AC-E2.F4.4 | An emergency, refuse, medical or not-sure reply is shown | The reply is read | It carries the "Answered from the clinic file" label (the model did not word it) | Version 1.0.0.0 | code PR #1 local probe |
+| AC-E2.F4.4 | An emergency, refuse or medical reply is shown | The reply is read | It carries the "Answered from the clinic file" label (the model did not word it); since 1.6.0.0 a not-sure or talk-to-a-person reply carries none (AC-E16.F5.4) | Version 1.0.0.0 | code PR #1 local probe |
 
 ## E3 Safety
 
@@ -475,7 +476,7 @@ As a patient, I want to carry my question to the clinic's WhatsApp so that I am 
 | ID | Given | When | Then | Trace | Planned check |
 | --- | --- | --- | --- | --- | --- |
 | AC-E9.F3.1 | A needs-human or booking reply | It shows | It offers a link that opens WhatsApp to the clinic's number from the file with the question already written | G28 | `tests/callback.mjs` |
-| AC-E9.F3.2 | The link shows | The reply text is read | The not-sure words and the call-back promise are unchanged; the reply carries the "Answered from the clinic file" label (the model did not word it) | G28 | `brief.mjs [R3 invisalign]` |
+| AC-E9.F3.2 | The link shows | The reply text is read | The not-sure words and the call-back promise are unchanged; since 1.6.0.0 the reply carries no "Answered from the clinic file" label, as it answers nothing from the file (AC-E16.F5.4) | G28 | `brief.mjs [R3 invisalign]` |
 
 ### E9.F4 Any booking-based business
 
@@ -810,7 +811,7 @@ mistake so that I can start a clean round.
 | AC-E15.F3.2 | The tickets were cleared | The patient chat in the same browser is read | It is empty too | V-17 | `tests/staffclear.mjs` |
 | AC-E15.F3.3 | The tickets were cleared | Staff press Undo within about 10 seconds | The ticket and the patient chat come back | V-17 | `tests/staffclear.mjs` |
 
-## E16 Shared store, a stricter model step, brand and phone chat (versions 1.3.1.0 to 1.5.0.0)
+## E16 Shared store, a stricter model step, brand and phone chat (versions 1.3.1.0 to 1.6.0.1)
 
 ### E16.F1 Engine gaps closed
 
@@ -847,7 +848,10 @@ mistake so that I can start a clean round.
 
 | Id | Given | When | Then | Planned check | Test |
 | --- | --- | --- | --- | --- | --- |
-| AC-E16.F5.1 | A phone, up to 767 px | The chat is shown | A slim composer pill, the quick replies in one row, every other action in the "+" menu; nothing removed | Test | `tests/phone-chat.mjs` |
+| AC-E16.F5.1 | A phone, up to 767 px, a chat with at least one message | The chat is shown | A slim composer pill, the quick replies in one row, every other action in the "+" menu; nothing removed | Test | `tests/phone-chat.mjs` |
+| AC-E16.F5.2 | A phone, up to 767 px, an empty chat | The chat is shown | The quick replies (the same `#quick` chips) are starter cards in two columns, full width, in the conversation area, each 44 px or taller, no sideways page scroll; after the first message they are the one row above the pill; New chat brings the cards back; from 768 px they stay in the composer | Test | `tests/starter-cards.mjs` |
+| AC-E16.F5.3 | A phone, up to 767 px | The chat is shown | A slim row: the emergency number as a red phone pill, borderless language and theme buttons, the language box shown whole ("EN"); the welcome line wraps; feedback as thumbs up and down; answers as plain text with the clinic mark | Look | checked by hand (version 1.6.0.1) |
+| AC-E16.F5.4 | Any screen | A not-sure or talk-to-a-person reply is shown | It carries no "Answered from the clinic file" label; an answer from the file still does | Test | `tests/starter-cards.mjs` |
 
 ## Revisions
 
@@ -862,3 +866,4 @@ mistake so that I can start a clean round.
 | 25 Nov 2026 | Contrast and voice rerun on the live link. `tests/contrast-true.mjs` added beside `tests/contrast.mjs`, which misreads a part-transparent background; 32 test files in all. The E7.F2 status line corrected. No criterion added |
 | 25 Nov 2026 | Version 1.3.0.3: two criteria added (AC-E13.F1.5, AC-E13.F3.7: a question or a reply sent just before the tab goes to the background) and two test files (`tests/sync-scale.mjs`, `tests/sync-watch-live.mjs`), 34 test files in all. Totals now 50 features and 175 criteria |
 | 27 Nov 2026 | Versions 1.3.1.0 to 1.5.0.0: epic E16 added (5 features, 11 criteria) and seven test files (`tests/engine-gaps.cjs`, `tests/model-step.cjs`, `tests/store.cjs`, `tests/shared.mjs`, `tests/brand.mjs`, `tests/layout-wide.mjs`, `tests/phone-chat.mjs`), 41 test files in all. Totals now 55 features and 186 criteria |
+| 27 Nov 2026 | Versions 1.5.0.1 to 1.6.0.1: AC-E16.F1.4 (an invented doctor, `tests/engine-doctor.cjs`) and AC-E16.F5.2 to AC-E16.F5.4 (starter cards, the slim row and the label rule, `tests/starter-cards.mjs`) added; AC-E16.F5.1, AC-E2.F4.4 and AC-E9.F3.2 corrected in place (the one row is checked after the answers; a not-sure reply carries no label). Totals now 55 features and 190 criteria |
