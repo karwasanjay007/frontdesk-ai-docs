@@ -1,49 +1,31 @@
 @startuml j2-safety-replies
 !include style.iuml
-title J2 Safety replies: emergency, discount or rule change, medical, not sure
+title J2 Safety replies (emergency, medical advice, rule break)
 actor Patient
-participant "Chat page\n(index.html, chat.js)" as Chat
-participant "core.js" as Core
-database "localStorage" as LS
-participant "WhatsApp" as WA
+participant "Chat page /" as Chat
+participant "POST /api/chat" as Api
+participant "guards.ts\n(runGuards)" as G
+participant "i18n.ts" as L
+database "Shared store" as Store
 autonumber
 
-Patient -> Chat : sends a question
-Chat -> Core : FD.answer(q, data)
-note right of Core
-Fixed order: emergency, rule change or discount,
-medical, booking, answer from the file, not sure.
-The first rule that matches decides the reply.
-end note
-alt emergency (RX.emergency: facial swelling, bleeding that will not stop, breathing, broken jaw...)
-  Core --> Chat : kind "emergency", status "urgent", T[lang].emergency(data)
-  note right of Chat : "Call <emergency_phone> now. <emergency_rules> I have raised an urgent ticket so our team knows."
-else rule change or discount (RX.injection or RX.discount)
-  Core --> Chat : kind "refuse", status "answered", T[lang].refuse()
-  note right of Chat : cannot change rules or prices, no discount; offers the listed prices, timings and doctors
-else medical (RX.medical, unless it asks how to book)
-  Core --> Chat : kind "medical", status "needs human", T[lang].medical(data)
-  note right of Chat : no advice or diagnosis; a dentist must see you; phone, WhatsApp or a day and time for a call-back
-else nothing in the file answers it
-  Core --> Chat : kind "notsure", status "needs human", T[lang].notSure()
-  note right of Chat
-  Also when a price is asked for something the file does
-  not price, or a named treatment (Invisalign, veneer,
-  crown...) is not in the file.
-  end note
+Patient -> Chat : types a message
+Chat -> Api : POST {chatId, message}
+Api -> G : through answerPatient: runGuards(message, clinic, language)
+note right of G : in code, before any AI step; the model is never asked
+alt emergency (English, Hindi, Telugu, Hinglish)
+  G --> Api : the emergency number first; ticket urgent, P1
+  Api -> Store : insertTicket(urgent, P1)
+else medical advice asked
+  G --> Api : no medicine named; a dentist must see the patient; no ticket
+else discount or "ignore your rules"
+  G --> Api : refusal; no discount, no rule change; no ticket
 end
-note over Chat : modelOk is false, so askModel() returns null: no model call
-Chat -> Core : FD.openNow(data), FD.addTicket(...)
-Core -> LS : write frontdesk.tickets (callBack true when "needs human")
-Chat -> Chat : ticketRows(t), with the label "Answered from the clinic file"
-alt emergency
-  Chat --> Patient : reply and a tel: button "Call <emergency_phone>"; no after-hours note
-else refuse
-  Chat --> Patient : reply only
-else medical or not sure
-  Chat --> Patient : reply, "Continue on WhatsApp", optional call-back form,\nafter-hours note when the clinic is closed
-  opt Patient taps Continue on WhatsApp
-    Patient -> WA : wa.me/91<whatsapp digits>?text=<the question>
-  end
+Api -> L : localiseReply(reply, language of the question)
+Api -> Store : insertMessage(assistant, source guard)
+Api --> Chat : {reply, source: guard, ticketStatus}
+Chat --> Patient : the fixed reply
+opt the ticket could not be recorded
+  Api --> Chat : the reply also asks the patient to call the clinic number
 end
 @enduml

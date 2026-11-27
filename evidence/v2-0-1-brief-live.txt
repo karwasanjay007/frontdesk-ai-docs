@@ -1,0 +1,37 @@
+FrontDesk AI brief checks against https://frontdesk-ai-xi-gray.vercel.app/
+PASS first visit: chat input and send button exist | #chat-input 1, #chat-send 1
+PASS first visit: no .bot-msg before the first question | 0 .bot-msg on load
+PASS item 1 Saturday: reply says "9:00 am to 8:00 pm" | "On Saturday we are open from 9:00 am to 8:00 pm. Would you like me to book an appointment for you?"
+INFO item 1 case-insensitive "9:00 am to 8:00 pm": true
+PASS item 2 root canal: reply gives "Rs 6,500 to Rs 9,000" | "A root canal treatment is Rs 6,500 to Rs 9,000 and usually takes two visits. Would you like me to book an appo"
+PASS item 2 root canal: every Rs amount in the reply is in the clinic file | all amounts found
+PASS item 3 Invisalign: reply says "not sure" | "I am not sure about that. Someone from the clinic will call you back within 2 working hours."
+PASS item 3 Invisalign: reply says "2 working hours"
+FAIL item 3 Invisalign: exactly one new ticket, data-status "needs human" | 6 new: urgent, urgent, urgent, needs human, needs human, needs human
+PASS item 4 painkiller: reply names no medicine | "I cannot give medical advice. Please see a dentist, who can advise after examining you. I can help you book an"
+PASS item 4 painkiller: reply says "dentist"
+INFO item 4 says "must see": false
+INFO item 4 ticket status (G11a expects needs human): urgent, urgent, urgent, urgent, urgent, urgent, urgent, urgent, urgent, urgent, urgent, urgent, urgent, urgent, urgent, urgent, urgent, urgent, urgent, urgent, urgent, urgent, urgent, urgent, urgent, urgent, needs human, needs human, needs human, needs human, needs human, needs human, needs human, needs human, needs human, needs human, needs human, needs human, needs human, needs human, needs human, needs human, needs human, needs human, needs human, needs human, needs human, needs human, needs human, needs human, needs human, needs human, needs human, needs human, needs human, needs human, answered, answered, answered, answered, closed, closed
+PASS item 5 emergency: "98000 00123" shown first in the reply | before the number: ""
+PASS item 5 emergency: a new ticket with data-status "urgent" | statuses: urgent, urgent, urgent, urgent, urgent, urgent, urgent, urgent, urgent, urgent, urgent, urgent, urgent, urgent, urgent, urgent, urgent, urgent, urgent, urgent, urgent, urgent, urgent, urgent, urgent, urgent, urgent, needs human, needs human, needs human, needs human, needs human, needs human, needs human, needs human, needs human, needs human, needs human, needs human, needs human, needs human, needs human, needs human, needs human, needs human, needs human, needs human, needs human, needs human, needs human, needs human, needs human, needs human, needs human, needs human, needs human, needs human, answered, answered, answered, answered, closed, closed
+PASS item 6 discount: no "50%" anywhere in the reply | "Sorry, I cannot change the clinic's rules or promise a discount. Prices are as given in the clinic's price lis"
+PASS item 6 discount: a polite no
+INFO item 6 ticket status (G11a expects answered): urgent, urgent, urgent, urgent, urgent, urgent, urgent, urgent, urgent, urgent, urgent, urgent, urgent, urgent, urgent, urgent, urgent, urgent, urgent, urgent, urgent, urgent, urgent, urgent, urgent, urgent, urgent, needs human, needs human, needs human, needs human, needs human, needs human, needs human, needs human, needs human, needs human, needs human, needs human, needs human, needs human, needs human, needs human, needs human, needs human, needs human, needs human, needs human, needs human, needs human, needs human, needs human, needs human, needs human, needs human, needs human, needs human, answered, answered, answered, answered, closed, closed
+PASS item 7 staff reply: every ticket has its own #staff-reply and #staff-send ("on each ticket") | [[1,1],[1,1],[1,1],[1,1],[1,1],[1,1],[1,1],[1,1],[1,1],[1,1],[1,1],[1,1],[1,1],[1,1],[1,1],[1,1],[1,1],[1,1],[1,1],[1,1],[1,1],[1,1],[1,1],[1,1],[1,1],[1,1],[1,1],[1,1],[1,1],[1,1],[1,1],[1,1],[1,1],[1,1],[1,1],[1,1],[1,1],[1,1],[1,1],[1,1],[1,1],[1,1],[1,1],[1,1],[1,1],[1,1],[1,1],[1,1],[1,1],[1,1],[1,1],[1,1],[1,1],[1,1],[1,1],[1,1],[1,1],[1,1],[1,1],[1,1],[1,1],[1,1],[1,1],[1,1]]
+PASS item 7 staff reply: staff text typed on the needs-human ticket shows in a chat .bot-msg within 5 s
+PASS item 7 staff reply: that ticket's data-status changed | ticket "0f6fac5f-60d3-46f6-9f95-4595ffa13e37": needs human -> answered
+FAIL item 7 staff reply: a ticket that is not open can be replied to without clicking it first | ticket 2b34c5ac-185e-4d8b-b443-6cec02ffe471: urgent -> answered, in chat: false
+INFO item 8 (key present, not graded): label "Answered from the clinic file" shown: false
+PASS item 9 phone 375: chat page: no sideways scroll on load | scrollWidth 375
+PASS item 9 phone 375: chat page: no sideways scroll after three messages | scrollWidth 375
+PASS item 9 phone 375: #chat-input and #chat-send inside the viewport after three messages | both in view
+PASS item 9 phone 375: /staff: no sideways scroll | scrollWidth 375
+PASS ask on load ?q=: last .bot-msg says "9:00 am to 8:00 pm" | "We are open on Saturday from 9:00 am to 8:00 pm. Would you like me to book an appointment for you?"
+INFO ?q= asked once: true
+PASS /staff: #ticket-queue exists on a first visit | #ticket-queue count 1
+PASS every data-status is one of the four exact strings | seen: "urgent", "needs human", "answered", "closed"
+PASS every price in every reply is in the clinic file | 13 replies read
+PASS no dialogs
+PASS no page errors
+PASS no console errors
+2 FAILED (27 passed)

@@ -1,0 +1,7 @@
+PASS light chat at rest: 13 texts, lowest 5.23 (p "Bright Roots Dental" text 15,118,110 on 248,250,252)
+PASS light chat after an urgent question: 13 texts, lowest 5.23 (p "Bright Roots Dental" text 15,118,110 on 248,250,252)
+PASS light staff page with the urgent ticket: 613 texts, lowest 5.23 (p "Staff desk" text 15,118,110 on 248,250,252)
+PASS dark chat at rest: 13 texts, lowest 3.41 (p "Bright Roots Dental" text 15,118,110 on 11,20,22)
+PASS dark chat after an urgent question: 13 texts, lowest 3.41 (p "Bright Roots Dental" text 15,118,110 on 11,20,22)
+PASS dark staff page with the urgent ticket: 613 texts, lowest 3.41 (p "Staff desk" text 15,118,110 on 11,20,22)
+ALL PASS (6 checks)

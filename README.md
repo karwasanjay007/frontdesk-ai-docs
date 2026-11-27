@@ -1,6 +1,6 @@
 # FrontDesk AI
 
-FrontDesk AI is the front desk chat for a dental clinic: patients get answers from the clinic's own file at any hour, and anything it cannot answer goes to a human as a ticket.
+FrontDesk AI is the front desk chat for a dental clinic. Patients get answers from the clinic's own file at any hour. Anything it cannot answer goes to a person as a ticket on the staff page.
 
 | | |
 | --- | --- |
@@ -8,154 +8,108 @@ FrontDesk AI is the front desk chat for a dental clinic: patients get answers fr
 | Documentation | This repository |
 | Code | `frontdesk-ai` (private while a competition is open) |
 | Built by | Sanjay Karwa, Smart AI for Business |
-| Stack | Plain HTML, CSS and JavaScript with a rules engine in the browser; one Vercel function calling OpenRouter with DeepSeek V4.1 Flash (`deepseek/deepseek-v4.1-flash`), the key on the server only; localStorage |
-| Version | 1.3.0.3 (25 Nov 2026; baseline 1.0.0.0, Sanjay Karwa, 21 Nov 2026) |
-| Status | Built and live. Every functional test passes on the live link, with the key and with the model blocked (rerun 22 Nov 2026 after two wording fixes, see REPORT.md). No text is under 4.5:1 in light or dark (measured on 25 Nov 2026 against the background really shown, lowest 5.94:1); the older scan's flagged lines are notes about text on the teal brand colour and two misread lines, not failures. Version 1.1.0.0 (22 Nov 2026) adds four things beside the baseline: a reply and a ticket when a patient asks for a person, search and filters on the staff page, a form for the clinic file, and an assistant name and quick replies set in that file. Every earlier test passes on the live link after it, unedited |
+| Stack | Next.js App Router, TypeScript, Tailwind CSS; Zod for checks; an OpenAI-compatible AI step with the key on the server only; a shared server store (Postgres when `DATABASE_URL` is set, otherwise the host's Redis, otherwise server memory) |
+| Version | 2.0.1 (live since 27 Nov 2026; baseline 1.0.0.0, 21 Nov 2026) |
+| Status | Live. Version 2.0 is a rebuild; the 1.3.0.3 code no longer runs. Measured results are in the table below. |
 
-## For the judges: FrontDesk AI in two minutes
+## How a message is answered
 
-**Promise.** Patients get clinic-true answers at any hour; what the file cannot cover becomes a human
-ticket, not a made-up reply.
+Every message goes through the same steps, in this order:
 
-**Why not a typical LLM demo.** Rules answer from the clinic file first. Emergency, medical, refusal and
-"not sure" use fixed templates and never wait on the model. The model may only reword a real file answer;
-a guard rejects invented prices or promises. With the key blocked, the same facts still show.
+1. Emergency check, in code. The reply starts with the emergency number and an urgent ticket is opened.
+2. Medical-advice and rule-break checks, in code. No medicine is named; no discount or rule change is promised.
+3. A booking request becomes a ticket with the requested day, calendar date and time. The AI step is not asked.
+4. The AI step, when an AI key is set: one attempt, stopped at 8 seconds. The reply must be JSON and is
+   checked with Zod. Code then rejects an answer that names a doctor who is not in the clinic file, gives a
+   figure that belongs to another service, or gives a time that belongs to another day. An answer that writes
+   a clock time without am or pm is not used either: the question goes to the clinic file.
+5. The keyword matcher answers from the clinic file, with the label "Answered from the clinic file". It runs
+   when there is no key, when the call fails or times out, and when the AI answer is rejected. If the file
+   has no answer, the reply says "not sure" and a "needs human" ticket is opened.
 
-**Same browser for the staff step.** The staff page opens with the tickets of this browser. Open the
-patient chat and `/staff` as two tabs in the **same browser**. A different browser, device or private
-window opens with an empty queue. Since version 1.3.0.0 staff can also turn on "Show tickets from all
-devices" there, which needs the clinic's desk code; without the code another device still shows nothing.
+## Where the data is kept
 
-**Try it in two minutes (five steps).**
+The first store that is set up is used:
 
-1. Open https://frontdesk-ai-xi-gray.vercel.app and ask "Are you open on Saturday?" (type it, tap a
-   quick reply, or use the microphone).
-2. Ask "Do you offer Invisalign?": not sure, call-back within 2 working hours, optional name and phone.
-   One needs-human ticket opens.
-3. Ask "My face is swelling and I cannot breathe.": "Call 98000 00123 now." comes first, with a Call button,
-   and an urgent ticket opens.
-4. Open https://frontdesk-ai-xi-gray.vercel.app/staff in a **second tab of the same browser** (also linked from Clinic info, which opens beside the chat). Tickets appear
-   in priority order (Urgent, then Needs human, then Answered) with their age. Every ticket has its own reply box
-   (`#staff-reply`) and Send button (`#staff-send`). Reply on the Invisalign ticket and send: the reply appears in the patient's chat as "From the clinic team" and the status moves to
-   answered. Optional: edit Saturday hours in the clinic-file editor, save, and ask again in chat; Reset
-   restores the original file.
-5. Set the language menu (top right) to HI or TE: the whole page changes, ask the Saturday question again, and
-   Listen reads the reply aloud; where the browser has no voice for the language (Chrome on Windows has no Telugu voice), a server voice plays it instead.
+1. Postgres (Neon), when `DATABASE_URL` is set.
+2. Otherwise the Redis the host already provides, over its REST address (`KV_REST_API_URL`,
+   `KV_REST_API_TOKEN`). Every key is under one prefix, so nothing of an earlier version is touched.
+3. Otherwise server memory. On the host this is a fault, because each server instance has its own memory: the
+   health route then answers not ok (status 503).
 
-**Against the specification.** Our own tests on the live link; line by line in [SPEC-CHECK.md](SPEC-CHECK.md),
-results in [evidence/](evidence/), build report in [REPORT.md](REPORT.md).
+The live site runs on the Redis store today (the health route says store `kv`). Neon is not connected yet:
+its marketplace terms must be accepted in the browser by the owner first. Postgres on the live site is not
+tested.
 
-| Part of the scoring | Marks | Status | Evidence |
-| --- | --- | --- | --- |
-| Must do, 9 items | (in the hidden-data test) | All met, with the key and with the model blocked | [last-brief-live.txt](evidence/last-brief-live.txt) ALL PASS (29 checks); [last-brief-nokey-live.txt](evidence/last-brief-nokey-live.txt) ALL PASS (31 checks); [last-audit-ai-live.txt](evidence/last-audit-ai-live.txt) and [last-audit-blocked-live.txt](evidence/last-audit-blocked-live.txt): 45 grader-style questions in three languages ALL PASS (rerun 22 Nov 2026) |
-| How they check: ids, classes, `?q=`, no-key run | (in the hidden-data test) | All met | the same two files; [last-questions-live.txt](evidence/last-questions-live.txt) ALL PASS (16 checks) |
-| Hidden-data test | 60 | Met on our tests; the graders' questions and data are unseen | the files above and [last-engine.txt](evidence/last-engine.txt) ALL PASS (127 checks); [last-emergency-live.txt](evidence/last-emergency-live.txt) ALL PASS (12 checks): bleeding that will not stop, said five other ways in English, Hindi and Telugu (22 Nov 2026); [last-wording-live.txt](evidence/last-wording-live.txt) and [last-wording-blocked-live.txt](evidence/last-wording-blocked-live.txt) ALL PASS (14 checks each): timings and prices asked other ways in Hindi, Roman-script Hindi and Telugu (22 Nov 2026); [last-sweep.txt](evidence/last-sweep.txt) ALL PASS (386 questions): unseen questions written by two reviewers who read only the clinic file, in English, Hindi, Telugu and both typed in Roman letters (22 Nov 2026); [last-other-clinic.txt](evidence/last-other-clinic.txt) ALL PASS: a second clinic with other names, numbers, hours, services and policies, and the same file with a section left out (22 Nov 2026) |
-| Bonus menu, at most 6 count | 30 | All 6 met, both ways | [last-bonus-live.txt](evidence/last-bonus-live.txt) ALL PASS (15 checks) |
-| Phone and light/dark | 10 | Met | [last-widths-live.txt](evidence/last-widths-live.txt) ALL PASS (25 checks, 375 to 2560 px); [last-contrast-true-live.txt](evidence/last-contrast-true-live.txt) ALL PASS (10 checks, lowest 5.94:1, both pages, light and dark, 25 Nov 2026); the older scan [last-contrast-live.txt](evidence/last-contrast-live.txt) flags text on the teal brand colour (7.61:1 or more) and misreads two lines, see SPEC-CHECK.md |
+## What FrontDesk AI supports (version 2.0.1)
 
-**What we added, and why.**
-
-- A morning call-back list on `/staff`, so the "someone will call you back" promise has a list to work from.
-- An optional name and phone for the call-back beside the reply, shown on the staff card with call and
-  WhatsApp links, so staff have a number to call.
-- A WhatsApp hand-off beside replies that need a person, and an after-hours note saying when the clinic
-  opens next.
-- A clinic-file editor, so the clinic (or another booking-based business) keeps its own hours, prices and
-  details current without a developer.
-- A "Could not answer" list on `/staff`, a Directions link built from the file's address, and a privacy line.
-- The one difference: voice in and out in English, Hindi and Telugu, using the browser's own speech.
-
-**How it answers.** A rules engine answers every question from the clinic file first: emergency, rule
-change or discount, medical, booking, file answer, not sure, in that order. Emergency, refusal, medical and
-not-sure replies are fixed templates and never go to the model (and they carry the file label because the model did not word them).
-For a real file answer, the model receives only the drafted answer and the clinic file, never the patient's
-words, and may only reword it; a guard rejects any number, name or promise that is not in the draft or the
-file. With no key, an error, no reply within 6 s or a rejection, that file answer shows with "Answered from
-the clinic file", so the no-key run gives the same facts.
-
-**How it was built.** The grading page was captured word for word before kickoff, and one literal test per
-"Done when" was written first and failed until the build existed. The build followed the PRD, tech stack
-and implementation plan in this repository. Before release four independent reviews (functional, brief
-audit, leading products, visual) were run and their findings fixed, then every test was rerun on the live
-link. Every diagram is PlantUML source plus SVG.
-
-**Deliberately left out.**
-
-| Left out | Why | Next step |
+| Area | What it does | Tested by |
 | --- | --- | --- |
-| Staff sign-in with accounts | Since version 1.3.0.0 tickets are mirrored to a server store and a staff device can see every device's tickets with the clinic's desk code. One shared code, no named accounts | Named staff accounts and an audit of who replied |
-| Real slot booking | The bot never invents or confirms a slot; a booking request becomes a needs-human ticket with the requested time, and the team confirms | Booking against the clinic's real diary |
-| Sign-in for staff | A sign-in screen would stand between a fresh-browser tester and `/staff` | Staff sign-in before a real clinic uses it |
+| Chat | Type a question and get a reply; six quick-reply buttons; a question in the link (`?q=`) is asked on load | `tests/e2e/chat-staff.spec.ts`, `tests/e2e/staff-queue.spec.ts` |
+| Answers | Hours, prices, doctors, address, insurance, parking and policies, from the clinic file only | `tests/unit/matcher.test.ts`, `tests/unit/answer.test.ts` |
+| Not in the file | "Not sure", a promise of a call back within 2 working hours, and a "needs human" ticket; no price from a neighbouring service | `tests/unit/matcher-notinfile.test.ts` |
+| Emergency | The emergency number first, in English, Hindi, Telugu and Hinglish; an urgent ticket | `tests/unit/guards.test.ts`, `tests/unit/guards-paraphrase.test.ts` |
+| Medical advice, discounts, rule changes | Refused in code, before any AI step | `tests/unit/guards.test.ts`, `tests/unit/guards-paraphrase.test.ts` |
+| Booking request | A ticket with the requested day, calendar date (India) and time | `tests/unit/booking-time.test.ts`, `tests/unit/answer-booking.test.ts` |
+| AI step | One attempt, 8 seconds, JSON checked with Zod; an unknown doctor, a figure for another service or a time for another day is rejected | `tests/unit/ai.test.ts`, `tests/unit/ai-claims.test.ts`, `tests/unit/ai-settings.test.ts` |
+| No AI key | The keyword matcher answers, with the label "Answered from the clinic file" | `tests/unit/answer.test.ts`, `scripts/run-tests.ts` |
+| Hindi and Telugu | A question written in Hindi or Telugu gets the fixed replies in that language. With no key, a fact is a greeting in that language before the English fact | `tests/unit/guards-paraphrase.test.ts`, `tests/unit/answer-booking.test.ts` |
+| Staff: tickets | A reply box on each ticket; order urgent, needs human, answered, closed; the age of each ticket; a call-back list; close | `tests/e2e/staff-queue.spec.ts`, `tests/unit/routes.test.ts` |
+| Staff: reply | A staff reply shows in that patient's chat, and only there | `tests/e2e/chat-staff.spec.ts`, `tests/unit/kv-store.test.ts` |
+| Staff: clinic file | An editor with a checked save and a reset to the original file; replies follow the edit | `tests/e2e/staff-queue.spec.ts`, `tests/unit/routes.test.ts` |
+| Desk code | Optional. It locks the staff routes only when the lock switch is on. It is off on the live site, because the tester opens the staff page with no login | `tests/unit/routes.test.ts` |
+| Shared store | Tickets are shared between visitors; a store fault never costs the patient a reply | `tests/unit/kv-store.test.ts`, `tests/unit/chat-db-down.test.ts` |
+| Health | `/api/health` names the store and says whether an AI key is set (never the key) | `tests/unit/routes.test.ts` |
+| Phone and themes | 375 px with no sideways scroll, 44 px controls, light and dark | `tests/e2e/cold-open.spec.ts`, `tests/e2e/staff-queue.spec.ts` |
 
-## What it does
+All test files named here are in the code repository.
 
-- Answers patients' questions about timings, doctors, prices, insurance, policies and location, only from
-  the clinic's own file, in English, Hindi or Telugu, typed or spoken.
-- Puts the emergency number first when a message sounds like an emergency, and opens an urgent ticket.
-- Never gives medical advice, never names a medicine, never offers a discount and ignores "ignore your
-  rules"; for symptoms it says a dentist must see the patient and offers to book.
-- When the file does not hold the answer, says so, opens a needs human ticket and promises a call back
-  within 2 working hours.
-- Turns a booking request into a ticket with the requested time; the team confirms.
-- Gives staff a ticket list in priority order with ages, a call-back list, a reply box whose reply reaches
-  the patient's chat, and an editor for the clinic file.
-- Still answers when no AI key works; every reply the model did not word carries the label "Answered from the clinic file"
-  (the fixed emergency, refusal, medical, booking and not-sure replies included).
-- Works on a 375 px phone and on wide screens, in light and dark.
+## In 1.x, not in 2.0
 
-## What FrontDesk AI supports
+These were in version 1.3.0.3 and were not rebuilt. They are not in the live product:
 
-Every requirement of the brief and every feature beyond it, in one table. The first column names the
-requirement the row belongs to: R1 to R9 are the nine "must do" items, B1 to B6 the bonus menu, M the phone and
-light/dark marks. N/A means the brief does not ask for it. "Pass" means tested on the live link, with the AI and
-with it blocked; "Yes" means the feature is in place. The last column is the version it arrived in.
+- Voice in and out (speaking a question, listening to a reply).
+- The language menu. (2.0 still replies in Hindi or Telugu when the question is written in that script.)
+- Patient name and phone for a call-back.
+- The clinic info panel and the open or closed sign.
+- Staff search and filters.
+- CSV export of tickets.
+- Ready-made staff replies.
+- Private staff notes.
+- Patient feedback on a reply.
+- Background-tab sync.
 
-| Req | Feature | Supported | Since |
+## Measured results for 2.0.1 (27 Nov 2026)
+
+| Check | Where | Result | Evidence |
 | --- | --- | --- | --- |
-| R1 | Patient chat: type a question, get a reply | Pass | 1.0 |
-| R2 | Answers only from the clinic file: timings, doctors, prices, policies, insurance, location | Pass | 1.0 |
-| R3 | Not in the file: says "not sure", opens a needs-human ticket, promises a call within 2 working hours | Pass | 1.0 |
-| R4 | No medical advice or diagnosis; a dentist must see the patient, with an offer to book | Pass | 1.0 |
-| R5 | Emergency: the emergency number first, and an urgent ticket | Pass | 1.0 |
-| R6 | No discount, and no obeying "ignore your rules" | Pass | 1.0 |
-| R7 | Staff page at `/staff` with every ticket and its status; a staff reply shows in the patient's chat | Pass | 1.0 |
-| R8 | Still answers with no AI key, with the label "Answered from the clinic file" | Pass | 1.0 |
-| R9 | Works on a phone at 375 px | Pass | 1.0 |
-| B1 | Replies in Hindi or Telugu when the patient writes in them | Pass | 1.0 |
-| B2 | A booking request becomes a ticket with a time | Pass | 1.0 |
-| B3 | Ticket ageing and priority | Pass | 1.0 |
-| B4 | Clinic data editable by staff | Pass | 1.0 |
-| B5 | Quick-reply buttons | Pass | 1.0 |
-| B6 | Replies stay correct after a staff edit | Pass | 1.0 |
-| M | Readable in light and dark | Pass | 1.0 |
-| N/A | Voice input, with a recording fallback when the browser has no speech service | Yes | 1.0 |
-| N/A | Read aloud ("Listen" beside each reply) | Yes | 1.0 |
-| N/A | Patient can leave a name and phone for the call back | Yes | 1.0 |
-| N/A | "To call back" and "Could not answer" lists for staff | Yes | 1.0 |
-| N/A | Clear all tickets, with undo | Yes | 1.0 |
-| N/A | Language menu: every label, the replies and Listen follow the chosen language; a New chat button | Yes | 1.0 |
-| N/A | Clinic info panel: today's hours, Call, WhatsApp, Directions, the week's hours, the doctors and the address, with an open or closed sign | Yes | 1.0 |
-| N/A | Call-back phone with a country code list, checked for that country's length | Yes | 1.0 |
-| N/A | Asking for a person gets its own reply and a ticket; a seventh quick reply | Yes | 1.1 |
-| N/A | Named assistant and the clinic's own quick replies, set in the clinic file | Yes | 1.1 |
-| N/A | Ticket search, status filter and sort | Yes | 1.1 |
-| N/A | Urgent alerts for staff (turned on by staff) | Yes | 1.1 |
-| N/A | Form editor for the clinic file, beside the JSON box | Yes | 1.1 |
-| N/A | Queue figures: open, urgent, over 2 hours, answered, average wait, feedback | Yes | 1.2 |
-| N/A | CSV export of tickets | Yes | 1.2 |
-| N/A | Ready-made staff replies | Yes | 1.2 |
-| N/A | Filter by ticket type | Yes | 1.2 |
-| N/A | Private staff note on a ticket | Yes | 1.2 |
-| N/A | Booking reply states the named day's hours | Yes | 1.2 |
-| N/A | Ticket numbers | Yes | 1.3 |
-| N/A | The patient's whole chat thread inside a ticket | Yes | 1.3 |
-| N/A | Patient feedback on a reply ("Helpful" or "Not helpful") | Yes | 1.3 |
-| N/A | Tickets shared across devices: a staff device can see and answer tickets from any phone | Yes, behind the clinic's desk code | 1.3 |
-| N/A | The light and dark button says which theme is on, in its own state and in a line for screen readers (version 1.3.0.2) | Yes | 1.3 |
+| 30 questions, with the AI key | live link | 30 of 30 | `evidence/v2-0-1-questions-30-live.txt` |
+| 30 questions, AI step off | live link | 30 of 30 | same file |
+| Lower of the two runs | live link | 30 of 30 | same file |
+| Browser tests (Playwright) | live link | 12 of 13 | `evidence/v2-0-1-e2e-live.txt` |
+| Contrast, light and dark, chat and staff | live link | all 6 checks pass | `evidence/v2-0-1-contrast-live.txt` |
+| The 1.x brief checker | live link | 27 of 29 | `evidence/v2-0-1-brief-live.txt` |
+| The 1.x brief checker | local | 28 of 29 | no file kept in this repository |
+| The 1.x bonus checker | live link | 14 of 15 | `evidence/v2-0-1-bonus-live.txt` |
+| Unit tests (Vitest) | local | 430 pass | `tests/unit/` in the code repository |
+| Browser tests (Playwright) | local | 13 pass | `tests/e2e/` in the code repository |
 
-All 16 rows of the brief pass, and all 24 rows beyond it are in place. The same table with three other builds of
-the batch beside it is in [REPORT.md](REPORT.md), section "Requirement and feature map"; what each version added
-and how it was tested is in the sections "Version 1.1.0.0" to "Version 1.3.0.3" there.
+The misses, each explained:
+
+- Browser tests on the live link, 1 miss: the test "not-in-file question creates needs human ticket" reads the
+  first ticket in the queue and assumes the queue was empty. The live queue held urgent tickets, so the first
+  one was urgent.
+- Brief checker, miss 1: it expects a ticket for every answered question. That was a 1.x design choice. 2.0
+  opens a ticket only when a person is needed.
+- Brief checker on a busy queue: it also miscounts new tickets, because a ticket's age text changes between
+  two reads and the checker takes the changed text for a new ticket. This is the second miss on the live link.
+- Bonus checker, 1 miss: it reads the save message before the save returns. The two checks after it show the
+  save worked (the timing and the price follow the edit).
+
+Not tested: Postgres on the live site (not connected), and the desk lock on the live site (it is off; it is
+covered by unit tests only).
+
+More detail is in [REPORT.md](REPORT.md), section "Version 2.0.1".
 
 ## Documentation
 
@@ -171,7 +125,7 @@ and how it was tested is in the sections "Version 1.1.0.0" to "Version 1.3.0.3" 
 | [docs/journeys.md](docs/journeys.md) | One sequence diagram per user journey |
 | [docs/data-model.md](docs/data-model.md) | Entities, the formula for every derived figure, storage |
 | [docs/diagrams/](docs/diagrams/) | PlantUML source and SVG for every diagram |
-| [docs/schema/](docs/schema/) | JSON Schemas for the clinic file and the tickets; the chat function's request and reply |
+| [docs/schema/](docs/schema/) | JSON Schemas for the clinic file and the tickets; the request and reply of each of the five routes |
 | [review/](review/) | The pre-release reviews (leading products, brief audit, functional, visual), each with its status after fixes |
 | [evidence/](evidence/) | The latest test results against the live link |
 
@@ -179,22 +133,14 @@ Every diagram is PlantUML source plus SVG. No PNG or JPG anywhere in this reposi
 
 ## Privacy
 
-- Messages and tickets are kept in the browser's localStorage on the device, and the staff page opens with
-  the tickets of its own browser. Since version 1.3.0.0 a patient's tickets (the question, the reply, and a name
-  and phone if the patient left them) are also mirrored to the clinic's server store, so staff on another
-  device can answer. They are deleted there after seven days.
-- On the server, a ticket can be read or changed only with the private key of the browser that created it, or
-  by staff with the clinic's desk code. A ticket id or a patient id alone opens nothing. Until the clinic sets a
-  desk code, the list of every device's tickets is closed to everyone.
-- When the model is used to word an answer, the server function sends it the drafted answer and the clinic file
-  only, never the patient's words.
-- Voice is the one exception, and only as a backup. Speaking a question uses the browser's own speech service.
-  If that service refuses, the page records a short clip (about 30 seconds at most) and sends it to the server,
-  which passes it to a model to be turned into text; the text then goes through the same rules as typed text.
-  Listen sends only the assistant's own reply text to the server voice, and only when the browser has no voice
-  for the language.
-- A name and phone are asked for only if the patient chooses to leave them for a call-back; they are saved
-  on that ticket.
-- The fine print says who sees the messages (the clinic's front desk, once a chat is stored on the server; this
-  browser and the clinic team before that), and asks patients not to type medical records.
-- The model key is kept in the Vercel environment and never reaches the page.
+- Messages, tickets and the clinic file are kept in the shared server store. The browser keeps only a chat id.
+- A chat is read with its chat id, which only the patient's browser holds. The ticket list sent to the staff
+  page never carries a chat id.
+- The staff page is open on the live site (the desk lock is off), so anyone with the link can read the
+  tickets' text. The demo holds sample data only. A clinic would switch the lock on.
+- When an AI key is set, the patient's question and the clinic file are sent to the AI provider. Emergency,
+  medical, rule-break and booking messages are handled in code and are not sent.
+- The AI key stays in the host's environment and never reaches the page. The health route says only whether a
+  key is set.
+- 2.0 does not ask for a name or a phone number, and has no voice.
+- Tickets are not deleted after a set time in 2.0.

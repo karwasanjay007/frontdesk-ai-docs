@@ -1,0 +1,47 @@
+
+Running 13 tests using 1 worker
+
+  ✘   1 [chromium] › tests\e2e\chat-staff.spec.ts:4:3 › chat and staff hooks › not-in-file question creates needs human ticket (8.4s)
+  ✓   2 [chromium] › tests\e2e\chat-staff.spec.ts:18:3 › chat and staff hooks › ?q= asks on load (2.4s)
+  ✓   3 [chromium] › tests\e2e\chat-staff.spec.ts:25:3 › chat and staff hooks › staff reply appears in patient chat within 5s (3.7s)
+  ✓   4 [chromium] › tests\e2e\cold-open.spec.ts:6:3 › cold open 375 › fresh chat opens with hooks and theme announces (1.8s)
+  ✓   5 [chromium] › tests\e2e\staff-queue.spec.ts:17:3 › staff queue › a reply box on each ticket; the newest waiting ticket leads its group; a reply reaches only that patient (5.6s)
+  ✓   6 [chromium] › tests\e2e\staff-queue.spec.ts:51:3 › staff queue › order is urgent, needs human, answered, closed; each ticket shows its age; the call-back list holds the waiting ones (3.9s)
+  ✓   7 [chromium] › tests\e2e\staff-queue.spec.ts:77:3 › staff queue › a booking request becomes a ticket with the requested date and time (1.0s)
+  ✓   8 [chromium] › tests\e2e\staff-queue.spec.ts:88:3 › staff queue › an emergency in Hindi, Telugu and Hinglish starts with the number and opens an urgent ticket (1.9s)
+  ✓   9 [chromium] › tests\e2e\staff-queue.spec.ts:99:3 › staff queue › a treatment that is not in the file gets no price and a ticket; a refreshed chat keeps the right labels (7.2s)
+  ✓  10 [chromium] › tests\e2e\staff-queue.spec.ts:117:3 › staff queue › staff edit the clinic file, replies follow the edit, a broken save is refused, reset brings the file back (7.8s)
+  ✓  11 [chromium] › tests\e2e\staff-queue.spec.ts:155:3 › staff queue › the staff page fits 375 px in light and dark with 44 px controls (791ms)
+  ✓  12 [chromium] › tests\e2e\staff-queue.spec.ts:172:3 › chat page › five or more quick replies; the first asks and gets the Saturday hours (1.4s)
+  ✓  13 [chromium] › tests\e2e\staff-queue.spec.ts:180:3 › chat page › at 375 px the message box and Send stay in view after several messages, with no sideways scroll (12.4s)
+
+
+  1) [chromium] › tests\e2e\chat-staff.spec.ts:4:3 › chat and staff hooks › not-in-file question creates needs human ticket 
+
+    Error: expect(locator).toHaveAttribute(expected) failed
+
+    Locator:  locator('#ticket-queue [data-ticket]').first()
+    Expected: "needs human"
+    Received: "urgent"
+    Timeout:  5000ms
+
+    Call log:
+      - Expect "toHaveAttribute" locator('#ticket-queue [data-ticket]').first() with timeout 5000ms
+      - waiting for locator('#ticket-queue [data-ticket]').first()
+        14 × locator resolved to <article data-priority="P1" data-status="urgent" data-ticket="eaf25d69-66bc-4afd-8fd8-634fe4926f63" class="rounded-xl border border-[var(--border)] bg-[var(--card)] p-4">…</article>
+           - unexpected value "urgent"
+
+
+      13 |     const ticket = staff.locator("#ticket-queue [data-ticket]").first();
+      14 |     await expect(ticket).toBeVisible({ timeout: 10_000 });
+    > 15 |     await expect(ticket).toHaveAttribute("data-status", "needs human");
+         |                          ^
+      16 |   });
+      17 |
+      18 |   test("?q= asks on load", async ({ page }) => {
+
+    Error Context: test-results\chat-staff-chat-and-staff--b7657--creates-needs-human-ticket-chromium\error-context.md
+
+  1 failed
+    [chromium] › tests\e2e\chat-staff.spec.ts:4:3 › chat and staff hooks › not-in-file question creates needs human ticket 
+  12 passed (1.0m)

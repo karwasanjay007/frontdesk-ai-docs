@@ -1,47 +1,37 @@
 @startuml deployment
 !include <C4/C4_Deployment>
-title FrontDesk AI: deployment (as built)
+title FrontDesk AI 2.0.1: deployment (as live since 27 Nov 2026)
 
-Deployment_Node(dev, "Developer PC", "PowerShell, Vercel CLI") {
-  Container(src, "frontdesk-ai repository", "Git, private", "Static files, api/chat.js, api/tts.js, api/transcribe.js, tests/; v1.3: api/tickets.js; .vercelignore keeps tests, brief, brand, .md, .env and tool folders off the site")
+Deployment_Node(browserP, "Patient's browser", "Phone or desktop") {
+  Container(chat, "Chat page /", "React", "Keeps a chat id in local storage, nothing else")
 }
-
-Deployment_Node(vercel, "Vercel", "Hobby") {
-  Deployment_Node(proj, "Project frontdesk-ai", "frontdesk-ai-xi-gray.vercel.app, HTTPS") {
-    Container(static, "Static files", "CDN", "index.html, staff/index.html, core.js, chat.js, staff/staff.js, styles.css, clinic-data.json, icon.svg; v1.1: staff/tools.js, staff/tools.css, staff/form.js, staff/form.css; v1.3: sync.js")
-    Container(fn, "api/chat", "Vercel serverless function, Node.js", "Warm-up GET; POST rewords a draft; 5 s model limit")
-    Container(tts, "api/tts", "Vercel serverless function, Node.js", "POST reply text, returns WAV; 15 s model limit")
-    Container(transcribe, "api/transcribe", "Vercel serverless function, Node.js", "POST a recorded voice clip, returns text; 12 s model limit")
-    Container(ticketsfn, "api/tickets", "Vercel serverless function, Node.js", "v1.3, api/tickets.js, the ticket store function: rules in core(), storage through Upstash Redis over REST; answers 503 when no store is configured")
-    ContainerDb(env, "Environment", "Production, sensitive", "OPENROUTER_API_KEY (hidden); optional OPENROUTER_MODEL, OPENROUTER_TTS_MODEL, OPENROUTER_AUDIO_MODEL; v1.3: KV_REST_API_URL and KV_REST_API_TOKEN (added by the store, hidden; UPSTASH_REDIS_REST_URL and UPSTASH_REDIS_REST_TOKEN also read), FRONTDESK_DESK_CODE (the desk code, set by the clinic, hidden)")
+Deployment_Node(browserS, "Staff browser", "Desktop or phone") {
+  Container(staffpage, "Staff page /staff", "React", "Keeps the desk code for the session only, when the lock is on")
+}
+Deployment_Node(host, "Vercel", "Serverless host") {
+  Deployment_Node(fn, "Server functions", "Node.js, Next.js App Router") {
+    Container(routes, "Routes", "TypeScript", "/api/chat, /api/tickets, /api/messages, /api/clinic, /api/health")
+    Container(memory, "Server memory", "Last resort store", "Used only when no store is set up. On the host each instance has its own, so health answers not ok (503)")
   }
+  Deployment_Node(env, "Environment", "Names only") {
+    Container(vars, "Settings", "Environment variables", "DATABASE_URL, KV_REST_API_URL, KV_REST_API_TOKEN, AI_API_KEY, AI_BASE_URL, AI_MODEL, OPENROUTER_API_KEY, AI_TIMEOUT_MS, FRONTDESK_DESK_LOCK, FRONTDESK_DESK_CODE")
+  }
+  ContainerDb(redis, "Redis of the host", "REST", "IN USE on the live site. Second in the store order")
+}
+Deployment_Node(neon, "Neon", "Postgres") {
+  ContainerDb(postgres, "Postgres", "SQL", "First in the store order, used when DATABASE_URL is set. NOT connected on the live site")
+}
+Deployment_Node(aihost, "AI provider", "OpenAI-compatible") {
+  Container(model, "Model", "Chat completions", "Optional. One attempt, stopped at 8 seconds")
 }
 
-Deployment_Node(device, "Patient's or staff's device", "Any modern browser") {
-  Container(pages, "Chat page and staff page", "HTML, CSS, JavaScript", "Rules engine, guard, tickets; v1.1: answer() wrapper over answerFile(), reply kind human, staff ticket tools and clinic file form on /staff; v1.2: queue figures, CSV export, ready-made replies, filter by ticket type, private staff note, booking reply with the named day's hours; v1.3: sync.js on both pages, ticket numbers, the chat thread in the open ticket, Helpful and Not helpful buttons")
-  ContainerDb(ls, "localStorage", "Web Storage", "Tickets, edited clinic file, language, theme; v1.1: frontdesk.alerts when alerts are on; v1.2: frontdesk.notes; v1.3: frontdesk.synckey, frontdesk.alldevices")
-  ContainerDb(ss, "sessionStorage", "Web Storage", "v1.3: frontdesk.deskcode on the staff page, this tab only")
-}
-
-System_Ext(openrouter, "OpenRouter", "deepseek/deepseek-v4.1-flash")
-System_Ext(upstash, "Upstash Redis (ticket store)", "v1.3: one key per ticket, deleted after seven days; reached over REST")
-
-Rel(src, proj, "vercel deploy --prod --yes", "HTTPS")
-Rel(pages, static, "Loads", "HTTPS")
-Rel(pages, fn, "GET warm-up; POST draft", "HTTPS, JSON")
-Rel(pages, tts, "POST reply text for Listen", "HTTPS, JSON")
-Rel(tts, env, "Reads the key")
-Rel(tts, openrouter, "Audio", "HTTPS")
-Rel(pages, transcribe, "POST a recorded clip when browser recognition fails", "HTTPS, JSON")
-Rel(transcribe, env, "Reads the key")
-Rel(transcribe, openrouter, "Audio to text", "HTTPS")
-Rel(fn, env, "Reads the key")
-Rel(fn, openrouter, "Chat completions", "HTTPS")
-Rel(pages, ls, "Reads and writes")
-Rel(pages, ss, "v1.3: keeps the desk code")
-Rel(pages, ticketsfn, "v1.3: sync.js sends this patient's tickets, fetches staff replies; the staff switch lists all devices with the desk code", "HTTPS, JSON")
-Rel(ticketsfn, env, "v1.3: reads the store address, the token and the desk code")
-Rel(ticketsfn, upstash, "v1.3: stores and reads tickets", "HTTPS, REST")
+Rel(chat, routes, "HTTPS, JSON")
+Rel(staffpage, routes, "HTTPS, JSON")
+Rel(routes, vars, "reads on each request")
+Rel(routes, redis, "HTTPS REST, token on the server only")
+Rel(routes, postgres, "only when its address is set")
+Rel(routes, model, "HTTPS, key on the server only")
+Rel(routes, memory, "only when no store is set up")
 
 SHOW_LEGEND()
 @enduml

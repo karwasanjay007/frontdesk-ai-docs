@@ -1,0 +1,16 @@
+PASS bonus 1 Hindi question gets a Hindi reply with the timing: शनिवार को क्लिनिक 9:00 am to 8:00 pm तक खुला रहता है। बीच में 1:30 pm to 2:30 pm
+PASS bonus 1 Telugu question gets a Telugu reply with the price: Root canal treatment ధర Rs 6,500 to Rs 9,000. ఇది సాధారణంగా రెండు విజిట్లలో చేస్
+PASS bonus 1 Hindi emergency: number first, Hindi text
+PASS bonus 2 booking reply says the team will confirm: I have noted your booking request for tomorrow 5 pm. Someone from the clinic wil
+PASS bonus 2 booking ticket has the requested time: needs human P2 opened 27 Nov, 04:00 I want to book a teeth cleaning tomorrow at 5 pm (requ
+PASS bonus 3 priority order: urgent, urgent, urgent, urgent, urgent, urgent, urgent, urgent, urgent, urgent, urgent, urgent, urgent, urgent, urgent, urgent, urgent, urgent, urgent, urgent, urgent, urgent, urgent, urgent, urgent, urgent, urgent, urgent, needs human, needs human, needs human, needs human, needs human, needs human, needs human, needs human, needs human, needs human, needs human, needs human, needs human, needs human, needs human, needs human, needs human, needs human, needs human, needs human, needs human, needs human, needs human, needs human, needs human, needs human, needs human, needs human, needs human, needs human, needs human, needs human, answered, answered, answered, answered, answered, answered, closed, closed
+PASS bonus 3 every ticket shows its age
+PASS bonus 3 call-back list shows the waiting tickets
+PASS bonus 5 quick-reply button asks and gets an answer
+PASS bonus 5 at least five quick-reply buttons
+FAIL bonus 4 staff saved an edited clinic file
+PASS bonus 6 timing follows the edit: On Saturday, Bright Roots Dental is open from 9:00 am to 6:30 pm.
+PASS bonus 6 price follows the edit: A root canal treatment at Bright Roots Dental is Rs 7,000 to Rs 9,500, and it us
+PASS bonus 4 reset brings the original file back
+PASS no page errors 
+1 FAILED (15 checks)

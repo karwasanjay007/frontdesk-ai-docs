@@ -1,108 +1,43 @@
 @startuml c4-component
 !include <C4/C4_Component>
-title FrontDesk AI: components (C4 level 3, as built)
+title FrontDesk AI 2.0.1: components of the answer and store modules (C4 level 3, as built)
 
-Person(patient, "Patient", "Chat page /")
-Person(staff, "Front desk staff", "Staff page /staff")
-System_Ext(openrouter, "OpenRouter, DeepSeek V4.1 Flash", "deepseek/deepseek-v4.1-flash, reasoning off")
-System_Ext(upstash, "Upstash Redis (ticket store)", "v1.3: one key per ticket for seven days, a sorted set for the order, a small set per browser key")
-ContainerDb(ls, "localStorage", "Web Storage, JSON", "frontdesk.clinic, frontdesk.tickets, frontdesk.patient, frontdesk.lang, frontdesk.theme; v1.1: frontdesk.alerts; v1.2: frontdesk.notes; v1.3: frontdesk.synckey, frontdesk.alldevices")
-ContainerDb(ss, "sessionStorage", "Web Storage", "v1.3: frontdesk.deskcode (staff tab only)")
-Container(file, "clinic-data.json", "Static JSON", "The shipped clinic file")
+Container(apichat, "POST /api/chat", "src/app/api/chat/route.ts")
+Container(apitickets, "/api/tickets", "src/app/api/tickets/route.ts")
+Container(apiother, "/api/messages, /api/clinic, /api/health", "Route handlers")
 
-Container_Boundary(core, "core.js (window.FD), shared by both pages") {
-  Component(store, "Clinic data store", "JavaScript", "loadClinic, clinic, originalClinic, saveClinic, resetClinic, validateClinic")
-  Component(engine, "Rules engine", "JavaScript", "answer(message, data): emergency, rule change or discount, medical, booking, answer from the file, not sure; returns kind, status, text, lang, facts, bookingTime, modelOk; v1.1: answer() is a wrapper over answerFile(); adds reply kind human (status needs human) for ask for a person, only where the file had no answer")
-  Component(enginefile, "File-only rules engine", "JavaScript", "v1.1: answerFile(message, data), the rules engine of 1.0 unchanged; answer() calls it first")
-  Component(bookingday, "Booking day note", "JavaScript", "v1.2: bookingDayNote: a booking that names one weekday also states that day's hours from the clinic file; the ticket, its status and the requested time are kept")
-  Component(quick, "Quick replies and assistant name", "JavaScript", "v1.1: FD.quick, FD.quickLabels: seven standard quick replies or the clinic's own from the optional assistant section of the clinic file; FD.assistantName")
-  Component(guard, "Guard", "JavaScript", "guard(modelText, ruled, data): rejects any number, capitalised name, doctor, promise, medicine or language change not in the draft or the file")
-  Component(tickets, "Ticket store", "JavaScript", "patientId, tickets, addTicket, replyToTicket, updateTicket, setStatus, byPriority")
-  Component(hours, "Opening hours", "JavaScript", "openNow, nextOpening; the after-hours note only, never an answer")
-  Component(i18n, "Languages and themes", "JavaScript", "langOf, templates T in en, hi, te; getLang, setLang, applyTheme, toggleTheme, esc, ago")
+Container_Boundary(lib, "src/lib") {
+  Component(answer, "answer.ts", "answerPatient", "The order per message: guards, booking, AI step, matcher")
+  Component(guards, "guards.ts", "runGuards", "1 emergency (urgent ticket, P1). 2 medical advice and rule-break refusals (no ticket)")
+  Component(i18n, "i18n.ts", "detectLanguage, localiseReply", "Hindi, Telugu, Hinglish or English from the script and words of the question")
+  Component(matcher, "matcher.ts", "detectBooking, matchClinicFile", "3 booking request to a ticket (P2). 5 keyword answer with the label Answered from the clinic file; not in the file: needs human ticket (P3)")
+  Component(booking, "booking-time.ts", "requestedLabel", "Requested day, calendar date in India and time, written on the ticket")
+  Component(ai, "ai.ts", "askModel, acceptAiReply", "4 one attempt, 8 seconds, JSON checked with Zod. Rejects an unknown doctor, a figure for another service, a time for another day")
+  Component(db, "db.ts", "storeMode and the store functions", "Picks the store: Postgres when its address is set, else Redis, else server memory. healthCheck")
+  Component(kv, "kv.ts", "Redis over REST", "Keys under one prefix: clinic, tickets, msgs per chat")
+  Component(desk, "desk.ts", "isStaff", "Optional desk lock: code compared as digests. Off on the live site")
+  Component(types, "types.ts", "Types", "ClinicData, AnswerResult, MessageRow, TicketRow")
 }
 
-Container_Boundary(chatjs, "chat.js, the patient chat") {
-  Component(chatui, "Chat UI", "JavaScript", "send, render, botRow, ticketRows, showTyping, ?q= on load; each reply added once as .bot-msg; v1.3: Helpful and Not helpful buttons [data-fb] in .msg-tools, beside the reply, never inside .bot-msg; ticket field feedback")
-  Component(client, "Model client", "JavaScript", "askModel(q, ruled): answerable replies only; posts the draft, facts, language and clinic file; 6 s limit; warm-up GET on load, body read")
-  Component(extras, "Extras", "JavaScript", "side (Today card: Call, WhatsApp, Directions), waLink, voice, call-back form, open chip")
-}
+System_Ext(model, "AI provider (OpenAI-compatible)")
+ContainerDb_Ext(redis, "Redis of the host", "Live store today")
+ContainerDb_Ext(postgres, "Postgres (Neon)", "Used when its address is set")
 
-Container_Boundary(staffjs, "staff/staff.js, the staff page") {
-  Component(staffui, "Staff UI", "JavaScript", "render (queue, counts, To call back, Could not answer), sendReply, clinicEditor; one open ticket holds #staff-reply and #staff-send; v1.3: ticket numbers .t-no (T-001, T-002), the chat thread details.t-thread (Chat so far) folded inside the open ticket, feedback shown on the ticket")
-}
-
-Container_Boundary(stafftoolsjs, "staff/tools.js and staff/tools.css, staff add-on (v1.1, extended in v1.2)") {
-  Component(stafftools, "Staff ticket tools", "JavaScript", "v1.1: toolbar before #ticket-queue: #queue-search, [data-filter], #queue-sort, #alerts-toggle, #queue-shown; observes the queue, never calls into staff.js; opt-in urgent alerts")
-  Component(stafftools2, "Queue figures, export, replies, notes", "JavaScript", "v1.2: the queue at a glance (open, urgent, overdue, answered, average wait); CSV export, a cell that starts like a formula written as text; four ready-made replies that fill the open ticket's reply box; filter by ticket type; a private staff note, never shown to the patient; v1.3: figure #kpi-feedback")
-}
-
-Container_Boundary(staffformjs, "staff/form.js and staff/form.css, staff add-on (v1.1)") {
-  Component(staffform, "Clinic file form", "JavaScript", "v1.1: details #clinic-form before the JSON box; cf- fields generated from the JSON in #clinic-json; writes back into that box; the existing Save stores it")
-}
-
-Container_Boundary(syncjs, "sync.js, add-on loaded on both pages (v1.3)") {
-  Component(syncchat, "Chat sync", "JavaScript", "v1.3: sends this patient's tickets when they change, fetches staff replies; a private browser key kept under frontdesk.synckey")
-  Component(syncstaff, "Staff sync", "JavaScript", "v1.3: #sync-bar with #all-devices (Show tickets from all devices, off by default) and #desk-code (the clinic's desk code, kept for the session only); tickets from other devices carry remote: true and leave when the switch goes off")
-}
-
-Container_Boundary(ticketsapi, "api/tickets.js, Vercel function (v1.3)") {
-  Component(ticketscore, "core(request, db, env)", "Node.js", "v1.3: the rules, separate from the store: patient key (only a hash is kept), desk code, clean, merge, rate limit; answers 503 when no store is configured")
-  Component(redisdb, "redisDb", "Node.js", "v1.3: the store behind core(): Upstash Redis over REST")
-}
-
-Container_Boundary(api, "api/chat.js, Vercel function") {
-  Component(handler, "handler(req, res)", "Node.js", "GET: ok. POST: reads draft, facts, lang, clinic; 5 s limit; returns { text, model } or { error }")
-}
-
-Container_Boundary(voiceapi, "api/tts.js and api/transcribe.js, Vercel functions") {
-  Component(ttsfn, "api/tts handler", "Node.js", "POST {text, lang}: reply text, at most 700 characters; openai/gpt-audio-mini; returns audio/wav; 15 s limit")
-  Component(sttfn, "api/transcribe handler", "Node.js", "POST {audio, lang}: a recorded WAV clip; google/gemini-2.5-flash-lite; returns { text }; 12 s limit")
-}
-
-Rel(patient, chatui, "Types, taps or speaks")
-Rel(staff, staffui, "Reads, replies, closes, edits the file")
-Rel(store, file, "Fetches")
-Rel(store, ls, "Reads and writes the edited file")
-Rel(chatui, engine, "Asks for the file answer")
-Rel(chatui, client, "Asks for a reworded draft")
-Rel(client, handler, "GET warm-up; POST draft", "HTTPS, JSON")
-Rel(handler, openrouter, "Chat completions", "HTTPS, key on the server")
-Rel(client, guard, "Checks the model's text")
-Rel(chatui, tickets, "Adds a ticket per message")
-Rel(chatui, hours, "After-hours note")
-Rel(chatui, extras, "Draws")
-Rel(extras, ttsfn, "Listen: reply text when the browser has no voice or is slow", "HTTPS, JSON")
-Rel(extras, sttfn, "Backup voice input: a recorded clip", "HTTPS, JSON")
-Rel(ttsfn, openrouter, "Audio", "HTTPS, key on the server")
-Rel(sttfn, openrouter, "Audio to text", "HTTPS, key on the server")
-Rel(staffui, tickets, "Lists, replies, sets status")
-Rel(staffui, store, "Saves or resets the file")
-Rel(tickets, ls, "Reads and writes; storage event")
-Rel(engine, i18n, "Templates")
-Rel(engine, enginefile, "Wraps: asks for the file-only answer first")
-Rel(quick, store, "Reads the optional assistant section")
-Rel(chatui, quick, "Quick replies, assistant name")
-Rel(staff, stafftools, "Searches, filters, sorts, turns alerts on")
-Rel(staff, staffform, "Edits the clinic file as a form")
-Rel(stafftools, staffui, "Observes #ticket-queue")
-Rel(stafftools, ls, "Reads tickets; stores frontdesk.alerts only when alerts are on")
-Rel(staffform, staffui, "Reads and writes the #clinic-json box")
-Rel(engine, bookingday, "v1.2: adds the named day's hours to a booking reply")
-Rel(bookingday, store, "v1.2: reads the hours from the clinic file")
-Rel(staff, stafftools2, "v1.2: reads the figures, exports, picks a ready-made reply, writes a note")
-Rel(stafftools2, staffui, "v1.2: fills the open ticket's reply box; staff still press Send")
-Rel(stafftools2, ls, "v1.2: reads tickets; keeps notes under frontdesk.notes")
-Rel(syncchat, tickets, "v1.3: reads this patient's tickets, writes staff replies")
-Rel(syncstaff, tickets, "v1.3: adds and removes tickets from other devices")
-Rel(staff, syncstaff, "v1.3: turns the switch on, types the desk code")
-Rel(syncchat, ls, "v1.3: keeps frontdesk.synckey")
-Rel(syncstaff, ls, "v1.3: keeps frontdesk.alldevices")
-Rel(syncstaff, ss, "v1.3: keeps frontdesk.deskcode")
-Rel(syncchat, ticketscore, "v1.3: sends tickets, fetches replies", "HTTPS, JSON, the browser key")
-Rel(syncstaff, ticketscore, "v1.3: lists every device's tickets, sends replies", "HTTPS, JSON, the desk code")
-Rel(ticketscore, redisdb, "v1.3: reads and writes through the store")
-Rel(redisdb, upstash, "v1.3: Redis commands", "HTTPS, REST, address and token on the server")
+Rel(apichat, answer, "answerPatient(message, clinic)")
+Rel(apichat, db, "insertMessage, insertTicket, getClinicData; a failure is noted, never thrown")
+Rel(apitickets, desk, "isStaff(request)")
+Rel(apitickets, db, "listTickets, replyToTicket, closeTicket, saveClinicData")
+Rel(apiother, db, "listMessages, getClinicData, healthCheck")
+Rel(answer, i18n, "language of the question")
+Rel(answer, guards, "first")
+Rel(answer, matcher, "booking third, clinic file last")
+Rel(answer, booking, "label for the ticket")
+Rel(answer, ai, "fourth, only with a key")
+Rel(answer, ai, "also drops a clock time without am or pm (keepsFileWording)")
+Rel(ai, model, "HTTPS, key on the server only")
+Rel(db, kv, "when no Postgres address is set")
+Rel(kv, redis, "HTTPS REST, 6 second limit")
+Rel(db, postgres, "SQL, when its address is set")
 
 SHOW_LEGEND()
 @enduml

@@ -1,207 +1,72 @@
 @startuml data-model
-title FrontDesk AI data model (clinic file and browser localStorage)
-
-skinparam backgroundColor #FFFFFF
+skinparam backgroundColor white
 skinparam shadowing false
-skinparam roundCorner 14
-skinparam defaultFontName "Segoe UI"
-skinparam defaultFontSize 13
-skinparam titleFontSize 18
-skinparam titleFontColor #0B5D63
-skinparam ArrowColor #0B5D63
-skinparam ArrowFontColor #2F4245
-skinparam ArrowThickness 1.4
+skinparam roundCorner 10
 skinparam class {
-  BackgroundColor #FFFFFF
   BorderColor #0B5D63
-  BorderThickness 1.6
-  HeaderBackgroundColor #E3F0F1
-  FontColor #132326
-  AttributeFontColor #2F4245
-  StereotypeFontColor #0B5D63
+  BackgroundColor #E6F1F2
+  ArrowColor #0B5D63
 }
 skinparam note {
-  BackgroundColor #F4F8F8
-  BorderColor #9BBFC2
-  FontColor #2F4245
-  FontSize 12
-}
-skinparam package {
-  BorderColor #9BBFC2
-  FontColor #0B5D63
-  BackgroundColor #FFFFFF
+  BorderColor #C97A1D
+  BackgroundColor #FFF6E8
 }
 hide circle
 hide methods
-set separator none
+title FrontDesk AI 2.0.1: data model (types.ts, migrations/001_init.sql, kv.ts)
 
-package "Clinic file: /clinic-data.json, or the edited copy in frontdesk.clinic" {
-  class ClinicFile <<root>> {
-    note : string [optional, not read]
-    {field} <b>clinic</b> : Clinic  (required)
-    {field} <b>hours</b> : object of strings  (required)
-    doctors : Doctor[] [optional]
-    services : Service[] [optional]
-    policies : object of strings [optional]
-    emergency_rules : string [optional]
-    {field} bot_rules : string[]  (sent to the model only)
-    {field} assistant : Assistant [optional]  (v1.1)
-  }
-  class Clinic {
-    name : string
-    address : string
-    landmark : string
-    phone : string
-    emergency_phone : string
-    whatsapp : string
-    languages : string[]
-    parking : string
-  }
-  class Doctor {
-    name : string
-    role : string
-    {field} days : string  ("Monday to Saturday")
-  }
-  class Service {
-    name : string
-    price : string
-    duration : string [optional]
-    note : string [optional]
-  }
-  class Assistant <<v1.1>> {
-    {field} name : string [optional]  (at most 40 characters)
-    {field} quick_replies : QuickReply[] [optional]  (at most 8)
-  }
-  class QuickReply <<v1.1>> {
-    {field} label : string  (at most 24 characters)
-    {field} question : string  (at most 120 characters)
-  }
+class "clinic_data (the clinic file)" as Clinic {
+  id : integer, one row
+  json : ClinicData
+  --
+  clinic : name, address, phone, emergency_phone, ...
+  hours : day or range -> timing text
+  doctors[] : name, role, days
+  services[] : name, price, note, duration, aliases
+  policies : name -> text
+  emergency_rules, bot_rules (optional)
 }
 
-package "localStorage key frontdesk.tickets (JSON array)" {
-  class Ticket {
-    {field} <b>id</b> : string  (T + time + 2 chars, key)
-    {field} patient : string  (patient id)
-    q : string
-    reply : string
-    source : model | file
-    kind : emergency | refuse | medical | booking | answer | notsure | human (v1.1)
-    status : urgent | needs human | answered | closed
-    lang : en | hi | te
-    {field} bookingTime : string  ("" when not a booking)
-    {field} modelOk : boolean  (the rules allowed a reworded reply)
-    afterHours : boolean
-    afterHoursNote : string
-    callBack : boolean
-    {field} contactName : string [optional]  (call-back form)
-    {field} contactPhone : string [optional]  (call-back form, with country code)
-    {field} created : number  (ms since 1970)
-    {field} updated : number [after first change]
-    staffReplies : StaffReply[]
-    {field} feedback : "up" | "down" | ""  (v1.3)
-    {field} remote : true  (v1.3, staff browser only, a ticket from another device)
-  }
-  class StaffReply {
-    text : string
-    {field} at : number  (ms since 1970)
-  }
+class "messages" as Message {
+  id : text
+  chat_id : text
+  role : user | assistant | staff
+  text : text
+  source : clinic-file | clinic-file-unsure | ai | guard | staff | null
+  created_at : time
 }
 
-package "Other localStorage keys" {
-  class Browser <<per browser>> {
-    {field} frontdesk.patient : string  (P + 5 chars)
-    frontdesk.lang : en | hi | te
-    frontdesk.theme : light | dark
-    {field} frontdesk.alerts : "1"  (v1.1, only when staff turn urgent alerts on)
-    {field} frontdesk.notes : map of ticket id to note  (v1.2, written only when a note is saved)
-    {field} frontdesk.synckey : string  (v1.3, this browser's private key for its own tickets)
-    {field} frontdesk.alldevices : "1"  (v1.3, while the staff switch "all devices" is on)
-  }
-  class StaffNote <<v1.2>> {
-    {field} ticket id : string  (the map key)
-    {field} note : string  (private, never sent)
-  }
+class "tickets" as Ticket {
+  id : text
+  chat_id : text (never sent to the staff page)
+  status : urgent | needs human | answered | closed
+  priority : P1 | P2 | P3
+  text : the question, with the requested day, date and time for a booking
+  reply : the staff reply, or null
+  created_at : time
 }
 
-package "sessionStorage (staff tab only)" {
-  class Session <<v1.3>> {
-    {field} frontdesk.deskcode : string  (the desk code typed for "all devices", sent as x-desk-code)
-  }
+class "Chat (not stored as a row)" as Chat {
+  chat id : made in the patient's browser,
+  kept in its local storage
 }
 
-package "Ticket store on the server (v1.3, Upstash Redis, kept seven days)" {
-  class StoredTicket <<v1.3>> {
-    {field} the ticket's fields  (as Ticket, without remote)
-    {field} owner : string  (a hash of the browser key that created it)
-  }
-  class TicketOrder <<v1.3>> {
-    {field} ticket ids : ordered list
-  }
-  class OwnerIndex <<v1.3>> {
-    {field} owner : string  (the hash)
-    {field} ticket ids : small set
-  }
-}
+Chat "1" -- "0..*" Message : chat_id
+Chat "1" -- "0..*" Ticket : chat_id
+Ticket "1" -- "0..1" Message : a staff reply adds one message with role staff
+Clinic ..> Message : every answer is worked out from the file in use
 
-ClinicFile "1" *-- "1" Clinic : clinic
-ClinicFile "1" *-- "0..*" Doctor : doctors
-ClinicFile "1" *-- "0..*" Service : services
-ClinicFile "1" *-- "0..1" Assistant : assistant (v1.1)
-Assistant "1" *-- "0..8" QuickReply : quick_replies
-Ticket "1" *-- "0..*" StaffReply : staffReplies
-Browser "1" -- "0..*" Ticket : patient
-ClinicFile ..> Ticket : rules engine answer()\nsets reply, kind, status
-Browser "1" *-- "0..*" StaffNote : frontdesk.notes (v1.2)
-StaffNote "0..1" ..> "1" Ticket : ticket id
-Ticket "1" ..> "0..1" StoredTicket : sync.js sends a copy (v1.3)
-TicketOrder "1" o-- "0..*" StoredTicket : in the order opened
-OwnerIndex "1" o-- "0..*" StoredTicket : owner
-Browser ..> OwnerIndex : hash of frontdesk.synckey (v1.3)
-
-note bottom of StoredTicket
-  <b>v1.3 ticket store</b>
-  One record per ticket for seven days.
-  The question, reply and patient never
-  change once stored. A merge keeps every
-  staff reply; the status further along wins.
-  A patient browser reads its own tickets
-  with its key; staff read the list with
-  the clinic's desk code, which the browser
-  keeps for the session only.
+note bottom of Ticket
+P1 urgent: emergency. P2 needs human: booking request.
+P3 needs human: not in the clinic file.
+A staff reply sets answered; Close sets closed.
 end note
 
-note right of Ticket
-  <b>Status from the reply kind</b>
-  emergency : urgent
-  medical, booking, notsure : needs human
-  human (v1.1, asks for a person) : needs human
-  answer, refuse : answered
-  <b>A staff reply moves it on</b>
-  urgent or needs human : answered
-  answered : closed
-  <b>Close ticket</b> : closed
-  callBack = (status was needs human)
+note bottom of Clinic
+The same three shapes in each store, first one set up wins:
+1 Postgres tables, when its address is set (not connected on the live site)
+2 Redis keys under one prefix: clinic, tickets (hash), msgs per chat (list). Live today
+3 server memory
+With an empty store the clinic file that ships with the app is used.
 end note
-
-note bottom of Browser
-  <b>After hours</b> (openNow from the hours keys)
-  sets afterHours and afterHoursNote only;
-  the reply, kind and status never change.
-end note
-
-note bottom of QuickReply
-  <b>v1.1 assistant section</b>
-  Optional. A file without it keeps the
-  standard name and the seven standard
-  quick replies (the seventh is
-  "Talk to a person").
-end note
-
-note left of ClinicFile
-  <b>Which file is used</b>
-  frontdesk.clinic when it holds an object
-  with a clinic section, else the shipped
-  file. Reset removes frontdesk.clinic.
-end note
-
 @enduml
