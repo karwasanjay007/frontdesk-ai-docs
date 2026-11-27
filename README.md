@@ -9,7 +9,7 @@ FrontDesk AI is the front desk chat for a dental clinic: patients get answers fr
 | Code | `frontdesk-ai` (private while a competition is open) |
 | Built by | Sanjay Karwa, Smart AI for Business |
 | Stack | Plain HTML, CSS and JavaScript with a rules engine in the browser; one Vercel function calling OpenRouter with DeepSeek V4.1 Flash (`deepseek/deepseek-v4.1-flash`), the key on the server only; localStorage |
-| Version | 1.7.1.0 (27 Nov 2026; baseline 1.0.0.0, Sanjay Karwa, 21 Nov 2026) |
+| Version | 1.7.2.0 (27 Nov 2026; baseline 1.0.0.0, Sanjay Karwa, 21 Nov 2026) |
 | Status | Built and live. Every functional test passes on the live link, with the key and with the model blocked (rerun 22 Nov 2026 after two wording fixes, see REPORT.md). No text is under 4.5:1 in light or dark (measured on 25 Nov 2026 against the background really shown, lowest 5.94:1); the older scan's flagged lines are notes about text on the teal brand colour and two misread lines, not failures. Version 1.1.0.0 (22 Nov 2026) adds four things beside the baseline: a reply and a ticket when a patient asks for a person, search and filters on the staff page, a form for the clinic file, and an assistant name and quick replies set in that file. Every earlier test passes on the live link after it, unedited |
 
 ## For the judges: FrontDesk AI in two minutes
@@ -62,7 +62,7 @@ results in [evidence/](evidence/), build report in [REPORT.md](REPORT.md).
   opens next.
 - A clinic-file editor, so the clinic (or another booking-based business) keeps its own hours, prices and
   details current without a developer.
-- A "Could not answer" list on `/staff`, a Directions link built from the file's address, and a privacy line.
+- A "Passed to the team" list on `/staff`, a Directions link built from the file's address, and a privacy line.
 - The one difference: voice in and out in English, Hindi and Telugu, using the browser's own speech.
 
 **How it answers.** A rules engine answers every question from the clinic file first: emergency, rule
@@ -132,7 +132,7 @@ with it blocked; "Yes" means the feature is in place. The last column is the ver
 | N/A | Voice input, with a recording fallback when the browser has no speech service | Yes | 1.0 |
 | N/A | Read aloud ("Listen" beside each reply) | Yes | 1.0 |
 | N/A | Patient can leave a name and phone for the call back | Yes | 1.0 |
-| N/A | "To call back" and "Could not answer" lists for staff | Yes | 1.0 |
+| N/A | "To call back" and "Passed to the team" lists for staff | Yes | 1.0 |
 | N/A | Clear all tickets, with undo | Yes | 1.0 |
 | N/A | Language menu: every label, the replies and Listen follow the chosen language; a New chat button | Yes | 1.0 |
 | N/A | Clinic info panel: today's hours, Call, WhatsApp, Directions, the week's hours, the doctors and the address, with an open or closed sign | Yes | 1.0 |
@@ -160,10 +160,15 @@ with it blocked; "Yes" means the feature is in place. The last column is the ver
 | N/A | A doctor the clinic file does not hold is never let stand: "We have no Dr. ...", with the clinic's own doctors (version 1.5.0.1) | Yes | 1.5 |
 | N/A | Phone chat polished: starter cards on an empty chat (the quick replies in two columns, full width), a slim row with the emergency number as a red phone pill and plain language and theme buttons, thumbs up and down for feedback, answers as plain text with the clinic mark (versions 1.6.0.0 and 1.6.0.1) | Pass | 1.6 |
 | N/A | Desktop chat polished like the phone, from 768 px: answers as plain text with the round clinic mark in a 760 px column left of the pinned clinic panel; Listen, Helpful and Not helpful as 44 px icon buttons that keep their names; a slim composer bar reading "+", a 16 px input and a round Send, with New chat and the mic in the "+" menu (version 1.7.1.0; round buttons in the bar at 1.7.0.0); the emergency number as a red phone pill and the note under it one muted line; starter cards three to a row on an empty chat, one row after the first message; the top-bar staff link in Hindi and Telugu too (version 1.7.1.0) (versions 1.7.0.0 and 1.7.1.0) | Pass | 1.7 |
+| N/A | A question that asks for the phone number gets the number from the clinic file, also beside another answer such as the address; the model step cannot drop it (version 1.7.2.0) | Pass | Since 1.7.2 |
+| N/A | While no phone number is saved, the call-back form says so and offers the clinic's own number, in English, Hindi and Telugu; the call-back reply is unchanged (version 1.7.2.0) | Pass | Since 1.7.2 |
+| N/A | A stranger's load of the staff page logs no console error: no ticket request is sent that is known to be refused; the server still refuses the ticket list without the desk code (version 1.7.2.0) | Pass | Since 1.7.2 |
+| N/A | The fine print under the message box wraps instead of being cut, and says only what is true: nothing about storage before a message is sent, then "kept on the clinic's server for 7 days"; the staff link says "(for clinic staff)"; the staff card is "Passed to the team" (version 1.7.2.0) | Pass | Since 1.7.2 |
+| N/A | The sai4b mark in the top bar opens sai4b.com in a new tab on the chat and staff pages; the product name still goes home (version 1.7.2.0) | Pass | Since 1.7.2 |
 
-All 16 rows of the brief pass, and all 27 rows beyond it are in place. The same table with three other builds of
+All 16 rows of the brief pass, and all 32 rows beyond it are in place. The same table with three other builds of
 the batch beside it is in [REPORT.md](REPORT.md), section "Requirement and feature map"; what each version added
-and how it was tested is in the sections "Version 1.1.0.0" to "Version 1.7.1.0" there.
+and how it was tested is in the sections "Version 1.1.0.0" to "Version 1.7.2.0" there.
 
 ## Documentation
 
@@ -203,8 +208,9 @@ Every diagram is PlantUML source plus SVG. No PNG or JPG anywhere in this reposi
   for the language.
 - A name and phone are asked for only if the patient chooses to leave them for a call-back; they are saved
   on that ticket.
-- The fine print says who sees the messages (the clinic's front desk, once a chat is stored on the server; this
-  browser and the clinic team before that), and asks patients not to type medical records.
+- The fine print claims nothing about storage before a message is sent. Once the server holds the chat it says
+  the messages go to the clinic's front desk and are kept on the clinic's server for 7 days, and it asks patients
+  not to type medical records.
 - The model key is kept in the Vercel environment and never reaches the page.
 
 ## Version 1.5.0.0
@@ -264,3 +270,32 @@ above the "+"; the composer reads "+", the input, Send. The top-bar staff link i
 At Sanjay's word three tests changed to open the menu first: `tests/phone-chat.mjs`, `tests/i18n.mjs` and
 `tests/voice.mjs`. On the live link: desk-chat (220 checks), phone-chat (197), brief (29), i18n (11) and voice (2)
 end ALL PASS (saved in `evidence/`).
+
+## Version 1.7.2.0
+
+Version 1.7.2.0 (27 Nov 2026) acts on a fresh review of the live link at 1.7.1.0 and adds one request; nothing
+removed. The review counted 38 passes, 6 fails and 10 items not tested, with no critical failure. Five of the six
+findings are closed, each beside the earlier files:
+
+- A question that asks for the phone number gets the number, and the model step cannot drop it (`core.js`).
+- The call-back reply is unchanged. While no number is saved, the call-back form says so and offers the clinic's
+  own number, in English, Hindi and Telugu (`callback-ask.js`).
+- A stranger's load of the staff page sends no ticket request that is known to be refused, so there is no console
+  error (`sync.js` asks the health route instead). The server still refuses the ticket list without the desk code.
+- The fine print under the message box wraps instead of being cut (`styles.css`).
+- Wording made true: the staff link says "(for clinic staff)"; the fine print claims nothing about storage before
+  a message is sent, and then says messages are kept on the clinic's server for 7 days; the staff card is "Passed
+  to the team"; the staff note is "Where tickets are kept".
+
+The request: the sai4b mark in the top bar opens sai4b.com in a new tab on the chat and staff pages; the product
+name still goes home (`mark-link.js`).
+
+Three tests were added and no earlier test was edited: `tests/review-answers.mjs`, `tests/review-look.mjs` and
+`tests/mark-link.mjs`. On the live link, 27 Nov 2026: mark-link (14 checks), review-look (36), review-answers
+(49), brief (29), questions (16), desk-chat (220), phone-chat (197) and brand (92) all pass. The health route
+reports the store as postgres.
+
+Still open: finding F1, what a stranger sees on the staff page without the desk code, is the owner's decision; a
+filter chip on the staff page still reads "Could not answer"; the fine print is hidden at 375 px by an earlier
+rule. Not tested: the staff page with the desk code; a real phone; a native speaker's read of the Hindi and Telugu
+notices.

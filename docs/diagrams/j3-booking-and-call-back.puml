@@ -29,6 +29,7 @@ Chat -> Core : FD.addTicket({... kind "booking", bookingTime, afterHours, callBa
 Core -> LS : write frontdesk.tickets
 Chat --> Patient : reply "passed your request for <time> ... call you back within 2 working hours",\n"Continue on WhatsApp", after-hours note when closed, call-back form
 note right of Chat : the note and the form sit beside the .bot-msg, never inside it
+Chat --> Patient : v1.7.2, callback-ask.js: while no number is saved, a line at the top of the form:\n"We do not have a phone number for you yet ...", or call the clinic on its own number\n(English, Hindi, Telugu); gone once a number is saved
 
 opt Patient leaves a name and phone
   Patient -> Chat : name (optional), country code and phone, presses Save

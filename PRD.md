@@ -441,3 +441,18 @@ Version 1.7.1.0 brings the "+" menu to the desktop (768 px and up). Nothing remo
 
 Corrected in place of earlier statements: on a desktop New chat and the microphone are no longer round buttons in
 the composer bar, and there is a "+" menu on a desktop.
+
+## Version 1.7.2.0: additions (27 Nov 2026)
+
+Version 1.7.2.0 acts on a fresh review of the live link at 1.7.1.0 and adds one request. Nothing removed.
+
+| Id | Requirement | Test |
+| --- | --- | --- |
+| R-16.12 | A question that asks for the phone number gets the number from the clinic file, also when it asks for something else as well; the model step must keep the number | `tests/review-answers.mjs` |
+| R-16.13 | The call-back reply is unchanged; while no phone number is saved, the call-back form says so and offers the clinic's own number, in English, Hindi and Telugu; the line goes once a number is left | `tests/review-answers.mjs` |
+| R-16.14 | A stranger's load of the staff page sends no ticket request that is known to be refused and logs no console error; the desk code is still asked for, and the server still refuses the ticket list without it | `tests/review-look.mjs` |
+| R-16.15 | The fine print under the message box wraps and is never cut, at 12 px or more | `tests/review-look.mjs` |
+| R-16.16 | Wording is true: the staff link says "(for clinic staff)"; the fine print claims nothing about storage before a message is sent, and says messages are kept on the clinic's server for 7 days once the server holds the chat; the staff card is "Passed to the team"; the staff note is "Where tickets are kept" | `tests/review-look.mjs` |
+| R-16.17 | The sai4b mark in the top bar opens sai4b.com in a new tab on the chat and staff pages; the product name still goes home | `tests/mark-link.mjs` |
+
+Open, as the owner's decision: what a stranger sees on the staff page without the desk code (review finding F1).

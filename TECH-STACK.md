@@ -150,3 +150,6 @@ PlantUML source (SVG only), embedded in ARCHITECTURE.md.
   and `compact.js` (768 px and up).
 - Version 1.7.1.0: no new technology, package or environment name; the desktop "+" menu and the staff link words are
   in `compact.css` and `compact.js`.
+- Version 1.7.2.0: no new technology, package or environment name; `package.json` still lists one dependency. Two
+  small plain JavaScript files are added, `callback-ask.js` and `mark-link.js`; the rest is in `core.js`, `sync.js`,
+  `chat.js`, `styles.css` and the two pages.

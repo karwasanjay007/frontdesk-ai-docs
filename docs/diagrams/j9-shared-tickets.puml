@@ -28,13 +28,14 @@ alt the store is set up and the call gets through
   is kept for seven days.
   end note
   Fn --> Chat : stored
-  Chat --> Patient : the small print now says the messages go to the clinic's front desk
+  Chat --> Patient : the small print now says the messages go to the clinic's front desk\n(v1.7.2: and are kept on the clinic's server for 7 days)
 else no store configured, or the call is blocked
   Fn --> Chat : no store (or no answer)
   Chat --> Patient : the chat works as before; the add-on goes quiet
 end
 
 Staff -> SP : open /staff on another device
+SP -> SP : v1.7.2: no desk code in this session, so sync.js asks /api/health,\nnot the ticket list; with a store the page asks for the code (no refused request)
 SP --> Staff : their own tickets only
 Staff -> SP : turn on "Show tickets from all devices"
 SP -> SP : write frontdesk.alldevices; ask for the clinic's desk code

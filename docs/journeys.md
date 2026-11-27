@@ -208,7 +208,10 @@ if the patient wishes.
 5. `FD.addTicket()` stores the booking with `bookingTime`, `afterHours`, `afterHoursNote` and `callBack:
    true`.
 6. Beside the reply, never inside it: "Continue on WhatsApp", the after-hours note, and the form "So we can
-   call you back (optional)" with name, a country code list and phone.
+   call you back (optional)" with name, a country code list and phone. Since 1.7.2.0, while no number is
+   saved in this chat, `callback-ask.js` puts one line at the top of the form: the clinic has no number yet,
+   leave it here, or call the clinic on its own number. The form is outlined. The line is in English, Hindi
+   or Telugu and goes once a number is saved.
 7. On Save, `intlNumber()` checks the number against the length for the chosen country (a leading 0 used
    at home is dropped; "Other" takes a full number with its code) and makes it `+<code><number>`.
    `FD.updateTicket(id, {contactName, contactPhone})` stores them and the form is replaced by "Thank you,
@@ -438,8 +441,11 @@ them both pages work as before and the add-on goes quiet.
    ticket in the phone's browser.
 2. `sync.js` sends the ticket to `/api/tickets` with the browser's private key (`frontdesk.synckey`).
 3. The function cleans the ticket and stores it in the ticket store under a hash of that key. The chat's
-   small print now says the messages go to the clinic's front desk.
-4. Staff on another device open `/staff` and see their own tickets only.
+   small print now says the messages go to the clinic's front desk and, since 1.7.2.0, that they are kept on
+   the clinic's server for 7 days.
+4. Staff on another device open `/staff` and see their own tickets only. Since 1.7.2.0, with no desk code in
+   this session, `sync.js` asks `/api/health` whether there is a store instead of the ticket list, so no
+   request is refused; with a store the page asks for the code.
 5. Staff turn on "Show tickets from all devices" (kept in `frontdesk.alldevices`) and type the clinic's
    desk code, which is kept in `sessionStorage` for this session only. The function checks the code against
    the server's environment and returns the list. The staff page asks for changes about every five seconds.
@@ -502,3 +508,20 @@ Source: [j9-shared-tickets.puml](diagrams/j9-shared-tickets.puml)
 - **J7 Languages and voice.** The top-bar staff link follows the chosen language, Hindi and Telugu included. On a
   desktop the microphone is reached through the "+" menu, as on a phone. Tests: `tests/i18n.mjs`,
   `tests/voice.mjs`.
+
+## Changes in version 1.7.2.0 (27 Nov 2026)
+
+- **J1 First visit and ask.** A question that asks for the phone number beside another fact, such as the address
+  or the timings, gets both: `withPhone()` in `core.js` adds the clinic's contact line when the answer does not
+  hold the number, and the number is a fact the model step must keep. The fine print under the message box wraps
+  instead of being cut, and at first says nothing about storage. A click on the sai4b mark in the top bar opens
+  sai4b.com in a new tab (`mark-link.js`); the product name still goes home. Tests: `tests/review-answers.mjs`,
+  `tests/review-look.mjs`, `tests/mark-link.mjs`.
+- **J3 Booking and call-back.** While no phone number is saved in the chat, the call-back form says so and offers
+  the clinic's own number, in English, Hindi and Telugu (`callback-ask.js`). The reply and the ticket are
+  unchanged. See the diagram `j3-booking-and-call-back`. Test: `tests/review-answers.mjs`.
+- **J4 Staff reply and J9 Shared tickets.** A load of `/staff` with no desk code asks the health route, not the
+  ticket list, so nothing is refused; the code is asked for as before. The card "Could not answer" is now
+  "Passed to the team", and the note "Where tickets are kept" names the clinic's server and 7 days. Once the
+  server holds a chat, its fine print says the messages are kept on the clinic's server for 7 days. See the
+  diagram `j9-shared-tickets`. Test: `tests/review-look.mjs`.

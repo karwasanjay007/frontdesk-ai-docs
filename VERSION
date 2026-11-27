@@ -1,4 +1,4 @@
-1.7.1.0
+1.7.2.0
 
 # FrontDesk AI release baseline
 #
@@ -52,3 +52,8 @@
 # shared by default, a staff edit of the clinic file applies from the next answer on every device, messages
 # stored; the brand palette, fonts and mark; a staff page link in the top bar; the clinic details pinned on the
 # right on a wide screen; a health route that says which store is in use.
+#
+# Version 1.7.2.0 (27 November 2026), after a fresh review of the live link; nothing removed: a question that asks for
+# the phone number gets it; the call-back form says when no number is saved and offers the clinic's own number; a
+# stranger's load of the staff page sends no request that is known to be refused; the fine print wraps and says what
+# is true (messages kept on the clinic's server for 7 days); the sai4b mark in the top bar opens sai4b.com.

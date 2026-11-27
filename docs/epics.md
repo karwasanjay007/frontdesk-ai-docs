@@ -62,6 +62,9 @@ was saved by hand.
 | `tests/phone-chat.mjs` | Phone chat: slim pill, quick replies in one row after the answers, "+" menu | `last-phone-chat-live.txt`: "ALL PASS (197 checks)" | AC-E16.F5.1 |
 | `tests/starter-cards.mjs` | Phone chat: starter cards in two columns on an empty chat, the one row after the first message, the cards back after New chat, the row kept in the composer from 768 px; the not-sure reply without the label, a file answer with it | `last-starter-cards-live.txt`: "ALL PASS (41 checks)" | AC-E16.F5.2, AC-E16.F5.4 |
 | `tests/desk-chat.mjs` | Desktop chat from 768 px (1024, 1280, 1440, light and dark): plain answers with the clinic mark left of the clinic panel, 44 px icon buttons that keep their names, the slim bar reading "+", input and a round Send with New chat and the mic in the "+" menu (1.7.1.0), the red emergency pill, starter cards three to a row then one row, the top-bar staff link in Hindi and Telugu | `last-desk-chat-live.txt`: "ALL PASS (220 checks)" | AC-E16.F6.1 to AC-E16.F6.3 |
+| `tests/review-answers.mjs` | The phone number given when a question asks for it, also beside another answer, and kept by the model step; the call-back form says when no number is saved and offers the clinic's own number, in English, Hindi and Telugu | `evidence/last-review-live.txt`, live link, 27 Nov 2026: all pass (49 checks) | AC-E16.F7.1, AC-E16.F7.2 |
+| `tests/review-look.mjs` | A stranger's load of the staff page: no console error and no ticket request without a desk code; the fine print never cut at 375, 1024 and 1280 px, light and dark, in three languages; the old wording gone and the true wording there | `evidence/last-review-live.txt`, live link, 27 Nov 2026: all pass (36 checks) | AC-E16.F7.3, AC-E16.F7.4 |
+| `tests/mark-link.mjs` | The sai4b mark in the top bar opens sai4b.com in a new tab on the chat and staff pages; the product name still goes home | `evidence/last-review-live.txt`, live link, 27 Nov 2026: all pass (14 checks) | AC-E16.F7.5 |
 | `tests/sync-watch-live.mjs` | The staff side on the real store, waiting for a person's reply and printing the ticket as the store holds it | none saved yet; the last proof is `last-sync-staff-real-store-live.txt` | AC-E13.F3.4 |
 | `tests/extras3.mjs` | Ticket numbers, the thread and feedback | `last-extras3-live.txt` | AC-E14.F1.1 to AC-E14.F3.4 |
 | `tests/i18n.mjs` | The language menu and New chat | `last-i18n-live.txt`, `last-i18n-blocked-live.txt` | AC-E15.F1.1 to AC-E15.F1.4 |
@@ -88,8 +91,8 @@ was saved by hand.
 | E13 | Tickets shared across devices (1.3) | 4 | 22 | V-14, V-22 | built, behind the clinic's desk code (`last-sync-live.txt`, `last-tickets-api-live.txt`, `last-tickets-redis.txt`) |
 | E14 | Ticket numbers, thread, feedback and the booking day note (1.2 and 1.3) | 4 | 14 | V-10 to V-13 | built (`last-extras3-live.txt`, `last-booking-day.txt`) |
 | E15 | Language menu, New chat, clinic info panel and Clear all (1.3) | 3 | 10 | V-15 to V-17 | built; the clinic info panel and the empty-queue message are not covered by a test (`last-i18n-live.txt`, `last-staffclear-live.txt`) |
-| E16 | Shared store, a stricter model step, brand, phone and desktop chat (1.3.1 to 1.7) | 6 | 18 | Test | built; live: `last-brand-live.txt`, `last-layout-wide-live.txt`, `last-phone-chat-live.txt`, `last-starter-cards-live.txt`, `last-desk-chat-live.txt`; engine-gaps, engine-doctor, model-step, store and shared run locally; AC-E16.F5.3 checked by hand |
-| **Total** | | **56** | **193** | | |
+| E16 | Shared store, a stricter model step, brand, phone and desktop chat (1.3.1 to 1.7.2) | 7 | 23 | Test | built; live: `last-brand-live.txt`, `last-layout-wide-live.txt`, `last-phone-chat-live.txt`, `last-starter-cards-live.txt`, `last-desk-chat-live.txt`; engine-gaps, engine-doctor, model-step, store and shared run locally; AC-E16.F5.3 checked by hand |
+| **Total** | | **57** | **198** | | |
 
 ---
 
@@ -519,7 +522,7 @@ about languages or a phone number.
 | ID | Given | When | Then | Trace | Planned check |
 | --- | --- | --- | --- | --- | --- |
 | AC-E10.F1.1 | A fresh browser on the chat page | The patient sends "Can I speak to a human?" or "Please call me back" | The reply says the request went to the team and gives the phone number; it keeps "not sure" and "2 working hours" | V-1 | `tests/person.cjs`, `tests/person.mjs` |
-| AC-E10.F1.2 | Both requests have been sent | /staff opens | Each is one needs-human ticket, listed in "To call back" and not in "Could not answer" | V-1 | `tests/person.mjs` |
+| AC-E10.F1.2 | Both requests have been sent | /staff opens | Each is one needs-human ticket, listed in "To call back" and not in "Passed to the team" | V-1 | `tests/person.mjs` |
 | AC-E10.F1.3 | A question the clinic file answers, such as "What is the phone number to call back?" | It is sent | The reply is exactly the reply of the file-only engine; the ask-for-a-person rule does not take it | V-1 | `tests/person.cjs` |
 | AC-E10.F1.4 | The 386 questions of the sweep | Each is answered by the engine | Each reply is exactly the reply of the file-only engine | V-1 | `tests/person.cjs`, `tests/sweep.cjs` |
 | AC-E10.F1.5 | The standard clinic file | The chat page opens | There are seven quick replies and the last is "Talk to a person", also in Hindi and Telugu, with no sideways scroll at 375 px | V-1 | `tests/person.mjs` |
@@ -812,7 +815,7 @@ mistake so that I can start a clean round.
 | AC-E15.F3.2 | The tickets were cleared | The patient chat in the same browser is read | It is empty too | V-17 | `tests/staffclear.mjs` |
 | AC-E15.F3.3 | The tickets were cleared | Staff press Undo within about 10 seconds | The ticket and the patient chat come back | V-17 | `tests/staffclear.mjs` |
 
-## E16 Shared store, a stricter model step, brand, phone and desktop chat (versions 1.3.1.0 to 1.7.0.0)
+## E16 Shared store, a stricter model step, brand, phone and desktop chat (versions 1.3.1.0 to 1.7.2.0)
 
 ### E16.F1 Engine gaps closed
 
@@ -862,6 +865,19 @@ mistake so that I can start a clean round.
 | AC-E16.F6.2 | A window 768 px or wider | The chat is shown | A composer bar at most 72 px tall reading "+", a 16 px input and a round 44 px Send named "Send"; New chat and the microphone are in the "+" menu, a small popover above the "+" (since 1.7.1.0; round buttons in the bar at 1.7.0.0); the top-bar staff link is worded in the chosen language, Hindi and Telugu included; the emergency number a 44 px red phone pill; the note under it one short line; after three answers the bar and Send are in view | Test | `tests/desk-chat.mjs` |
 | AC-E16.F6.3 | A window 768 px or wider, an empty chat | The chat is shown | The quick questions are starter cards three to a row; after the first answer they are one row above the bar; New chat brings the cards back | Test | `tests/desk-chat.mjs` |
 
+### E16.F7 Fresh review fixes and the mark link (1.7.2.0)
+
+As a patient I want the number I asked for and an honest note about the call-back, and as the clinic I want the
+pages to say only what is true.
+
+| Id | Given | When | Then | Planned check | Test |
+| --- | --- | --- | --- | --- | --- |
+| AC-E16.F7.1 | A clinic file with a phone number | The patient asks for the phone number, alone or with another question such as the address | The reply holds the number from the file, and the model step keeps it | Test | `tests/review-answers.mjs` |
+| AC-E16.F7.2 | A needs-human reply with the call-back form, and no phone number saved | The form is shown, in English, Hindi or Telugu | The reply is unchanged; the form says there is no number yet and offers the clinic's own number; the line goes once a number is left | Test | `tests/review-answers.mjs` |
+| AC-E16.F7.3 | A stranger with no desk code, and the server store in place | The staff page loads | No ticket list request is sent without a desk code, the console shows no error, and the desk code is still asked for | Test | `tests/review-look.mjs` |
+| AC-E16.F7.4 | The chat page at 375, 1024 and 1280 px, light or dark, in English, Hindi or Telugu | The fine print and the staff wording are read | The fine print is never cut and never under 12 px; before a message it claims nothing about storage; once the server holds the chat it says messages are kept on the clinic's server for 7 days; the staff link says "(for clinic staff)"; the staff card is "Passed to the team" and the staff note is "Where tickets are kept" | Test | `tests/review-look.mjs` |
+| AC-E16.F7.5 | The chat page or the staff page | The sai4b mark in the top bar is clicked, then the product name | The mark opens sai4b.com in a new tab; the product name goes home as before | Test | `tests/mark-link.mjs` |
+
 ## Revisions
 
 | Date | Change |
@@ -878,3 +894,4 @@ mistake so that I can start a clean round.
 | 27 Nov 2026 | Versions 1.5.0.1 to 1.6.0.1: AC-E16.F1.4 (an invented doctor, `tests/engine-doctor.cjs`) and AC-E16.F5.2 to AC-E16.F5.4 (starter cards, the slim row and the label rule, `tests/starter-cards.mjs`) added; AC-E16.F5.1, AC-E2.F4.4 and AC-E9.F3.2 corrected in place (the one row is checked after the answers; a not-sure reply carries no label). Totals now 55 features and 190 criteria |
 | 27 Nov 2026 | Version 1.7.0.0: feature E16.F6 (the desktop chat) with AC-E16.F6.1 to AC-E16.F6.3, traced to the new `tests/desk-chat.mjs`. Totals now 56 features and 193 criteria |
 | 27 Nov 2026 | Version 1.7.1.0: AC-E16.F6.2 corrected in place (New chat and the microphone in the "+" menu on a desktop; the top-bar staff link in Hindi and Telugu); `tests/desk-chat.mjs` now 220 checks; `tests/phone-chat.mjs`, `tests/i18n.mjs` and `tests/voice.mjs` changed at Sanjay's word to open the menu first. No criterion added; totals stay 56 features and 193 criteria |
+| 27 Nov 2026 | Version 1.7.2.0: feature E16.F7 (the fresh review fixes and the mark link) with AC-E16.F7.1 to AC-E16.F7.5, traced to three new test files (`tests/review-answers.mjs`, `tests/review-look.mjs`, `tests/mark-link.mjs`); the staff card named "Passed to the team" in place. No earlier test was edited. Totals now 57 features and 198 criteria |

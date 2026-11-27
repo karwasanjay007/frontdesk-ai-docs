@@ -291,3 +291,8 @@ Version 1.7.0.0: no key, table, field or schema added or changed; the desktop ic
 
 Version 1.7.1.0: no key, table, field or schema added or changed; the desktop "+" menu and the staff link words
 store nothing.
+
+Version 1.7.2.0: no key, table, field or schema added or changed. `callback-ask.js` and `mark-link.js` read and
+write no `localStorage` or `sessionStorage` key. `sync.js` reads the desk code key it already had before it asks
+for the list. The phone number added to an answer comes from the clinic file's `clinic.phone`. The chat's fine
+print now states what was already so: the server keeps the messages for 7 days.

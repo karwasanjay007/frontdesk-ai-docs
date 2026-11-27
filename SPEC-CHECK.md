@@ -253,3 +253,11 @@ PASS on the live link.
 
 Version 1.7.1.0 (27 Nov 2026): the desktop "+" menu keeps every row: New chat and the microphone are still named
 buttons, reached through the menu; the staff link reads in the chosen language. No row changed.
+
+Version 1.7.2.0 (27 Nov 2026): the fixes from the fresh review keep every row. A question that asks for the phone
+number gets it; the call-back form says when no number is saved; a stranger's load of the staff page logs no
+console error; the fine print wraps and its wording is true; the sai4b mark opens sai4b.com in a new tab. On the
+live link mark-link (14), review-look (36), review-answers (49), brief (29), questions (16), desk-chat (220),
+phone-chat (197) and brand (92) all pass. The review counted 38 passes, 6 fails and 10 items not tested; finding
+F1 (what a stranger sees on the staff page without the desk code) stays open as the owner's decision. Not tested:
+the staff page with the desk code, a real phone, and a native speaker's read of the Hindi and Telugu notices.

@@ -29,7 +29,7 @@ Container_Boundary(chatjs, "chat.js, the patient chat") {
 }
 
 Container_Boundary(staffjs, "staff/staff.js, the staff page") {
-  Component(staffui, "Staff UI", "JavaScript", "render (queue, counts, To call back, Could not answer), sendReply, clinicEditor; one open ticket holds #staff-reply and #staff-send; v1.3: ticket numbers .t-no (T-001, T-002), the chat thread details.t-thread (Chat so far) folded inside the open ticket, feedback shown on the ticket")
+  Component(staffui, "Staff UI", "JavaScript", "render (queue, counts, To call back, Passed to the team), sendReply, clinicEditor; one open ticket holds #staff-reply and #staff-send; v1.3: ticket numbers .t-no (T-001, T-002), the chat thread details.t-thread (Chat so far) folded inside the open ticket, feedback shown on the ticket")
 }
 
 Container_Boundary(stafftoolsjs, "staff/tools.js and staff/tools.css, staff add-on (v1.1, extended in v1.2)") {
@@ -113,7 +113,14 @@ Container_Boundary(storeb, "Shared store and routes (v1.4)") {
 }
 Component(sharedjs, "shared.js", "JavaScript", "v1.4: clinic file from the server before an answer; messages to the server; staff Save and Reset to the server")
 Component(lookjs, "brand.css, layout.css, layout.js, compact.css, compact.js", "CSS, JavaScript", "v1.4 to v1.7: brand look; staff link and clinic panel from 1024 px; phone chat with a + menu; v1.7 desktop chat from 768 px: plain answers, icon buttons, slim bar with +, input and round Send; v1.7.1 New chat and mic in the + menu, staff link in Hindi and Telugu")
+Component(callbackask, "callback-ask.js", "JavaScript", "v1.7.2: while no phone number is saved, the call-back form says so and offers the clinic's own number; English, Hindi, Telugu; changes no reply and no ticket")
+Component(marklink, "mark-link.js", "JavaScript", "v1.7.2, both pages: a click on the sai4b mark in the top bar opens sai4b.com in a new tab; the product name still goes home")
 ContainerDb_Ext(neon, "Postgres on Neon", "SQL", "tables messages, tickets, clinic_data")
+Rel(callbackask, chatui, "v1.7.2: adds a line to the call-back form in #chat-log")
+Rel(callbackask, store, "v1.7.2: reads the clinic's phone, FD.clinic()")
+Rel(patient, marklink, "v1.7.2: clicks the mark in the top bar")
+Rel(staff, marklink, "v1.7.2: clicks the mark in the top bar")
+Rel(syncstaff, healthr, "v1.7.2: with no desk code, asks whether there is a store", "HTTPS, JSON")
 Rel(ticketscore, storemod, "v1.4: reads and writes through")
 Rel(clinicr, storemod, "clinic_data")
 Rel(msgr, storemod, "messages")

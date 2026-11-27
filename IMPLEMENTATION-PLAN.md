@@ -215,6 +215,7 @@ test; no earlier test was edited.
 | 1.6.0.1 | Starter cards full width, the language box whole, the welcome line wraps | `compact.css` | `tests/starter-cards.mjs`, `tests/phone-chat.mjs` |
 | 1.7.0.0 | Desktop chat polished like the phone from 768 px: plain answers with the clinic mark, icon buttons, a slim bar with New chat, mic and a round Send, the red emergency pill, starter cards three to a row | `compact.css`, `compact.js` | `tests/desk-chat.mjs` |
 | 1.7.1.0 | The "+" menu on desktop too: New chat and the mic in it, a popover above the "+"; the top-bar staff link in Hindi and Telugu | `compact.css`, `compact.js` | `tests/desk-chat.mjs` (220); `tests/phone-chat.mjs`, `tests/i18n.mjs`, `tests/voice.mjs` changed at Sanjay's word |
+| 1.7.2.0 | Fresh review fixes: the phone number given when asked and kept by the model step; the call-back form says when no number is saved; no refused ticket request on a stranger's load of the staff page; the fine print wraps; wording made true ("(for clinic staff)", kept on the clinic's server for 7 days, "Passed to the team"); the sai4b mark opens sai4b.com in a new tab | `core.js`, `callback-ask.js`, `sync.js`, `chat.js`, `styles.css`, `mark-link.js`, the two pages | `tests/review-answers.mjs` (49), `tests/review-look.mjs` (36), `tests/mark-link.mjs` (14); no earlier test edited |
 
 Each was added beside the earlier files. One earlier test was edited, at Sanjay's word, in 1.6.0.0:
 `tests/phone-chat.mjs` checks the one row of chips after the answers, since an empty chat now shows cards.

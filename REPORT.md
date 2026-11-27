@@ -35,7 +35,7 @@ link, saved in `evidence/`; none of it is the graders' tester.
   answered, needs human, urgent or closed; only the open ticket holds `#staff-reply` and `#staff-send`, so
   each id exists once; a staff reply reaches the patient's chat within a second and always changes the
   status (needs human or urgent to answered, answered to closed); priority order, age on every ticket, an
-  overdue flag, a "To call back" list with call and WhatsApp links, a "Could not answer" list, a Today card
+  overdue flag, a "To call back" list with call and WhatsApp links, a "Passed to the team" list, a Today card
   and a clinic-file editor with reset.
 - **Tickets** are kept in the browser's localStorage. A failed save tells the patient so.
 - **One server function** (`api/chat.js` on Vercel) calls OpenRouter with `deepseek/deepseek-v4.1-flash`.
@@ -93,7 +93,7 @@ Four independent reviews before release, reports in `review/`. One line per revi
   cheapest treatment and price list, contrast saved as evidence); 6 hidden-data robustness partly, because
   the word lists are dental; 7 small wording not recorded as fixed.
 - **Industry** (`review/industry.md`): the top 5 fixed (optional call-back details, Directions link,
-  privacy line, "Could not answer" list, WhatsApp link from the staff card); server ticket store, slot
+  privacy line, "Passed to the team" list, WhatsApp link from the staff card); server ticket store, slot
   booking, outbound reminders, new channels and staff sign-in left for phase 2 or not built.
 - **Visual** (`review/visual.md`, 14 items): 1 to 4, 6, 7 and 11 fixed (centred chat column, clinic name
   and emergency number on phones, emergency replies that stand out with a Call button, quieter reply tools,
@@ -156,7 +156,7 @@ WHY IT STANDS OUT
 - Honest when the file is silent: a female dentist, whitening for children, an aligner brand or laser gum surgery get "not sure" and a ticket, never a guess.
 - Safe: emergency number first, no medicine names or diagnoses, no discounts, "ignore your rules" refused.
 - Voice both ways in all three languages: if the browser cannot hear or speak a language (Chrome has no Telugu voice), the server transcribes or speaks it instead.
-- Made for a real clinic: Clinic info opens beside the chat, morning call-back list, bookings saved with the real date (honours ?today=), WhatsApp Web on a computer, a "Could not answer" list, New chat, Clear all tickets with Undo, and any clinic can load its own file.
+- Made for a real clinic: Clinic info opens beside the chat, morning call-back list, bookings saved with the real date (honours ?today=), WhatsApp Web on a computer, a "Passed to the team" list, New chat, Clear all tickets with Undo, and any clinic can load its own file.
 
 BONUS ITEMS
 Hindi and Telugu: either script or the language menu. Booking with a time: "Book a check-up tomorrow at 5 pm". Ageing and priority: /staff. Clinic data editable and replies follow the edit: Clinic file on /staff. Quick replies: above the message box. Also light and dark, top right.
@@ -318,7 +318,7 @@ using their app, and "No" means it was not on the screens read.
 | N/A | Whole chat thread inside a ticket | Yes (1.3) | Yes | Yes | No |
 | N/A | Form editor for the clinic file | Yes | Not tested | Yes | Not tested |
 | N/A | Clear all tickets | Yes | No | No | Yes |
-| N/A | "To call back" and "Could not answer" lists | Yes | No | No | No |
+| N/A | "To call back" and "Passed to the team" lists | Yes | No | No | No |
 | N/A | Patient feedback on a reply | Yes (1.3) | Yes | No | No |
 | N/A | Ticket numbers | Yes (1.3) | No | Yes | No |
 
@@ -554,3 +554,42 @@ On the live link: desk-chat (220 checks), phone-chat (197), brief (29), i18n (11
 `evidence/last-i18n-live.txt`, `evidence/last-voice-live.txt`).
 
 Not tested on the live link at 1.7.1.0: layout-wide, starter-cards, controls, brand and bonus (run locally only).
+
+## Version 1.7.2.0 (27 Nov 2026)
+
+What: the fixes from a fresh review of the live link at 1.7.1.0, and one request; nothing removed.
+
+- A question that asks for the phone number gets the number. A wrapper beside the file answer in `core.js` adds
+  the clinic's contact line when the answer does not hold the number, and makes the number a fact the model step
+  must keep.
+- The call-back reply is unchanged. While no number is saved, the call-back form says so and offers the clinic's
+  own number, in English, Hindi and Telugu (new file `callback-ask.js`). The line goes once a number is left.
+- A stranger's load of the staff page sends no ticket request that is known to be refused, so the console shows
+  no error. `sync.js` asks the health route instead. The server still refuses the ticket list without the desk
+  code.
+- The fine print under the message box wraps instead of being cut (`styles.css`).
+- Wording made true. The staff link says "(for clinic staff)". Before a message is sent the fine print claims
+  nothing about storage; once the server holds the chat it says messages are kept on the clinic's server for 7
+  days. The staff card is "Passed to the team" and its hint names pain, medicine and bookings as well as
+  questions the file cannot answer. The staff note is "Where tickets are kept".
+- The request: the sai4b mark in the top bar opens sai4b.com in a new tab on the chat and staff pages; the
+  product name still goes home (new file `mark-link.js`).
+
+How the baseline is kept: each change sits beside the earlier files (`callback-ask.js` and `mark-link.js` are
+new; `core.js`, `sync.js`, `styles.css` and the two pages gain a few lines). No reply text changed and no ticket
+changed. No earlier test was edited.
+
+The review: one script in a fresh browser, with only the specification page, the clinic file and the live link.
+It counted 38 passes, 6 fails and 10 items not tested, with no critical failure: no reply held a price, doctor,
+timing or day that is not in the clinic file, and none named a medicine or a dose. Findings F2 to F6 are closed
+by the changes above. Finding F1, what a stranger sees on the staff page without the desk code, stays open as the
+owner's decision.
+
+Tests: three new files, `tests/review-answers.mjs` (49 checks), `tests/review-look.mjs` (36) and
+`tests/mark-link.mjs` (14). On the live link, 27 Nov 2026: mark-link (14), review-look (36), review-answers (49),
+brief (29), questions (16), desk-chat (220), phone-chat (197) and brand (92) all pass. The health route reports
+the store as postgres.
+
+Not covered: a filter chip on the staff page still reads "Could not answer"; the fine print is hidden at 375 px
+by an earlier rule. Not tested: the staff page with the desk code; a real phone; a native speaker's read of the
+Hindi and Telugu notices.
