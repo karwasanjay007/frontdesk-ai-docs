@@ -1,5 +1,5 @@
 @startuml data-model
-title FrontDesk AI data model (clinic file and browser localStorage)
+title FrontDesk AI data model: the server's tables, the browser's copy, the clinic file
 
 skinparam backgroundColor #FFFFFF
 skinparam shadowing false
@@ -35,17 +35,94 @@ hide circle
 hide methods
 set separator none
 
-package "Clinic file: /clinic-data.json, or the edited copy in frontdesk.clinic" {
+package "Server: Postgres on Neon, through api/_store.js" {
+  entity messages {
+    {field} <b>id</b> : BIGSERIAL, primary key
+    {field} chat_id : TEXT
+    {field} role : TEXT  (patient | bot | staff)
+    {field} text : TEXT  (at most 6,000 characters)
+    {field} source : TEXT
+    {field} owner : TEXT  (hash of the browser key)
+    {field} created_at : BIGINT
+  }
+  entity tickets {
+    {field} <b>id</b> : TEXT, primary key
+    {field} patient : TEXT
+    {field} owner : TEXT  (hash of the browser key)
+    {field} status : TEXT
+    {field} priority : TEXT  (urgent | normal)
+    {field} text : TEXT  (the question)
+    {field} reply : TEXT
+    {field} data : JSONB  (the whole ticket)
+    {field} created_at : BIGINT
+    {field} updated_at : BIGINT
+  }
+  entity clinic_data {
+    {field} <b>id</b> : INTEGER  (always 1, the only row)
+    {field} data : JSONB  (the edited clinic file)
+    {field} updated_at : BIGINT
+  }
+}
+
+package "Browser: localStorage key frontdesk.tickets (JSON list)" {
+  class Ticket {
+    {field} <b>id</b> : string  (T + time in base 36 + 2 characters)
+    {field} patient : string  (patient id)
+    q : string
+    reply : string
+    source : model | file
+    kind : emergency | refuse | medical | booking | answer | notsure | human
+    status : urgent | needs human | answered | closed
+    lang : en | hi | te
+    {field} bookingTime : string  ("" when not a booking)
+    modelOk : boolean
+    afterHours : boolean
+    afterHoursNote : string
+    callBack : boolean
+    {field} contactName : string [optional]
+    {field} contactPhone : string [optional]  (with country code)
+    {field} feedback : "up" | "down" | ""
+    {field} created : number  (ms since 1970)
+    {field} updated : number
+    staffReplies : StaffReply[]
+    {field} remote : true  (staff browser only: a ticket from another device)
+  }
+  class StaffReply {
+    text : string
+    {field} at : number  (ms since 1970)
+  }
+}
+
+package "Browser: other keys" {
+  class LocalStorage <<per browser>> {
+    {field} frontdesk.clinic : the clinic file in use on this device
+    {field} frontdesk.clinic.server : mark, the file came from the server
+    {field} frontdesk.clinic.own : mark, saved or reset on this device only
+    {field} frontdesk.patient : string  (P + 5 characters)
+    frontdesk.lang : en | hi | te
+    frontdesk.theme : light | dark
+    {field} frontdesk.synckey : string  (the private browser key)
+    {field} frontdesk.msgseen : list of ticket id:reply time  (last 300)
+    {field} frontdesk.alldevices : "1" | "0"
+    {field} frontdesk.notes : map of ticket id to note  (never sent)
+    {field} frontdesk.alerts : "1"
+  }
+  class SessionStorage <<per tab>> {
+    {field} frontdesk.deskcode : string  (sent as x-desk-code)
+  }
+}
+
+package "Clinic file: clinic-data.json, or the edited copy" {
   class ClinicFile <<root>> {
-    note : string [optional, not read]
-    {field} <b>clinic</b> : Clinic  (required)
-    {field} <b>hours</b> : object of strings  (required)
-    doctors : Doctor[] [optional]
-    services : Service[] [optional]
-    policies : object of strings [optional]
-    emergency_rules : string [optional]
+    note : string [optional]
+    {field} <b>clinic</b> : Clinic
+    {field} <b>hours</b> : object of strings
+    doctors : Doctor[]
+    services : Service[]
+    policies : object of strings
+    emergency_rules : string
     {field} bot_rules : string[]  (sent to the model only)
-    {field} assistant : Assistant [optional]  (v1.1)
+    {field} assistant : Assistant [optional]
   }
   class Clinic {
     name : string
@@ -60,7 +137,7 @@ package "Clinic file: /clinic-data.json, or the edited copy in frontdesk.clinic"
   class Doctor {
     name : string
     role : string
-    {field} days : string  ("Monday to Saturday")
+    days : string
   }
   class Service {
     name : string
@@ -68,167 +145,56 @@ package "Clinic file: /clinic-data.json, or the edited copy in frontdesk.clinic"
     duration : string [optional]
     note : string [optional]
   }
-  class Assistant <<v1.1>> {
-    {field} name : string [optional]  (at most 40 characters)
-    {field} quick_replies : QuickReply[] [optional]  (at most 8)
+  class Assistant {
+    {field} name : string  (at most 40 characters)
+    {field} quick_replies : QuickReply[]  (at most 8)
   }
-  class QuickReply <<v1.1>> {
+  class QuickReply {
     {field} label : string  (at most 24 characters)
     {field} question : string  (at most 120 characters)
-  }
-}
-
-package "localStorage key frontdesk.tickets (JSON array)" {
-  class Ticket {
-    {field} <b>id</b> : string  (T + time + 2 chars, key)
-    {field} patient : string  (patient id)
-    q : string
-    reply : string
-    source : model | file
-    kind : emergency | refuse | medical | booking | answer | notsure | human (v1.1)
-    status : urgent | needs human | answered | closed
-    lang : en | hi | te
-    {field} bookingTime : string  ("" when not a booking)
-    {field} modelOk : boolean  (the rules allowed a reworded reply)
-    afterHours : boolean
-    afterHoursNote : string
-    callBack : boolean
-    {field} contactName : string [optional]  (call-back form)
-    {field} contactPhone : string [optional]  (call-back form, with country code)
-    {field} created : number  (ms since 1970)
-    {field} updated : number [after first change]
-    staffReplies : StaffReply[]
-    {field} feedback : "up" | "down" | ""  (v1.3)
-    {field} remote : true  (v1.3, staff browser only, a ticket from another device)
-  }
-  class StaffReply {
-    text : string
-    {field} at : number  (ms since 1970)
-  }
-}
-
-package "Other localStorage keys" {
-  class Browser <<per browser>> {
-    {field} frontdesk.patient : string  (P + 5 chars)
-    frontdesk.lang : en | hi | te
-    frontdesk.theme : light | dark
-    {field} frontdesk.alerts : "1"  (v1.1, only when staff turn urgent alerts on)
-    {field} frontdesk.notes : map of ticket id to note  (v1.2, written only when a note is saved)
-    {field} frontdesk.synckey : string  (v1.3, this browser's private key for its own tickets)
-    {field} frontdesk.alldevices : "1"  (v1.3, while the staff switch "all devices" is on)
-  }
-  class StaffNote <<v1.2>> {
-    {field} ticket id : string  (the map key)
-    {field} note : string  (private, never sent)
-  }
-}
-
-package "sessionStorage (staff tab only)" {
-  class Session <<v1.3>> {
-    {field} frontdesk.deskcode : string  (the desk code typed for "all devices", sent as x-desk-code)
-  }
-}
-
-package "Ticket store on the server (v1.3, Upstash Redis, kept seven days)" {
-  class StoredTicket <<v1.3>> {
-    {field} the ticket's fields  (as Ticket, without remote)
-    {field} owner : string  (a hash of the browser key that created it)
-  }
-  class TicketOrder <<v1.3>> {
-    {field} ticket ids : ordered list
-  }
-  class OwnerIndex <<v1.3>> {
-    {field} owner : string  (the hash)
-    {field} ticket ids : small set
   }
 }
 
 ClinicFile "1" *-- "1" Clinic : clinic
 ClinicFile "1" *-- "0..*" Doctor : doctors
 ClinicFile "1" *-- "0..*" Service : services
-ClinicFile "1" *-- "0..1" Assistant : assistant (v1.1)
+ClinicFile "1" *-- "0..1" Assistant : assistant
 Assistant "1" *-- "0..8" QuickReply : quick_replies
 Ticket "1" *-- "0..*" StaffReply : staffReplies
-Browser "1" -- "0..*" Ticket : patient
-ClinicFile ..> Ticket : rules engine answer()\nsets reply, kind, status
-Browser "1" *-- "0..*" StaffNote : frontdesk.notes (v1.2)
-StaffNote "0..1" ..> "1" Ticket : ticket id
-Ticket "1" ..> "0..1" StoredTicket : sync.js sends a copy (v1.3)
-TicketOrder "1" o-- "0..*" StoredTicket : in the order opened
-OwnerIndex "1" o-- "0..*" StoredTicket : owner
-Browser ..> OwnerIndex : hash of frontdesk.synckey (v1.3)
+LocalStorage "1" -- "0..*" Ticket : frontdesk.patient
+ClinicFile ..> Ticket : the rules engine sets\nreply, kind, status
+Ticket "1" ..> "1" tickets : sync.js, POST /api/tickets\n(without remote)
+Ticket "1" ..> "1..*" messages : shared.js, POST /api/messages\n(question, bot reply, staff replies)
+ClinicFile "1" ..> "0..1" clinic_data : shared.js, POST /api/clinic\n(desk code)
+LocalStorage ..> tickets : owner = SHA-256 of frontdesk.synckey
+SessionStorage ..> tickets : the desk code reads every device's tickets
 
-note bottom of StoredTicket
-  <b>v1.3 ticket store</b>
-  One record per ticket for seven days.
-  The question, reply and patient never
-  change once stored. A merge keeps every
-  staff reply; the status further along wins.
-  A patient browser reads its own tickets
-  with its key; staff read the list with
-  the clinic's desk code, which the browser
-  keeps for the session only.
+note bottom of tickets
+  <b>On the server</b>
+  A ticket and a message are deleted
+  seven days after they were made.
+  The clinic file row has no expiry.
+  A merge keeps every staff reply; the
+  status further along wins. Patient,
+  question, bot reply, created and
+  owner never change once stored.
 end note
 
 note right of Ticket
   <b>Status from the reply kind</b>
   emergency : urgent
-  medical, booking, notsure : needs human
-  human (v1.1, asks for a person) : needs human
+  medical, booking, notsure, human : needs human
   answer, refuse : answered
   <b>A staff reply moves it on</b>
   urgent or needs human : answered
   answered : closed
   <b>Close ticket</b> : closed
-  callBack = (status was needs human)
-end note
-
-note bottom of Browser
-  <b>After hours</b> (openNow from the hours keys)
-  sets afterHours and afterHoursNote only;
-  the reply, kind and status never change.
-end note
-
-note bottom of QuickReply
-  <b>v1.1 assistant section</b>
-  Optional. A file without it keeps the
-  standard name and the seven standard
-  quick replies (the seventh is
-  "Talk to a person").
 end note
 
 note left of ClinicFile
   <b>Which file is used</b>
-  frontdesk.clinic when it holds an object
-  with a clinic section, else the shipped
-  file. Reset removes frontdesk.clinic.
+  The row in clinic_data when there is one,
+  else the shipped clinic-data.json.
+  frontdesk.clinic is this device's copy.
 end note
-
-package "Shared store on the server (v1.4, Postgres on Neon; else Redis)" {
-  entity messages {
-    {field} id : BIGSERIAL, primary key
-    {field} chat_id : text
-    {field} role : patient | bot | staff
-    {field} text : text, at most 6,000 characters
-    {field} source : text
-    {field} owner : hash of the browser key
-    {field} created_at : bigint
-  }
-  entity tickets {
-    {field} id : text, primary key
-    {field} patient : text
-    {field} owner : hash of the browser key
-    {field} status : text
-    {field} priority : text
-    {field} text : text
-    {field} reply : text
-    {field} data : JSONB, the whole ticket
-    {field} created_at, updated_at : bigint
-  }
-  entity clinic_data {
-    {field} id : 1, the only row
-    {field} data : JSONB, the clinic file
-    {field} updated_at : bigint
-  }
-}
 @enduml

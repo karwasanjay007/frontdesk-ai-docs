@@ -1,0 +1,27 @@
+@startuml j5-staff-reply
+!include style.iuml
+title J5 A staff reply reaches the chat
+actor Staff
+participant "Staff page\n(staff/index.html,\nstaff/staff.js, sync.js)" as SP
+participant "Rules engine\n(core.js)" as Core
+participant "api/tickets.js" as Tix
+database "Store (Postgres)\nthrough api/_store.js" as Store
+participant "api/messages.js" as Msg
+participant "Patient chat\n(chat.js, sync.js, shared.js)" as Chat
+actor Patient
+autonumber
+
+Staff -> SP : opens a ticket, types in the reply box and presses "Send reply"
+SP -> Core : FD.replyToTicket (ticket, text)
+Core --> SP : the reply is on the ticket in the staff browser;\n"Needs human" or "Urgent" becomes "Answered"
+SP --> Staff : "Sent. The patient sees it in their chat."
+SP -> Tix : sync.js: POST /api/tickets (the ticket, with the desk code)
+Tix -> Store : merged into the row in the table tickets:\nevery staff reply kept, the status further along wins
+Chat -> Tix : sync.js: GET /api/tickets?patient=<id> (with this browser's key)
+Tix -> Store : read this patient's tickets
+Tix --> Chat : the ticket with the staff reply
+Chat -> Chat : sync.js merges it into this browser's tickets; chat.js redraws
+Chat --> Patient : the reply, headed "From the clinic team"
+Chat -> Msg : shared.js: POST /api/messages (the staff reply, once)
+Msg -> Store : a row in the table messages
+@enduml

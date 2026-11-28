@@ -1,0 +1,31 @@
+@startuml j7-clinic-file-edit
+!include style.iuml
+title J7 Editing the clinic file
+actor Staff
+participant "Staff page\n(staff/staff.js, staff/form.js,\nshared.js)" as SP
+participant "Rules engine\n(core.js)" as Core
+participant "api/clinic.js" as Clinic
+database "Store (Postgres)\nthrough api/_store.js" as Store
+participant "Patient chat on any device\n(chat.js, shared.js)" as Chat
+actor Patient
+autonumber
+
+Staff -> SP : changes a value under "Edit with a form" or in the JSON box,\nthen presses "Save clinic file"
+SP -> Core : FD.validateClinic, then FD.saveClinic
+Core --> SP : the file is in use in the staff browser
+SP -> Clinic : shared.js: POST /api/clinic (the file, with the desk code)
+Clinic -> Clinic : checks the desk code, then the shape of the file
+Clinic -> Store : the one row of the table clinic_data
+Clinic --> SP : 200
+SP --> Staff : "Saved for every device. The chat answers from this file from the very next question."
+Patient -> Chat : asks a question
+Chat -> Clinic : shared.js: GET /api/clinic (the answer waits two seconds at most)
+Clinic -> Store : read the saved file
+Clinic --> Chat : the saved file
+Chat -> Core : FD.saveClinic, then FD.answer from the new file
+Chat --> Patient : the answer holds the new value
+Staff -> SP : presses "Use the original file"
+SP -> Clinic : shared.js: POST /api/clinic (reset, with the desk code)
+Clinic -> Store : the saved row is deleted
+SP --> Staff : "Back to the original clinic file, on every device."
+@enduml

@@ -1,0 +1,25 @@
+@startuml j4-ask-for-a-person
+!include style.iuml
+title J4 Asking for a person
+actor Patient
+participant "Patient chat\n(index.html, chat.js, sync.js)" as Chat
+participant "Rules engine\n(core.js)" as Core
+database "Browser storage" as LS
+participant "api/tickets.js" as Tix
+database "Store (Postgres)\nthrough api/_store.js" as Store
+participant "Staff page\n(staff/staff.js, staff/tools.js)" as SP
+actor Staff
+autonumber
+
+Patient -> Chat : taps "Talk to a person", or types "Can I speak to a human?"
+Chat -> Core : FD.answer(message, clinic file, language)
+Core -> Core : looks in the clinic file first; it has no answer,\nor only the contact line
+Core --> Chat : the person reply, status "needs human"
+Chat -> Core : FD.addTicket (question, reply, call back)
+Core -> LS : the ticket joins this browser's tickets
+Chat --> Patient : "I am not sure I can settle this myself, so I have passed your request to our team ...";\nbelow it the call-back form
+Chat -> Tix : sync.js: POST /api/tickets (the ticket, with this browser's key)
+Tix -> Store : a row in the table tickets
+Staff -> SP : on /staff chooses the type "Asked for a person"
+SP --> Staff : the ticket, marked "Needs human" and listed under "To call back"
+@enduml

@@ -2,94 +2,38 @@
 !include style.iuml
 title J1 First visit and ask
 actor Patient
-participant "Chat page\n(index.html, chat.js)" as Chat
-participant "core.js" as Core
-database "localStorage" as LS
-participant "api/chat\n(Vercel)" as API
-participant "OpenRouter\n(DeepSeek)" as OR
+participant "Patient chat\n(index.html, chat.js,\nsync.js, shared.js)" as Chat
+participant "Rules engine\n(core.js)" as Core
+database "Browser storage" as LS
+participant "api/clinic.js" as Clinic
+participant "api/messages.js" as Msg
+participant "api/chat.js" as Api
+participant "OpenRouter" as OR
+participant "api/tickets.js" as Tix
+database "Store (Postgres)\nthrough api/_store.js" as Store
 autonumber
 
-Patient -> Chat : opens / (or /?q=<question>)
-Chat -> Core : FD.getLang(), FD.patientId(), FD.applyTheme()
-Core -> LS : read frontdesk.lang, frontdesk.patient, frontdesk.theme
-Core -> LS : write a new patient id (P + 5 characters) when none is stored
-Chat -> API : GET /api/chat (warm-up; the body is read and dropped)
-API --> Chat : 200 {ok: true}
-Chat -> Core : FD.loadClinic()
-Core -> Core : fetch /clinic-data.json\n(window.FRONTDESK_CLINIC if the fetch fails)
-Core -> LS : read frontdesk.clinic
-note right of Core : an edited file with a "clinic" section wins over the shipped one
-Core --> Chat : clinic data
-Chat -> Chat : side(), labels(), render()
-note right of Chat
-side() puts the assistant name (assistant.name,
-else "FrontDesk AI") in the header. labels() fills
-the greeting line and the quick chips FD.quick().
-v1.6: on a phone (up to 767 px) an empty chat shows
-the same #quick chips as starter cards, two columns,
-full width; after the first message they are one row
-above the composer again.
-v1.7: on a desktop (768 px and up) the cards are
-three to a row in a 760 px column left of the clinic
-panel, above a slim bar (+, input, round Send;
-v1.7.1: New chat and mic in the + menu)
-and the red emergency pill; one row after the first
-message.
-The greeting is #greeting (.bot-greeting in
-.greeting-row), never .bot-msg. render() keeps it
-and redraws this patient's earlier tickets.
-end note
-
-opt the address has ?q=
-  Chat -> Chat : history.replaceState() removes q, then send(q)
-  note right of Chat : q is removed before sending, so a reload does not ask again
-end
-
-Patient -> Chat : types a question and presses Send, or taps a quick chip
-Chat -> Chat : provisional user line, pending + 1, showTyping(true)
-note right of Chat : the typing dots are .typing-row, never .bot-msg
-Chat -> Core : FD.answer(q, data, lang)
-Core --> Chat : {kind, status, text, lang, facts, bookingTime, modelOk}
-
-alt kind "answer" and modelOk (a reply built from the file)
-  Chat -> API : POST /api/chat {draft, facts, lang, clinic}\nAbortController stops the call after 6 s
-  API -> OR : chat/completions, deepseek/deepseek-v4.1-flash,\ntemperature 0, reasoning off, one attempt, 8 s limit
-  note right of API
-  Sent: the rules, the DRAFT and the clinic file.
-  The patient's words are never sent.
-  end note
-  OR --> API : reworded answer
-  API --> Chat : 200 {text, model}
-  Chat -> Core : FD.guard(text, ruled, data)
-  alt guard passes
-    Core --> Chat : true: reply is the model text, source "model"
-  else guard fails
-    Core --> Chat : false: reply is the rules text, source "file"
-  end
-else greeting, thanks, safety reply, booking or not sure
-  note over Chat : askModel() returns null at once; no call to api/chat
-end
-
-Chat -> Core : FD.openNow(data)
-Chat -> Core : FD.addTicket({patient, q, reply, source, kind, status, lang,\nbookingTime, afterHours, afterHoursNote, callBack})
-Core -> LS : read frontdesk.tickets, add the ticket, write frontdesk.tickets
-Core --> Chat : ticket {id, created, staffReplies: [], saved}
-Chat -> Chat : remove the provisional line; showTyping(false) when nothing is pending
-Chat -> Chat : ticketRows(t): .user-msg, then the reply as the last .bot-msg
-note right of Chat
-.src-label "Answered from the clinic file" when the
-source is not "model" and the reply is not a
-not-sure or talk-to-a-person reply (v1.6). A Listen
-button sits beside the reply when speechSynthesis
-exists, with the feedback buttons "Helpful" and
-"Not helpful" (thumbs up and down on a phone, v1.6;
-on a desktop plain text with the clinic mark and
-44 px icon buttons that keep their names, v1.7).
-end note
-Chat --> Patient : one complete reply
-opt Patient taps Helpful or Not helpful
-  Chat -> Core : FD.updateTicket(id, {feedback: "up" or "down"})
-  Core -> LS : write frontdesk.tickets (staff see it on the ticket)
-end
-note over Chat, API : with a ticket store, sync.js also sends the ticket to /api/tickets (J9)
+Patient -> Chat : opens the live link
+Chat -> Clinic : shared.js: GET /api/clinic
+Clinic -> Store : read the saved clinic file
+Clinic --> Chat : the saved file, or the shipped clinic-data.json
+Chat --> Patient : the welcome line and seven quick replies
+Patient -> Chat : taps "Timings", or types a question and presses Send
+Chat -> Msg : shared.js: POST /api/messages (the question, with this browser's key)
+Msg -> Store : a row in the table messages
+Chat -> Core : FD.answer(question, clinic file, language)
+Core --> Chat : the draft answer and the facts it holds
+Chat -> Api : POST /api/chat (the draft, its facts, the language, the clinic file)
+Api -> OR : reword the draft; the patient's message is not sent
+OR --> Api : the reworded text
+Api -> Api : FD.guard checks the text against the draft and the file
+Api --> Chat : 200 with the checked text
+Chat -> Core : FD.guard checks it again in the browser
+Chat -> Core : FD.addTicket (question, reply, status "answered")
+Core -> LS : the ticket joins this browser's tickets
+Chat --> Patient : the answer, with "Listen", "Helpful" and "Not helpful"
+Chat -> Msg : shared.js: POST /api/messages (the reply)
+Msg -> Store : a second row in the table messages
+Chat -> Tix : sync.js: POST /api/tickets (the ticket, with this browser's key)
+Tix -> Store : a row in the table tickets, owned by the hash of the key
 @enduml

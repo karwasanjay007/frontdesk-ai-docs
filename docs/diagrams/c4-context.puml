@@ -1,22 +1,26 @@
 @startuml c4-context
 !include <C4/C4_Context>
-title FrontDesk AI: system context (C4 level 1, as built)
+title FrontDesk AI: system context
 
 Person(patient, "Patient", "Asks the clinic a question on a phone or desktop browser, by typing or speaking")
 Person(staff, "Front desk staff", "Opens /staff to answer tickets, call back and edit the clinic file")
-System(frontdesk, "FrontDesk AI", "Patient chat at / and staff page at /staff. Answers only from the clinic file, opens tickets, hands hard questions to a human")
-System_Ext(model, "OpenRouter, DeepSeek V4.1 Flash", "Rewords a drafted file answer; optional. Never sees the patient's words. Also reads a reply aloud (api/tts) and, as a backup, turns a recorded voice clip into text (api/transcribe)")
-System_Ext(upstash, "Upstash Redis (ticket store)", "v1.3: tickets shared across devices, kept seven days; optional")
-System_Ext(speechsvc, "Browser speech services", "Web Speech API: recognition and synthesis in the patient's browser")
-System_Ext(whatsapp, "WhatsApp", "Chat with the clinic, opened from a wa.me link")
-System_Ext(phone, "Clinic phone lines", "040 5550 0123 and the emergency line from the clinic file")
+System(frontdesk, "FrontDesk AI", "Patient chat at / and staff page at /staff. Answers only from the clinic file, opens a ticket per question, hands hard questions to a person")
+System_Ext(neon, "Postgres on Neon", "The shared store: tables messages, tickets and clinic_data. Tickets and messages are kept seven days")
+System_Ext(model, "OpenRouter", "Rewords a drafted file answer; never receives the patient's message. Also reads a reply aloud and, as a backup, turns a recorded voice clip into text")
+System_Ext(speechsvc, "Browser speech services", "Speech recognition and synthesis built into the patient's browser")
+System_Ext(fonts, "Google Fonts", "Font files for both pages")
+System_Ext(whatsapp, "WhatsApp", "Chat with the clinic, opened from a wa.me or web.whatsapp.com link")
+System_Ext(maps, "Google Maps", "Directions, opened from a link with the clinic name and address")
+System_Ext(phone, "Clinic phone lines", "The phone and emergency numbers in the clinic file")
 
 Rel(patient, frontdesk, "Asks questions, reads replies", "HTTPS")
-Rel(staff, frontdesk, "Reads tickets, replies, edits the clinic file", "HTTPS")
-Rel(frontdesk, model, "Asks for a reworded draft, 8 s limit; reply audio, 15 s; backup transcription, 12 s", "HTTPS, key on the server only")
-Rel(frontdesk, upstash, "v1.3: stores and reads tickets", "HTTPS, REST, token on the server only")
+Rel(staff, frontdesk, "Reads tickets, replies, edits the clinic file", "HTTPS, desk code")
+Rel(frontdesk, neon, "Stores and reads tickets, messages and the edited clinic file", "SQL over HTTPS, DATABASE_URL on the server only")
+Rel(frontdesk, model, "Draft to reword, 8 s limit; reply audio, 15 s; backup transcription, 12 s", "HTTPS, key on the server only")
 Rel(frontdesk, speechsvc, "Listens and speaks on request")
-Rel(patient, whatsapp, "Continues the conversation", "wa.me link")
+Rel(frontdesk, fonts, "Loads fonts on page load", "HTTPS")
+Rel(patient, whatsapp, "Continues the conversation", "link")
+Rel(patient, maps, "Opens Directions", "link")
 Rel(patient, phone, "Calls in an emergency", "number shown first")
 
 SHOW_LEGEND()

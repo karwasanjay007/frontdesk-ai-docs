@@ -1,49 +1,32 @@
 @startuml j2-safety-replies
 !include style.iuml
-title J2 Safety replies: emergency, discount or rule change, medical, not sure
+title J2 Safety replies
 actor Patient
-participant "Chat page\n(index.html, chat.js)" as Chat
-participant "core.js" as Core
-database "localStorage" as LS
-participant "WhatsApp" as WA
+participant "Patient chat\n(index.html, chat.js,\nsync.js, shared.js)" as Chat
+participant "Rules engine\n(core.js)" as Core
+database "Browser storage" as LS
+participant "api/messages.js" as Msg
+participant "api/tickets.js" as Tix
+database "Store (Postgres)\nthrough api/_store.js" as Store
 autonumber
 
-Patient -> Chat : sends a question
-Chat -> Core : FD.answer(q, data)
-note right of Core
-Fixed order: emergency, rule change or discount,
-medical, booking, answer from the file, not sure.
-The first rule that matches decides the reply.
-end note
-alt emergency (RX.emergency: facial swelling, bleeding that will not stop, breathing, broken jaw...)
-  Core --> Chat : kind "emergency", status "urgent", T[lang].emergency(data)
-  note right of Chat : "Call <emergency_phone> now. <emergency_rules> I have raised an urgent ticket so our team knows."
-else rule change or discount (RX.injection or RX.discount)
-  Core --> Chat : kind "refuse", status "answered", T[lang].refuse()
-  note right of Chat : cannot change rules or prices, no discount; offers the listed prices, timings and doctors
-else medical (RX.medical, unless it asks how to book)
-  Core --> Chat : kind "medical", status "needs human", T[lang].medical(data)
-  note right of Chat : no advice or diagnosis; a dentist must see you; phone, WhatsApp or a day and time for a call-back
-else nothing in the file answers it
-  Core --> Chat : kind "notsure", status "needs human", T[lang].notSure()
-  note right of Chat
-  Also when a price is asked for something the file does
-  not price, or a named treatment (Invisalign, veneer,
-  crown...) is not in the file.
-  end note
-end
-note over Chat : modelOk is false, so askModel() returns null: no model call
-Chat -> Core : FD.openNow(data), FD.addTicket(...)
-Core -> LS : write frontdesk.tickets (callBack true when "needs human")
-Chat -> Chat : ticketRows(t), with the label "Answered from the clinic file"\n(v1.6: not on a not-sure reply, which answers nothing from the file)
+Patient -> Chat : types the message and presses Send
+Chat -> Core : FD.answer(message, clinic file, language)
+Core -> Core : checks in order: emergency, a rule change round a symptom,\nrule change or discount, medical; "not sure" when the file has no answer
 alt emergency
-  Chat --> Patient : reply and a tel: button "Call <emergency_phone>"; no after-hours note
-else refuse
-  Chat --> Patient : reply only
-else medical or not sure
-  Chat --> Patient : reply, "Continue on WhatsApp", optional call-back form,\nafter-hours note when the clinic is closed
-  opt Patient taps Continue on WhatsApp
-    Patient -> WA : wa.me/91<whatsapp digits>?text=<the question>
-  end
+  Core --> Chat : the emergency reply, status "urgent"
+else rule change or discount
+  Core --> Chat : the refusal, status "answered"
+else medical
+  Core --> Chat : the medical reply, status "needs human"
+else not sure
+  Core --> Chat : the not-sure reply, status "needs human"
 end
+Chat -> Core : FD.addTicket (question, reply, status)
+Core -> LS : the ticket joins this browser's tickets
+Chat --> Patient : the fixed reply; api/chat.js is not called
+Chat -> Msg : shared.js: POST /api/messages (the question, then the reply)
+Msg -> Store : rows in the table messages
+Chat -> Tix : sync.js: POST /api/tickets (the ticket, with this browser's key)
+Tix -> Store : a row in the table tickets; priority "urgent" for an emergency
 @enduml

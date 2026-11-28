@@ -1,90 +1,62 @@
-# api/chat: the server function contract
+# The wording route: /api/chat
 
-`api/chat.js` is the only server code in FrontDesk AI. It asks a language model to reword an answer that
-the rules engine in the browser has already worked out from the clinic file. It never decides what the
-answer is: the browser sends the draft and the facts, and checks whatever comes back with `guard()` (see
-[../data-model.md](../data-model.md), "The guard").
+This page describes version 1.7.2, the version on the live link.
 
-## Environment
+`api/chat.js` asks a language model to reword an answer that the rules engine in the browser has already
+worked out from the clinic file. It never decides what the answer is, and it never receives the patient's
+message as text for the model: the model is given the draft, the facts and the clinic file. The other routes
+are listed in [the architecture](../../ARCHITECTURE.md#the-routes).
 
-| Variable | Use |
-| --- | --- |
-| `OPENROUTER_API_KEY` | The OpenRouter key, read from the server's environment on each request. Without it every POST gets 503. |
-| `OPENROUTER_MODEL` | The model id. When not set, `deepseek/deepseek-v4.1-flash`. |
+## GET /api/chat
 
-The key is sent only in the `Authorization: Bearer` header of the call to OpenRouter. It is never returned
-in a response and never logged: the function has no logging at all.
-
-## GET /api/chat (warm-up)
-
-The chat page sends one GET when it opens, so that the first real question is not slowed by the function
-starting up. It reads the body and ignores the result.
-
-- 200 `{"ok": true}`. No key is needed and nothing else happens.
+A warm-up call made when the chat page opens. It answers 200 `{"ok": true}` and does nothing else.
 
 ## POST /api/chat
 
-Request body, JSON (`Content-Type: application/json`). The chat page sends it only for a reply of kind
-`answer` that the rules engine marked as fit for the model (not greetings or thanks).
+The chat page sends it only for a reply of kind `answer` that the rules engine marked as fit for the model.
 
-| Field | Type | Limit applied by the function |
+| Field | Type | Limit |
 | --- | --- | --- |
-| `question` | string | Converted to a string and cut to 500 characters. Required (not empty). |
-| `draft` | string | The rules engine's reply. Cut to 1,500 characters. Required (not empty). |
-| `facts` | array of strings | Only when it is an array: first 20 items, each converted to a string. Otherwise none. |
+| `draft` | string | The rules engine's reply. Required. Over 1,500 characters is refused with 413. |
+| `facts` | list of strings | The first 20 are used. |
 | `lang` | `en`, `hi` or `te` | Any other value becomes `en`. |
-| `clinic` | object | The clinic file in use. Only when it is an object: turned into JSON and cut to 12,000 characters. Otherwise empty. |
+| `kind` | string | Must be `answer`, or the request is refused with 422. |
+| `clinic` | object | The clinic file in use. Required. The first 12,000 characters of its JSON go to the model. |
+| `q` | string, optional | Used only by the server's own check of whether the reply may be reworded. Over 1,000 characters is refused with 413. |
 
-When the platform has not already parsed the body, the function reads the stream itself and stops with
-400 when it passes 60,000 characters.
+A body the platform has not parsed is read as a stream and refused with 400 past 60,000 characters.
 
-### What it sends to the model
+## What the server does
 
-One call to `https://openrouter.ai/api/v1/chat/completions` with `temperature` 0.2, `max_tokens` 700 and
-reasoning turned off. The system message tells the model to rewrite the draft warmly in at most three
-sentences in the chosen language (English, Hindi in Devanagari, Telugu in Telugu script), to use only
-facts from the draft and the clinic file, to copy every price, time, date, doctor name and phone number
-exactly, to keep the listed facts word for word, and never to give medical advice, name a medicine or
-mention a discount or percentage. The user message holds the question, the draft and the clinic file.
+1. Checks the request limit: 60 POST requests a minute per caller address, or the number in
+   `FRONTDESK_CHAT_PER_MINUTE`.
+2. Loads `core.js` and refuses a draft that is not a file answer (an emergency, medical, refusal, booking or
+   not-sure reply is never reworded).
+3. Makes one call to `https://openrouter.ai/api/v1/chat/completions` with the model in `OPENROUTER_MODEL`
+   (default `deepseek/deepseek-v4.1-flash`), `temperature` 0, `max_tokens` 700 and reasoning off. The model is
+   told to reword the draft in at most three sentences in the chosen language.
+4. Runs the guard (`FD.guard`) on the model's text against the draft and the clinic file. The browser runs the
+   same guard again on what it receives.
 
-### Time limit
+The whole request has 8 seconds on the server; the browser waits 9 seconds. The key is read from
+`OPENROUTER_API_KEY`, sent only to OpenRouter, and never returned.
 
-The model call is cut off after 5,000 ms (an `AbortController`). The chat page waits at most 6,000 ms for
-the whole request. Either way, the patient then sees the rules engine's own text.
+## Replies
 
-### Responses
-
-Every response is JSON with `Content-Type: application/json; charset=utf-8` and `Cache-Control: no-store`.
+Every reply is JSON with `Cache-Control: no-store`.
 
 | Code | Body | When |
 | --- | --- | --- |
-| 200 | `{"text": "<reply>", "model": "<model id>"}` | The model answered in full. `text` is trimmed. |
-| 400 | `{"error": "bad request"}` | The body is not valid JSON, or the streamed body passed 60,000 characters. |
-| 400 | `{"error": "missing question or draft"}` | `question` or `draft` is empty after conversion. |
-| 405 | `{"error": "POST only"}` | Any method other than GET or POST. |
-| 502 | `{"error": "model <status>"}` | OpenRouter answered with a status that is not 2xx, for example `model 429`. |
-| 502 | `{"error": "empty"}` | The model returned no text. |
-| 502 | `{"error": "cut off"}` | The model stopped because it reached `max_tokens` (`finish_reason` is `length`). |
-| 503 | `{"error": "no key"}` | `OPENROUTER_API_KEY` is not set. This is checked before the body is read. |
-| 504 | `{"error": "timeout"}` | The 5,000 ms limit was reached. |
-| 504 | `{"error": "failed"}` | Any other error while calling the model. |
+| 200 | `{"text": "...", "model": "..."}` | The model's wording passed the guard. |
+| 400 | `{"error": ...}` | The body is not valid JSON, or the draft or the clinic file is missing. |
+| 405 | `{"error": ...}` | A method other than GET or POST. |
+| 413 | `{"error": "draft too long"}` or `"question too long"` | A field is over its limit. |
+| 422 | `{"error": "not reworded"}` | The reply is not one the model may reword. |
+| 422 | `{"error": "failed the check"}` | The guard rejected the model's text. |
+| 429 | `{"error": ...}` | Over the request limit. |
+| 502 | `{"error": ...}` | The rules engine did not load, the model returned an error, no text, or a cut-off reply. |
+| 503 | `{"error": "no key"}` | `OPENROUTER_API_KEY` is not set. |
+| 504 | `{"error": ...}` | The time limit was reached, or the call failed. |
 
-The chat page treats every response other than a 200 with a `text` that passes `guard()` the same way: it
-shows the rules engine's text and stores `source: "file"` on the ticket. The UI label "Answered from the
-clinic file" is added to every reply the model did not word. Fixed
-emergency, refuse, medical, booking and not-sure replies never call this function but carry the label
-too.
-
-## POST /api/tts (backup voice for Listen)
-
-`api/tts.js` is a second function. The chat page calls it only when the browser has no voice for the reply's
-language (Chrome on Windows has no Telugu voice) or its voice has not started within 3 s. It sends the bot's
-reply text, never the patient's words, at most 700 characters.
-
-- Request: `{ "text": "...", "lang": "<language>" }`.
-- It calls OpenRouter with the model in `OPENROUTER_TTS_MODEL` (default `openai/gpt-audio-mini`), streams
-  pcm16 audio at 24 kHz and wraps it as WAV. The limit is 15 s.
-- 200 returns `audio/wav`. Any failure returns an error code and the button says no voice is available.
-- The key is read from the server environment, as for `api/chat`, and is never returned.
-- Verified 21 Nov 2026: Telugu and Hindi audio transcribed back word for word; Telugu Listen played to the
-  end in Chrome.
+On anything other than a 200 whose text passes the guard, the chat page shows the rules engine's own text and
+stores `source: "file"` on the ticket.

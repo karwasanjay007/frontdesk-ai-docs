@@ -2,59 +2,55 @@
   "$schema": "https://json-schema.org/draft/2020-12/schema",
   "$id": "https://frontdesk-ai.local/docs/schema/clinic-file.schema.json",
   "title": "FrontDesk AI clinic file",
-  "description": "The clinic file as core.js reads it: /clinic-data.json shipped with the app, or the edited copy saved from the staff page in localStorage key frontdesk.clinic. validateClinic() in core.js requires only that the file is a JSON object with a \"clinic\" object and an \"hours\" object, and that \"services\" and \"doctors\", when present (truthy), are lists. Everything else is optional to the validator. The rules engine reads the fields listed below when they are there; a field it needs for a reply that is missing is printed as it is (for example \"undefined\" in a template), because the validator does not check it. Extra fields are allowed and are kept; the whole file (as JSON, first 12,000 characters) is sent to the server function as the CLINIC FILE the model may use.",
+  "description": "The clinic file: clinic-data.json shipped with the app, or the edited copy saved from the staff page (the one row of the Postgres table clinic_data, and this device's copy in localStorage key frontdesk.clinic). This schema follows the server's check before a save (checkClinic in api/_store.js): a JSON object under 100,000 characters with the required parts below. The browser's own check (validateClinic in core.js) looks at the shape only: an object with a clinic section; hours and policies, when present, are sections; services and doctors, when present, are lists. The engine also reads the same facts in other shapes (cost for price, specialty for role, hours as objects, policies as a list) and fills a field that is left out, so no reply prints an empty value. Extra fields are kept; the first 12,000 characters of the file go to the wording model.",
   "type": "object",
-  "required": ["clinic", "hours"],
+  "required": ["clinic", "hours", "doctors", "services"],
   "properties": {
-    "note": {
-      "type": "string",
-      "description": "Free text about the file. Not read by the code, but sent to the model with the rest of the file."
-    },
+    "note": { "type": "string", "description": "Free text about the file. Not read by the rules engine." },
     "clinic": {
       "type": "object",
-      "description": "Required by validateClinic(). Its presence is also what clinic() checks to decide that an edited copy in frontdesk.clinic is used instead of the shipped file.",
+      "required": ["name", "address", "phone", "emergency_phone"],
       "properties": {
-        "name": { "type": "string", "description": "Shown in the greeting, the page title and the staff page heading." },
-        "address": { "type": "string", "description": "Location replies and the side panel." },
-        "landmark": { "type": "string", "description": "Added after the address when present." },
-        "phone": { "type": "string", "description": "Medical and contact replies; the side panel tel: link uses its digits." },
-        "emergency_phone": { "type": "string", "description": "First thing in an emergency reply; also the emergency link in the page footer." },
-        "whatsapp": { "type": "string", "description": "Medical and contact replies and the wa.me link. Its digits are used; a 10-digit number gets 91 in front." },
-        "languages": { "type": "array", "items": { "type": "string" }, "description": "Joined with commas in the language reply." },
-        "parking": { "type": "string", "description": "The parking reply." }
+        "name": { "type": "string", "minLength": 1 },
+        "address": { "type": "string", "minLength": 1 },
+        "landmark": { "type": "string", "description": "Added after the address." },
+        "phone": { "type": "string", "minLength": 1 },
+        "emergency_phone": { "type": "string", "minLength": 1, "description": "First thing in an emergency reply." },
+        "whatsapp": { "type": "string", "description": "Used for the WhatsApp links." },
+        "languages": { "type": "array", "items": { "type": "string" } },
+        "parking": { "type": "string" }
       },
       "additionalProperties": true
     },
     "hours": {
       "type": "object",
-      "description": "Required by validateClinic(). Each key names one or more days and each value is the timing text. A day matches a key when the key contains the day name (\"sunday\") or is a range written day_to_day (\"monday_to_saturday\"; a range may wrap past Sunday). The first matching key in file order wins. lunch_break and public_holidays are read only when the question says lunch or holiday. For the open or closed check a value must hold a range such as \"9:00 am to 8:00 pm\"; a value containing \"closed\", \"emergency only\" or \"emergencies only\" counts as closed.",
-      "additionalProperties": { "type": "string" },
-      "properties": {
-        "lunch_break": { "type": "string" },
-        "public_holidays": { "type": "string" }
-      }
+      "minProperties": 1,
+      "description": "Each key names one or more days (for example monday_to_saturday, sunday) and each value is the timing text. lunch_break and public_holidays are read when the question asks for them.",
+      "additionalProperties": true
     },
     "doctors": {
       "type": "array",
-      "description": "Optional. When present (truthy) validateClinic() requires a list.",
+      "minItems": 1,
       "items": {
         "type": "object",
+        "required": ["name"],
         "properties": {
-          "name": { "type": "string", "description": "Written \"Dr. First Last\"; the guard looks for names in this form." },
-          "role": { "type": "string", "description": "Matched against the question: a role with child, paediatric, pediatric or kid answers children questions; orthodont answers braces and aligners; root canal or filling answers those." },
-          "days": { "type": "string", "description": "A day name, a list of day names, or a range \"monday to saturday\" (case does not matter; no wrap past Sunday)." }
+          "name": { "type": "string", "minLength": 1 },
+          "role": { "type": "string" },
+          "days": { "type": "string" }
         },
         "additionalProperties": true
       }
     },
     "services": {
       "type": "array",
-      "description": "Optional. When present (truthy) validateClinic() requires a list.",
+      "minItems": 1,
       "items": {
         "type": "object",
+        "required": ["name", "price"],
         "properties": {
-          "name": { "type": "string", "description": "Matched against the question by a fixed word list (root canal, cleaning, filling, whitening, braces, implant, X-ray, consultation) and by any word of the name longer than four letters." },
-          "price": { "type": "string", "description": "Copied as written. The guard reads amounts written \"Rs 1,200\"." },
+          "name": { "type": "string", "minLength": 1 },
+          "price": { "type": ["string", "number"], "description": "Copied into the reply as written." },
           "duration": { "type": "string" },
           "note": { "type": "string" }
         },
@@ -63,27 +59,28 @@
     },
     "policies": {
       "type": "object",
-      "description": "Optional. Each key the rules engine knows is read when the question asks for it; other keys are kept and sent to the model only.",
+      "description": "The shipped file has appointments, walk_ins, payment, emi, insurance, children, first_visit and sterilisation. Any other key is answered when the question names it.",
+      "additionalProperties": true
+    },
+    "emergency_rules": { "type": "string", "description": "Added after the emergency number in an emergency reply. An emergency named only here is also treated as one." },
+    "bot_rules": { "type": "array", "items": { "type": "string" }, "description": "Not read by the rules engine; sent to the model with the rest of the file." },
+    "assistant": {
+      "type": "object",
+      "description": "Optional; not in the shipped file. Sets the assistant's name and the clinic's own quick replies.",
       "properties": {
-        "appointments": { "type": "string", "description": "Added to booking replies and to how-to-book, cancel or reschedule answers." },
-        "walk_ins": { "type": "string" },
-        "payment": { "type": "string" },
-        "emi": { "type": "string" },
-        "insurance": { "type": "string", "description": "When it contains \"cashless with A and B.\" the names are pulled out for the insurance reply and kept as facts." },
-        "children": { "type": "string" },
-        "first_visit": { "type": "string" },
-        "sterilisation": { "type": "string" }
-      },
-      "additionalProperties": { "type": "string" }
-    },
-    "emergency_rules": {
-      "type": "string",
-      "description": "Added after the emergency number in an emergency reply."
-    },
-    "bot_rules": {
-      "type": "array",
-      "items": { "type": "string" },
-      "description": "Not read by the rules engine; sent to the model with the rest of the file. The rules are enforced in code by answer() and guard()."
+        "name": { "type": "string", "maxLength": 40 },
+        "quick_replies": {
+          "type": "array",
+          "maxItems": 8,
+          "items": {
+            "type": "object",
+            "properties": {
+              "label": { "type": "string", "maxLength": 24 },
+              "question": { "type": "string", "maxLength": 120 }
+            }
+          }
+        }
+      }
     }
   },
   "additionalProperties": true

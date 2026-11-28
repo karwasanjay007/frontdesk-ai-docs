@@ -1,0 +1,36 @@
+@startuml j8-languages-and-voice
+!include style.iuml
+title J8 Languages and voice
+actor Patient
+participant "Patient chat\n(index.html, chat.js, compact.js)" as Chat
+participant "Rules engine\n(core.js)" as Core
+participant "Browser speech" as Sp
+participant "api/transcribe.js" as Tr
+participant "api/tts.js" as Tts
+participant "OpenRouter" as OR
+autonumber
+
+Patient -> Chat : chooses HI in the language box
+Chat -> Core : FD.setLang
+Chat --> Patient : the labels and quick replies are in Hindi
+Patient -> Chat : taps "+", then "Speak your question", and speaks
+Chat -> Sp : start speech recognition in the chosen language
+alt the browser's recognition answers
+  Sp --> Chat : the words heard
+else it does not start within 2.5 seconds, or its service refuses
+  Chat -> Tr : POST /api/transcribe (a recorded clip and the language)
+  Tr -> OR : the clip, to be turned into text
+  Tr --> Chat : the text
+end
+Chat -> Core : FD.answer(the words, clinic file, language)
+Chat --> Patient : the reply in Hindi
+Patient -> Chat : taps "Listen" under the reply
+alt the browser has a voice for the language
+  Chat -> Sp : read the reply aloud
+else it has none, or the voice stays silent for 3 seconds
+  Chat -> Tts : POST /api/tts (the reply's text, 700 characters at most)
+  Tts -> OR : the text, to be spoken
+  Tts --> Chat : the sound as a WAV file
+end
+Chat --> Patient : the reply is heard; if both voices fail,\n"No voice for this language on this device"
+@enduml

@@ -1,0 +1,29 @@
+@startuml j6-shared-tickets
+!include style.iuml
+title J6 Shared tickets and the desk code
+actor Staff
+participant "Staff page\n(staff/index.html,\nstaff/staff.js, sync.js)" as SP
+participant "api/health.js" as Health
+participant "api/tickets.js" as Tix
+database "Store (Postgres)\nthrough api/_store.js" as Store
+participant "Patient chat on another device\n(chat.js, sync.js)" as Chat
+actor Patient
+autonumber
+
+Staff -> SP : opens /staff
+SP -> Health : sync.js: GET /api/health (no desk code typed yet)
+Health --> SP : the store is "postgres"
+SP --> Staff : this browser's tickets, and "Enter the desk code to see tickets from every device."
+Staff -> SP : types the desk code and presses "Use code"
+SP -> Tix : sync.js: GET /api/tickets (with the desk code)
+Tix -> Tix : compares it with FRONTDESK_DESK_CODE
+Tix -> Store : read the newest tickets of every device
+Tix --> SP : the list
+SP --> Staff : "<n> from other devices"; the queue shows them, urgent first
+Patient -> Chat : asks a question on a phone
+Chat -> Tix : sync.js: POST /api/tickets (the ticket, with that browser's key)
+Tix -> Store : a row in the table tickets, owned by the hash of the key
+SP -> Tix : sync.js: GET /api/tickets again, about every five seconds
+Tix --> SP : the list, now with the new ticket
+SP --> Staff : the new ticket appears in the queue
+@enduml
