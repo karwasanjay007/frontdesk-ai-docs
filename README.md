@@ -1,5 +1,7 @@
 # FrontDesk AI
 
+> **This branch is the submitted version.** These are the documents of FrontDesk AI 1.0.0.0 as they stood when the project was submitted on 21 November 2026. They are kept for comparison and are not updated. The documents of the live version (1.7.2.0) are on the [main branch](../../tree/main).
+
 FrontDesk AI is the front desk chat for a dental clinic: patients get answers from the clinic's own file at any hour, and anything it cannot answer goes to a human as a ticket.
 
 | | |
