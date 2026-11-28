@@ -167,7 +167,7 @@ original as a whole; nothing is merged. Reset removes `frontdesk.clinic`, so the
 (`window.FRONTDESK_CLINIC` is read as a fallback, but no page sets it) and every message gets the
 not-sure reply unless an edited copy is stored.
 
-## Validation of the brief's clinic file
+## Validation of the specification's clinic file
 
 `clinic-data.json` in the code folder was checked against
 [schema/clinic-file.schema.json](schema/clinic-file.schema.json) on 20 November 2026 with a small

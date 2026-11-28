@@ -10,8 +10,8 @@ every document, this one included, stays in this repository.
 | Last revised | 21 Nov 2026 |
 
 How to read the last column. "SC 1.n" is row n of SPEC-CHECK.md section 1 (Must do); "SC 2" names a row
-of section 2 (How they check); "SC 3.n" is bonus item n; "SC 4" is the phone and light/dark part of the
-scoring. S-1 to S-9 are the nine must-do scenarios in PRD.md 5.4 (spec items 1 to 9, in order). S-10 to
+of section 2 (How they check); "SC 3.n" is optional feature n; "SC 4" is the phone and light/dark part of the
+specification. S-1 to S-9 are the nine must-do scenarios in PRD.md 5.4 (spec items 1 to 9, in order). S-10 to
 S-17 are the eight sample questions, in the order of `sample-questions.json`: S-10 Saturday time, S-11
 root canal, S-12 children's doctor, S-13 Niva Bupa, S-14 Invisalign, S-15 painkiller, S-16 face
 swelling, S-17 ignore your rules. G-n are the decisions in PRD.md 2.5.
@@ -39,12 +39,12 @@ swelling, S-17 ignore your rules. G-n are the decisions in PRD.md 2.5.
 | 16 | After-hours awareness | With the device clock set outside the file's hours (Playwright `clock`), a separate small note under the reply (never inside the `.bot-msg`) says when the clinic opens next, worked out from the file, and the ticket is marked for the morning list. The same eight questions at 11 pm and at 11 am give identical `.bot-msg` text and identical `data-status` values; inside hours no note shows | G26, G11a |
 | 17 | Morning call list | `/staff` shows "To call back" first: needs-human and booking tickets with the question, age and requested time. It does not change `#ticket-queue` or any `data-status` | G27 |
 | 18 | Continue on WhatsApp | Each needs-human and booking reply offers a `wa.me` link to the file's `whatsapp` number with the question written in; the link sits outside the `.bot-msg` | G28 |
-| 19 | Any booking-based business | A gym file pasted in the editor gives answers from the gym file with the same code; recorded for the judges' note | G29 |
+| 19 | Any booking-based business | A gym file pasted in the editor gives answers from the gym file with the same code; recorded | G29 |
 | 20 | Voice in and out | Microphone and speaker buttons in English, Hindi and Telugu using the browser's speech; hidden where the browser lacks it; typing works the same with them hidden. The buttons sit outside the `.bot-msg` | G30 |
 | 21 | Phone layout | At 375 px nothing scrolls sideways (`scrollWidth <= clientWidth`), `#chat-input` and `#chat-send` stay in view with the keyboard space and after 30 messages; targets 44 px; content reaches the right edge at 375, 768, 1366, 1920 and 2560 px | SC 1.9, SC 4; S-9; G23 |
 | 22 | Themes and contrast | Light and dark both pass the contrast scan at 4.5:1 in every state: rest, hover, focus, the typing indicator, the label, staff actions, toasts and the editor | SC 4; G24 |
 
-**Extras never weaken a graded item.** Steps 16 to 20 add nothing inside a `.bot-msg` that could break a
+**Extras never weaken a tested item.** Steps 16 to 20 add nothing inside a `.bot-msg` that could break a
 `must_include` check or add a number that is not in the file. The speaker button, the WhatsApp link and
 the after-hours note are not `.bot-msg` elements and sit beside the reply, never inside its text. None
 of them adds a ticket, changes a `data-status` or repeats an id; after hours never changes an answer or a
@@ -54,13 +54,13 @@ status (G11a). After each of steps 16 to 20,
 ## Where the agent will likely get stuck
 
 Known traps from earlier builds; keep them and add this project's own.
-- A `confirm()` or `alert()` in front of a graded action: an automated tester dismisses it and the action
+- A `confirm()` or `alert()` in front of a tested action: an automated test dismisses it and the action
   silently fails. Use Undo.
-- Demo data loaded on the first visit, when the tester starts by adding its own record: a duplicate, then
+- Demo data loaded on the first visit, when the test starts by adding its own record: a duplicate, then
   wrong totals.
-- Validation stricter than the specification: a valid input the tester types is refused.
+- Validation stricter than the specification: a valid input the test types is refused.
 - A colour that passes at rest but not on hover, after a click or in a toast, in one of the two themes.
-- A formatted number the grader cannot parse: keep the sign next to the digits, keep one figure per graded
+- A formatted number automated tests cannot parse: keep the sign next to the digits, keep one figure per tested
   element.
 - Testing a deploy by changing only the `#` part of the address: the page does not reload and shows the
   old build. Load the page afresh.
@@ -68,11 +68,11 @@ Known traps from earlier builds; keep them and add this project's own.
   expressions with the Write tool, not a heredoc.
 
 This project's own traps:
-- **The greeting class.** A welcome message with class `bot-msg` is read as the answer if the tester
+- **The greeting class.** A welcome message with class `bot-msg` is read as the answer if the test
   reads before the reply lands. The greeting is `bot-greeting` only (G1).
 - **The typing indicator.** A "typing..." bubble with class `bot-msg` is the last `.bot-msg` for a moment.
   It never carries the class, and the reply element is added once, complete; never streamed (G2).
-- **Model latency and timeout.** A slow model reply leaves the tester waiting or reading nothing. The file
+- **Model latency and timeout.** A slow model reply leaves the test waiting or reading nothing. The file
   answer is computed first; the model gets about 5 s in the function and 6 s in the browser; on timeout
   the file answer shows with the label (G3).
 - **Echo.** "I cannot give you 50% off" puts "50%" in the reply; "do not take ibuprofen" names a
@@ -92,18 +92,18 @@ This project's own traps:
 - **Cross-page updates.** The `storage` event fires only in the other tab, not the one that wrote. The
   chat page listens for it and also reads storage on load and on focus, so a staff reply appears whether
   the chat was open or reopened (G12).
-- **The no-key run.** The tester removes the key; the score is the lower of the two runs. Every answer
+- **The no-key run.** The test removes the key; both runs must pass. Every answer
   must come from the rules engine first, and step 9's no-key test runs after every deploy, not once (G4,
   G15).
 - **Extras inside the reply.** A speaker button label, a WhatsApp link text or an after-hours time placed
-  inside the `.bot-msg` changes the text the tester reads. Keep them beside it (steps 16 to 20).
-- **The device clock.** Grading may run at night. The after-hours note is separate from the `.bot-msg`,
+  inside the `.bot-msg` changes the text the test reads. Keep them beside it (steps 16 to 20).
+- **The device clock.** Tests may run at night. The after-hours note is separate from the `.bot-msg`,
   and the answer and the status are the same by day and by night; every time in the note comes from the
   file (G26, G11a).
 - **A staff reply that leaves the status unchanged.** Replying to an `answered` ticket and setting it to
   `answered` again fails "the ticket status changes". A reply always moves the status: `needs human` or
   `urgent` to `answered`, `answered` to `closed` (G11).
-- **The wrong ticket open by default.** If the newest ticket is open but the tester replies to an urgent
+- **The wrong ticket open by default.** If the newest ticket is open but the test replies to an urgent
   one, the box is not where it looks. `/staff` opens the first ticket in priority order: urgent, then
   needs human, newest first (G11).
 - **Statuses by reply kind.** An advice reply marked `answered`, or a refusal marked `needs human`, puts
@@ -119,11 +119,10 @@ This project's own traps:
 | R3 | Literal specification test on the live link | `tests/brief.mjs` ALL PASS with the key and with the key removed; result saved in `tests/` and copied to `evidence/` here |
 | R4 | Contrast in every state, both themes | The contrast scan (pattern: sai-resources `kickoff/tools/contrast-scan.mjs`) acts, hovers every control, finds nothing under 4.5:1 |
 | R5 | Widths and targets | No sideways scroll at 375 px; content reaches the right edge at 375, 768, 1366, 1920 and 2560 px; 44 px targets |
-| R6 | Four reviews in parallel | Category leaders, brief and coaching audit, functional test, visual critique, each in `review/`; every finding fixed or recorded; all tests rerun on the live link |
-| R7 | Documentation set complete | README (judges or client section first), SPEC-CHECK filled, ARCHITECTURE (C4), docs/epics.md traced to tests, docs/journeys.md, docs/data-model.md, docs/schema/; every diagram PlantUML plus SVG; no PNG or JPG; links checked |
+| R6 | Four reviews in parallel | Category leaders, specification audit, functional test, visual critique; every finding fixed or recorded; all tests rerun on the live link |
+| R7 | Documentation set complete | README (client section first), SPEC-CHECK filled, ARCHITECTURE (C4), docs/epics.md traced to tests, docs/journeys.md, docs/data-model.md, docs/schema/; every diagram PlantUML plus SVG; no PNG or JPG; links checked |
 | R8 | Recapture the specification | The page captured again and compared with `spec-page.md`; changes reflected in SPEC-CHECK.md; R3 rerun |
-| R9 | Publish the documents if they are to be shared | This repository made public with one baseline commit by the GitHub no-reply author, after a scan for keys, tokens and personal details; the code repository stays private while the competition is open |
-| R10 | Submission draft | The form filled only on request, the draft shown in full, stopped before Submit |
+| R9 | Publish the documents if they are to be shared | This repository made public with one baseline commit by the GitHub no-reply author, after a scan for keys, tokens and personal details; the code repository stays private |
 
 ## Revisions
 

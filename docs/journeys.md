@@ -39,18 +39,18 @@ java -jar plantuml.jar -tsvg -charset UTF-8 docs/diagrams/j*.puml
 
 Epics (from [epics.md](epics.md)): E1 Patient chat, E2 Answers from the clinic file, E3 Safety, E4 Tickets
 and staff page, E5 Languages and quick replies, E6 Clinic data editing, E7 Phone, themes, accessibility, E8
-Grader contract and robustness, E9 Go further (after hours, call list, WhatsApp hand-off, any business,
+Test contract and robustness, E9 Go further (after hours, call list, WhatsApp hand-off, any business,
 voice).
 
 ## The journeys
 
 | ID | Name | Who | Trigger | Outcome | Epics |
 | --- | --- | --- | --- | --- | --- |
-| J1 | First visit and ask | Patient (or a tester) | Opens the chat, optionally with `?q=`, and asks a question | Greeting shown; one complete reply as the last `.bot-msg`, worded by the model and checked, or from the file with the label when the model path failed or was skipped; a ticket saved | E1, E2, E4, E7, E8 |
+| J1 | First visit and ask | Patient (or a test) | Opens the chat, optionally with `?q=`, and asks a question | Greeting shown; one complete reply as the last `.bot-msg`, worded by the model and checked, or from the file with the label when the model path failed or was skipped; a ticket saved | E1, E2, E4, E7, E8 |
 | J2 | Safety replies | Patient | Asks about an emergency, a discount or rule change, a medical problem, or something the file does not cover | Fixed reply with no model call, shown with the "Answered from the clinic file" label; ticket saved as urgent, answered or needs human; emergency call button, or WhatsApp and call-back offers | E3, E4, E9 |
 | J3 | Booking and call-back | Patient | Asks to book, with or without a day and time | Booking ticket with the requested time, needs human; optional name and phone saved on the ticket; after-hours note when closed | E4, E9 |
 | J4 | Staff reply | Clinic staff | Opens `/staff`, picks a ticket and sends a reply | Reply stored on the ticket, status moved on, the reply appears in the patient's chat as "From the clinic team" | E4, E9 |
-| J5 | No-key run | Patient (or a tester) | Asks a question while the key is missing, the model fails, is slow, or its text is rejected | The same answers from the file, with "Answered from the clinic file" | E2, E8 |
+| J5 | No-key run | Patient (or a test) | Asks a question while the key is missing, the model fails, is slow, or its text is rejected | The same answers from the file, with "Answered from the clinic file" | E2, E8 |
 | J6 | Clinic file edit | Clinic staff | Edits the clinic file on `/staff` and saves, or resets it | File checked and stored; the chat answers from the edited file; reset brings back the shipped file | E6 |
 | J7 | Languages and voice | Patient | Picks a language, types in Hindi or Telugu script, speaks, or taps Listen | Labels in the chosen language; replies in the script of the question; speech in and out where the browser supports it | E5, E9 |
 

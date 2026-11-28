@@ -3,7 +3,7 @@
 title FrontDesk AI: containers (C4 level 2, as built)
 
 Person(patient, "Patient", "Phone or desktop browser")
-Person(staff, "Front desk staff", "Same browser in the competition build")
+Person(staff, "Front desk staff", "Same browser in this release")
 System_Ext(openrouter, "OpenRouter", "Model gateway, chat completions API")
 System_Ext(deepseek, "DeepSeek V4.1 Flash", "deepseek/deepseek-v4.1-flash, reasoning off")
 System_Ext(whatsapp, "WhatsApp", "wa.me link")

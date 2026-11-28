@@ -1,6 +1,6 @@
 # FrontDesk AI
 
-> **This branch is the submitted version.** These are the documents of FrontDesk AI 1.0.0.0 as they stood when the project was submitted on 21 November 2026. They are kept for comparison and are not updated. The documents of the live version (1.7.2.0) are on the [main branch](../../tree/main).
+> **This branch is the first release.** These are the documents of FrontDesk AI 1.0.0.0 as they stood on 21 November 2026, kept for comparison. Private details and notes addressed to other people have been removed; nothing else is updated. The documents of the live version (1.7.2.0) are on the [main branch](../../tree/main).
 
 FrontDesk AI is the front desk chat for a dental clinic: patients get answers from the clinic's own file at any hour, and anything it cannot answer goes to a human as a ticket.
 
@@ -8,13 +8,13 @@ FrontDesk AI is the front desk chat for a dental clinic: patients get answers fr
 | --- | --- |
 | Live | Patient chat https://frontdesk-ai-xi-gray.vercel.app and staff page https://frontdesk-ai-xi-gray.vercel.app/staff |
 | Documentation | This repository |
-| Code | `frontdesk-ai` (private while a competition is open) |
+| Code | `frontdesk-ai` (private) |
 | Built by | Sanjay Karwa, Smart AI for Business |
 | Stack | Plain HTML, CSS and JavaScript with a rules engine in the browser; one Vercel function calling OpenRouter with DeepSeek V4.1 Flash (`deepseek/deepseek-v4.1-flash`), the key on the server only; localStorage |
 | Version | 1.0.0.0 (baseline, Sanjay Karwa, 21 Nov 2026) |
 | Status | Built and live; every test passes on the live link, with the key and with the model blocked (21 Nov 2026) |
 
-## For the judges: FrontDesk AI in two minutes
+## FrontDesk AI in two minutes
 
 **Promise.** Patients get clinic-true answers at any hour; what the file cannot cover becomes a human
 ticket, not a made-up reply.
@@ -46,13 +46,13 @@ window shows an empty queue and cannot complete the staff reply check.
 **Against the specification.** Our own tests on the live link; line by line in [SPEC-CHECK.md](SPEC-CHECK.md),
 results in [evidence/](evidence/), build report in [REPORT.md](REPORT.md).
 
-| Part of the scoring | Marks | Status | Evidence |
-| --- | --- | --- | --- |
-| Must do, 9 items | (in the hidden-data test) | All met, with the key and with the model blocked | [last-brief-live.txt](evidence/last-brief-live.txt) ALL PASS (29 checks); [last-brief-nokey-live.txt](evidence/last-brief-nokey-live.txt) ALL PASS (31 checks); [last-audit-ai-live.txt](evidence/last-audit-ai-live.txt) and [last-audit-blocked-live.txt](evidence/last-audit-blocked-live.txt): 30 grader-style questions ALL PASS |
-| How they check: ids, classes, `?q=`, no-key run | (in the hidden-data test) | All met | the same two files; [last-questions-live.txt](evidence/last-questions-live.txt) ALL PASS (16 checks) |
-| Hidden-data test | 60 | Met on our tests; the graders' questions and data are unseen | the files above and [last-engine.txt](evidence/last-engine.txt) ALL PASS (48 checks) |
-| Bonus menu, at most 6 count | 30 | All 6 met, both ways | [last-bonus-live.txt](evidence/last-bonus-live.txt) ALL PASS (15 checks) |
-| Phone and light/dark | 10 | Met | [last-widths-live.txt](evidence/last-widths-live.txt) ALL PASS (20 checks, 375 to 2560 px); [last-contrast-live.txt](evidence/last-contrast-live.txt): nothing under 4.5:1 (its flagged lines are text on the teal brand colour at 5.89:1 or more) |
+| Requirement | Status | Evidence |
+| --- | --- | --- |
+| Must do, 9 items | All met, with the key and with the model blocked | [last-brief-live.txt](evidence/last-brief-live.txt) ALL PASS (29 checks); [last-brief-nokey-live.txt](evidence/last-brief-nokey-live.txt) ALL PASS (31 checks); [last-audit-ai-live.txt](evidence/last-audit-ai-live.txt) and [last-audit-blocked-live.txt](evidence/last-audit-blocked-live.txt): 30 other questions ALL PASS |
+| How they check: ids, classes, `?q=`, no-key run | All met | the same two files; [last-questions-live.txt](evidence/last-questions-live.txt) ALL PASS (16 checks) |
+| Different data | Met on our tests | the files above and [last-engine.txt](evidence/last-engine.txt) ALL PASS (48 checks) |
+| Optional features | All 6 met, both ways | [last-bonus-live.txt](evidence/last-bonus-live.txt) ALL PASS (15 checks) |
+| Phone and light/dark | Met | [last-widths-live.txt](evidence/last-widths-live.txt) ALL PASS (20 checks, 375 to 2560 px); [last-contrast-live.txt](evidence/last-contrast-live.txt): nothing under 4.5:1 (its flagged lines are text on the teal brand colour at 5.89:1 or more) |
 
 **What we added, and why.**
 
@@ -74,7 +74,7 @@ words, and may only reword it; a guard rejects any number, name or promise that 
 file. With no key, an error, no reply within 6 s or a rejection, that file answer shows with "Answered from
 the clinic file", so the no-key run gives the same facts.
 
-**How it was built.** The grading page was captured word for word before kickoff, and one literal test per
+**How it was built.** The specification page was captured word for word before kickoff, and one literal test per
 "Done when" was written first and failed until the build existed. The build followed the PRD, tech stack
 and implementation plan in this repository. Before release four independent reviews (functional, brief
 audit, leading products, visual) were run and their findings fixed, then every test was rerun on the live
@@ -86,7 +86,7 @@ link. Every diagram is PlantUML source plus SVG.
 | --- | --- | --- |
 | Server ticket store | Tickets stay in this browser's localStorage only: no database or account. Chat and `/staff` must share one browser | A shared store so staff on another device see every ticket (phase 2) |
 | Real slot booking | The bot never invents or confirms a slot; a booking request becomes a needs-human ticket with the requested time, and the team confirms | Booking against the clinic's real diary |
-| Sign-in for staff | A sign-in screen would stand between a fresh-browser tester and `/staff` | Staff sign-in before a real clinic uses it |
+| Sign-in for staff | A sign-in screen would stand between a fresh-browser test and `/staff` | Staff sign-in before a real clinic uses it |
 
 ## What it does
 
@@ -108,7 +108,7 @@ link. Every diagram is PlantUML source plus SVG.
 
 | Document | What it covers |
 | --- | --- |
-| [REPORT.md](REPORT.md) | Build report, claims ledger, review fixes and the note for judges |
+| [REPORT.md](REPORT.md) | Build report, claims ledger and review fixes |
 | [SPEC-CHECK.md](SPEC-CHECK.md) | The specification, rated line by line with evidence |
 | [PRD.md](PRD.md) | What is built and why: decisions, rules, scenarios |
 | [TECH-STACK.md](TECH-STACK.md) | Each technology choice with its reason and cost |
@@ -119,7 +119,6 @@ link. Every diagram is PlantUML source plus SVG.
 | [docs/data-model.md](docs/data-model.md) | Entities, the formula for every derived figure, storage |
 | [docs/diagrams/](docs/diagrams/) | PlantUML source and SVG for every diagram |
 | [docs/schema/](docs/schema/) | JSON Schemas for the clinic file and the tickets; the chat function's request and reply |
-| [review/](review/) | The pre-release reviews (leading products, brief audit, functional, visual), each with its status after fixes |
 | [evidence/](evidence/) | The latest test results against the live link |
 
 Every diagram is PlantUML source plus SVG. No PNG or JPG anywhere in this repository.

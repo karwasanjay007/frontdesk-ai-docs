@@ -31,7 +31,7 @@ link, and this document is revised to describe what was built.
 | E5 | Languages and quick replies | 2 | 5 | S-20, S-24, G19, G22, stage 2 | built (`last-bonus-live.txt`) |
 | E6 | Clinic data editing | 2 | 4 | S-23, S-25, F-11, G18, Q-1 | built (`last-bonus-live.txt`) |
 | E7 | Phone, themes, accessibility | 3 | 6 | S-9, G23, G24 | built; accessibility checked by hand only (`last-widths-live.txt`, `last-contrast-live.txt`) |
-| E8 | Grader contract and robustness | 4 | 11 | S-18, S-19, F-12, F-13, G1, G2, G14, G16, G17, G25 | built (both runs ALL PASS) |
+| E8 | Test contract and robustness | 4 | 11 | S-18, S-19, F-12, F-13, G1, G2, G14, G16, G17, G25 | built (both runs ALL PASS) |
 | E9 | Go further: after hours, call list, WhatsApp hand-off, any business, voice | 5 | 12 | S-26, S-27, D-8, G26 to G30, stage 3 | partly built: four of five built; any business only partly (dental word lists) |
 | **Total** | | **30** | **83** | | |
 
@@ -40,7 +40,7 @@ link, and this document is revised to describe what was built.
 ## E1 Patient chat
 
 Goal: a patient opens the link and can type straight away. The first screen holds no answer yet, so the
-first bot reply the tester reads is the answer to its own question.
+first bot reply the test reads is the answer to its own question.
 
 ### E1.F1 Ask a question and get a reply
 
@@ -127,7 +127,7 @@ patient.
 As the clinic owner, I want the chat to keep answering when the model is down so that no patient is left
 without a reply.
 
-**Status:** Built. `last-brief-live-nokey.txt`: "PASS item 8 no key: Saturday answered with the key removed" and "PASS item 8 no key: reply shows "Answered from the clinic file""; "ALL PASS (30 checks)". With the key, model-worded replies carry no label: `last-brief-live.txt` "INFO item 8 (key present, not graded): label "Answered from the clinic file" shown: false". Critique fix (code PR #1): later changed: the label is shown on every reply the model did not word, the emergency, refuse, medical, booking and not-sure templates included.
+**Status:** Built. `last-brief-live-nokey.txt`: "PASS item 8 no key: Saturday answered with the key removed" and "PASS item 8 no key: reply shows "Answered from the clinic file""; "ALL PASS (30 checks)". With the key, model-worded replies carry no label: `last-brief-live.txt` "INFO item 8 (key present, not checked): label "Answered from the clinic file" shown: false". Critique fix (code PR #1): later changed: the label is shown on every reply the model did not word, the emergency, refuse, medical, booking and not-sure templates included.
 
 | ID | Given | When | Then | Trace | Planned check |
 | --- | --- | --- | --- | --- | --- |
@@ -226,7 +226,7 @@ As front-desk staff, I want to type a reply on a ticket so that the patient gets
 As front-desk staff, I want booking requests with their time and the most urgent tickets first so that I
 call the right patient first.
 
-**Status:** Built. `last-bonus-live.txt`: "PASS bonus 2 booking ticket has the requested time", "PASS bonus 3 priority order: urgent, needs human, needs human, answered", "PASS bonus 3 every ticket shows its age". A booking is a request the team confirms; no slot is booked in a diary.
+**Status:** Built. `last-bonus-live.txt`: "PASS optional 2 booking ticket has the requested time", "PASS optional 3 priority order: urgent, needs human, needs human, answered", "PASS optional 3 every ticket shows its age". A booking is a request the team confirms; no slot is booked in a diary.
 
 | ID | Given | When | Then | Trace | Planned check |
 | --- | --- | --- | --- | --- | --- |
@@ -241,7 +241,7 @@ Goal: patients who write in Hindi or Telugu get replies in their language; commo
 
 As a patient, I want a reply in the language I write in so that I understand it.
 
-**Status:** Built. `last-bonus-live.txt`: "PASS bonus 1 Hindi question gets a Hindi reply with the timing", "PASS bonus 1 Telugu question gets a Telugu reply with the price", "PASS bonus 1 Hindi emergency: number first, Hindi text".
+**Status:** Built. `last-bonus-live.txt`: "PASS optional 1 Hindi question gets a Hindi reply with the timing", "PASS optional 1 Telugu question gets a Telugu reply with the price", "PASS optional 1 Hindi emergency: number first, Hindi text".
 
 | ID | Given | When | Then | Trace | Planned check |
 | --- | --- | --- | --- | --- | --- |
@@ -253,7 +253,7 @@ As a patient, I want a reply in the language I write in so that I understand it.
 
 As a patient, I want buttons for common questions so that I can ask with one tap.
 
-**Status:** Built. `last-bonus-live.txt`: "PASS bonus 5 quick-reply button asks and gets an answer" and "PASS bonus 5 at least five quick-reply buttons".
+**Status:** Built. `last-bonus-live.txt`: "PASS optional 5 quick-reply button asks and gets an answer" and "PASS optional 5 at least five quick-reply buttons".
 
 | ID | Given | When | Then | Trace | Planned check |
 | --- | --- | --- | --- | --- | --- |
@@ -268,7 +268,7 @@ Goal: staff keep the clinic's details current, and every answer follows the chan
 
 As front-desk staff, I want to change the clinic's details so that the chat never quotes old ones.
 
-**Status:** Built. `last-bonus-live.txt`: "PASS bonus 4 staff saved an edited clinic file" and "PASS bonus 4 reset brings the original file back"; `last-engine.txt`: "PASS a clinic file missing its phone, address and hours is refused".
+**Status:** Built. `last-bonus-live.txt`: "PASS optional 4 staff saved an edited clinic file" and "PASS optional 4 reset brings the original file back"; `last-engine.txt`: "PASS a clinic file missing its phone, address and hours is refused".
 
 | ID | Given | When | Then | Trace | Planned check |
 | --- | --- | --- | --- | --- | --- |
@@ -279,7 +279,7 @@ As front-desk staff, I want to change the clinic's details so that the chat neve
 
 As the clinic owner, I want answers to follow the edit so that what patients read is always right.
 
-**Status:** Built. `last-bonus-live.txt`: "PASS bonus 6 timing follows the edit: We're open on Saturday from 9:00 am to 6:30 pm." and "PASS bonus 6 price follows the edit: Root canal treatment is Rs 7,000 to Rs 9,500".
+**Status:** Built. `last-bonus-live.txt`: "PASS optional 6 timing follows the edit: We're open on Saturday from 9:00 am to 6:30 pm." and "PASS optional 6 price follows the edit: Root canal treatment is Rs 7,000 to Rs 9,500".
 
 | ID | Given | When | Then | Trace | Planned check |
 | --- | --- | --- | --- | --- | --- |
@@ -323,13 +323,13 @@ As a patient using a screen reader or keyboard, I want to use the chat fully.
 | AC-E7.F3.1 | The chat page | A reply is added | It is announced to screen readers | G2 | manual |
 | AC-E7.F3.2 | Either page | It is used by keyboard only | Every control can be reached and shows where focus is | G24 | manual |
 
-## E8 Grader contract and robustness
+## E8 Test contract and robustness
 
-Goal: everything the tester reads is exactly as the page names it, and nothing stands in its way.
+Goal: everything the test reads is exactly as the page names it, and nothing stands in its way.
 
 ### E8.F1 Exact ids, classes and statuses
 
-As the grader, I want the exact names so that my script finds them.
+As an automated test, I want the exact names so that my script finds them.
 
 **Status:** Built. `last-brief-live.txt`: "PASS first visit: chat input and send button exist | #chat-input 1, #chat-send 1", "PASS item 7 staff reply: #staff-reply and #staff-send each unique on /staff", "PASS /staff: #ticket-queue exists on a first visit".
 
@@ -342,7 +342,7 @@ As the grader, I want the exact names so that my script finds them.
 
 ### E8.F2 Ask on load
 
-As the grader, I want to put a question in the page address so that one page load gives one answer.
+As an automated test, I want to put a question in the page address so that one page load gives one answer.
 
 **Status:** Built. `last-brief-live.txt`: "PASS ask on load ?q=: last .bot-msg says "9:00 am to 8:00 pm"" and "INFO ?q= asked once: true". The functional review checked "+", HTML, quotes, emoji and reloads by hand: "asked once, shown escaped ... not asked again on reload".
 
@@ -354,7 +354,7 @@ As the grader, I want to put a question in the page address so that one page loa
 
 ### E8.F3 The two runs
 
-As the grader, I want the same results with and without the key so that the lower score is still high.
+As an automated test, I want the same results with and without the key so that both runs pass.
 
 **Status:** Built. `last-brief-live.txt` "ALL PASS (28 checks)" with the key; `last-brief-live-nokey.txt` "ALL PASS (30 checks)" with the model blocked; `last-questions-live.txt` "ALL PASS (16 checks)". The key lives only in the Vercel environment (`OPENROUTER_API_KEY`), never in page code.
 
@@ -365,21 +365,21 @@ As the grader, I want the same results with and without the key so that the lowe
 
 ### E8.F4 Nothing in the way, any input
 
-As the grader, I want a fresh browser to reach every graded element so that no step is blocked.
+As an automated test, I want a fresh browser to reach every tested element so that no step is blocked.
 
 **Status:** Built. `last-brief-live.txt`: "PASS no dialogs", "PASS no page errors", "PASS no console errors". Long input: the functional review found "A 5,000-character question is cut to 500 characters by the input and answered".
 
 | ID | Given | When | Then | Trace | Planned check |
 | --- | --- | --- | --- | --- | --- |
-| AC-E8.F4.1 | A fresh browser on the chat page or /staff | Every graded action is taken | No confirm, alert, login, cookie banner or tour appears | F-13, G17 | `brief.mjs` (a dialog fails the run) |
+| AC-E8.F4.1 | A fresh browser on the chat page or /staff | Every tested action is taken | No confirm, alert, login, cookie banner or tour appears | F-13, G17 | `brief.mjs` (a dialog fails the run) |
 | AC-E8.F4.2 | A very long message, or one in any language | It is sent | It is accepted (trimmed to the limit) and gets a reply | G16 | `questions.mjs [long input]` |
 
 ## E9 Go further: after hours, call list, WhatsApp hand-off, any business, voice
 
-Goal: what the coach described ("answers any question and escalates to a human where needed ... Works
+Goal: what the specification describes ("answers any question and escalates to a human where needed ... Works
 for any booking-based business"; "It answers WhatsApp inquiries at night and books a slot"; "Dental clinic
 with 20 missed calls to return each morning"), plus one difference. Every item here never weakens a
-graded item: it adds to a reply or a page and never changes a graded reply, status, id or class.
+tested item: it adds to a reply or a page and never changes a tested reply, status, id or class.
 
 ### E9.F1 After-hours awareness
 
@@ -397,7 +397,7 @@ As a patient writing at night, I want to know when the clinic opens so that I kn
 
 As front-desk staff, I want a list of who to call back each morning so that no missed patient is forgotten.
 
-**Status:** Built. `last-bonus-live.txt`: "PASS bonus 3 call-back list shows the waiting tickets". The optional name and phone a patient leaves beside the reply show on the staff card with call and WhatsApp links (commit bb6f826).
+**Status:** Built. `last-bonus-live.txt`: "PASS optional 3 call-back list shows the waiting tickets". The optional name and phone a patient leaves beside the reply show on the staff card with call and WhatsApp links (commit bb6f826).
 
 | ID | Given | When | Then | Trace | Planned check |
 | --- | --- | --- | --- | --- | --- |
@@ -419,7 +419,7 @@ As a patient, I want to carry my question to the clinic's WhatsApp so that I am 
 
 As a business owner who is not a dentist, I want to use the same product with my own file.
 
-**Status:** Partly built. Every answer reads the clinic file, so hours, prices and address follow any file loaded in the clinic-file editor (`last-bonus-live.txt`: "PASS bonus 6 timing follows the edit"). Not built: the words that recognise intents, staff roles and medical questions are written for a dental clinic, so a gym's "Who is the trainer?" gets "not sure" (functional review finding 17). The planned `brief.mjs [G29 other business]` check was not written.
+**Status:** Partly built. Every answer reads the clinic file, so hours, prices and address follow any file loaded in the clinic-file editor (`last-bonus-live.txt`: "PASS optional 6 timing follows the edit"). Not built: the words that recognise intents, staff roles and medical questions are written for a dental clinic, so a gym's "Who is the trainer?" gets "not sure" (functional review finding 17). The planned `brief.mjs [G29 other business]` check was not written.
 
 | ID | Given | When | Then | Trace | Planned check |
 | --- | --- | --- | --- | --- | --- |

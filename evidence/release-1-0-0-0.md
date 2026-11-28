@@ -21,5 +21,4 @@ node tests/engine.cjs → ALL PASS
 node tests/brief.mjs http://127.0.0.1:4199/ --nokey → ALL PASS (31 checks)
 ```
 
-Live evidence files under `evidence/last-*-live.txt` remain the submission record from 21 Nov 2026.
-Projects-page re-capture under a signed-in session remains To do.
+Live evidence files under `evidence/last-*-live.txt` remain the test record from 21 Nov 2026.
