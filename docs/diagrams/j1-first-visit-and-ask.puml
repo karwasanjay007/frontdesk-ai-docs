@@ -1,40 +1,48 @@
 @startuml j1-first-visit-and-ask
-!include style.iuml
-skinparam maxMessageSize 120
+!include c4-sequence.iuml
 title J1 First visit and ask
-actor Patient
-participant "Patient chat\n(index.html, chat.js,\nsync.js, shared.js)" as Chat
-participant "Rules engine\n(core.js)" as Core
-database "Browser\nstorage" as LS
-participant "api/clinic.js" as Clinic
-participant "api/messages.js" as Msg
-participant "api/chat.js" as Api
-participant "OpenRouter" as OR
-participant "api/tickets.js" as Tix
-database "Store (Postgres)\nthrough api/_store.js" as Store
-autonumber
+actor "Patient" as Patient <<person>>
+box "In the patient's browser"
+participant "Patient chat\n(chat.js, sync.js,\nshared.js)" as Chat <<container>>
+participant "Rules engine\n(core.js)" as Core <<component>>
+database "Browser storage\n(localStorage)" as LS <<store>>
+end box
+box "Vercel functions"
+participant "api/clinic.js\napi/messages.js\napi/tickets.js" as R <<container>>
+participant "api/chat.js" as Api <<container>>
+end box
+participant "OpenRouter" as OR <<external>>
+database "Postgres\n(Neon)" as Store <<store>>
 
+== Opening the chat ==
 Patient -> Chat : opens the live link
-Chat -> Clinic : shared.js: GET /api/clinic
-Clinic -> Store : read the saved clinic file
-Clinic --> Chat : the saved file, or the shipped clinic-data.json
-Chat --> Patient : the welcome line and seven quick replies
-Patient -> Chat : taps "Timings", or types a question and presses Send
-Chat -> Msg : shared.js: POST /api/messages (the question, with this browser's key)
-Msg -> Store : a row in the table messages
-Chat -> Core : FD.answer(question, clinic file, language)
-Core --> Chat : the draft answer and the facts it holds
-Chat -> Api : POST /api/chat (the draft, its facts, the language, the clinic file)
-Api -> OR : reword the draft; the patient's message is not sent
-OR --> Api : the reworded text
-Api -> Api : FD.guard checks the text against the draft and the file
-Api --> Chat : 200 with the checked text
-Chat -> Core : FD.guard checks it again in the browser
-Chat -> Core : FD.addTicket (question, reply, status "answered")
-Core -> LS : the ticket joins this browser's tickets
-Chat --> Patient : the answer, with "Listen", "Helpful" and "Not helpful"
-Chat -> Msg : shared.js: POST /api/messages (the reply)
-Msg -> Store : a second row in the table messages
-Chat -> Tix : sync.js: POST /api/tickets (the ticket, with this browser's key)
-Tix -> Store : a row in the table tickets, owned by the hash of the key
+Chat -> R : shared.js: GET /api/clinic
+R -> Store : read the saved clinic file
+R --> Chat : the saved file, or the\nshipped clinic-data.json
+Chat --> Patient : the welcome line and\nseven quick replies
+== A question ==
+Patient -> Chat : taps "Timings", or\ntypes a question\nand presses Send
+Chat -> R : shared.js: POST /api/messages\n(the question, with\nthis browser's key)
+R -> Store : a row in the\ntable messages
+Chat -> Core : FD.answer(question,\nclinic file, language)
+Core --> Chat : the draft answer and\nthe facts it holds
+note over Core, R : The rules engine always answers first;\nthe model may only reword the draft.
+Chat -> Api : POST /api/chat (the draft,\nits facts, the language,\nthe clinic file)
+alt the model answers in time and passes the guard
+  Api -> OR : reword the draft;\nthe patient's message\nis not sent
+  OR --> Api : the reworded text
+  Api -> Api : FD.guard checks the\ntext against the draft\nand the file
+  Api --> Chat : 200 with the checked text
+  Chat -> Core : FD.guard checks it\nagain in the browser
+else no answer in time, or a check fails
+  note over Chat, Api : the draft is shown as it is (see J9)
+end
+Chat -> Core : FD.addTicket (question,\nreply, status "answered")
+Core -> LS : the ticket joins\nthis browser's tickets
+Chat --> Patient : the answer, with\n"Listen", "Helpful"\nand "Not helpful"
+Chat -> R : shared.js: POST /api/messages\n(the reply)
+R -> Store : a second row in\nthe table messages
+Chat -> R : sync.js: POST /api/tickets\n(the ticket, with\nthis browser's key)
+R -> Store : a row in the table\ntickets, owned by\nthe hash of the key
+note left of Store : tickets and messages\nare deleted after 7 days
 @enduml

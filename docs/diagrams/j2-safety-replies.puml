@@ -1,32 +1,37 @@
 @startuml j2-safety-replies
-!include style.iuml
+!include c4-sequence.iuml
 title J2 Safety replies
-actor Patient
-participant "Patient chat\n(index.html, chat.js,\nsync.js, shared.js)" as Chat
-participant "Rules engine\n(core.js)" as Core
-database "Browser storage" as LS
-participant "api/messages.js" as Msg
-participant "api/tickets.js" as Tix
-database "Store (Postgres)\nthrough api/_store.js" as Store
-autonumber
+actor "Patient" as Patient <<person>>
+box "In the patient's browser"
+participant "Patient chat\n(chat.js, sync.js,\nshared.js)" as Chat <<container>>
+participant "Rules engine\n(core.js)" as Core <<component>>
+database "Browser storage\n(localStorage)" as LS <<store>>
+end box
+box "Vercel functions"
+participant "api/messages.js" as Msg <<container>>
+participant "api/tickets.js" as Tix <<container>>
+end box
+database "Postgres\n(Neon)" as Store <<store>>
 
-Patient -> Chat : types the message and presses Send
-Chat -> Core : FD.answer(message, clinic file, language)
-Core -> Core : checks in order: emergency, a rule change round a symptom,\nrule change or discount, medical; "not sure" when the file has no answer
+Patient -> Chat : types the message\nand presses Send
+Chat -> Core : FD.answer(message,\nclinic file, language)
+Core -> Core : checks in order: emergency,\na rule change round a symptom,\nrule change or discount, medical;\n"not sure" when the file\nhas no answer
 alt emergency
-  Core --> Chat : the emergency reply, status "urgent"
+  Core --> Chat : the emergency reply,\nstatus "urgent"
 else rule change or discount
-  Core --> Chat : the refusal, status "answered"
+  Core --> Chat : the refusal,\nstatus "answered"
 else medical
-  Core --> Chat : the medical reply, status "needs human"
+  Core --> Chat : the medical reply,\nstatus "needs human"
 else not sure
-  Core --> Chat : the not-sure reply, status "needs human"
+  Core --> Chat : the not-sure reply,\nstatus "needs human"
 end
-Chat -> Core : FD.addTicket (question, reply, status)
-Core -> LS : the ticket joins this browser's tickets
-Chat --> Patient : the fixed reply; api/chat.js is not called
-Chat -> Msg : shared.js: POST /api/messages (the question, then the reply)
-Msg -> Store : rows in the table messages
-Chat -> Tix : sync.js: POST /api/tickets (the ticket, with this browser's key)
-Tix -> Store : a row in the table tickets; priority "urgent" for an emergency
+note right of Core : A safety reply is fixed text:\nno model reworks it.
+Chat -> Core : FD.addTicket (question,\nreply, status)
+Core -> LS : the ticket joins\nthis browser's tickets
+Chat --> Patient : the fixed reply;\napi/chat.js is not called
+Chat -> Msg : shared.js: POST /api/messages\n(the question, then the reply)
+Msg -> Store : rows in the\ntable messages
+Chat -> Tix : sync.js: POST /api/tickets\n(the ticket, with\nthis browser's key)
+Tix -> Store : a row in the table tickets;\npriority "urgent"\nfor an emergency
+note left of Store : an urgent ticket is listed\nfirst on the staff page
 @enduml

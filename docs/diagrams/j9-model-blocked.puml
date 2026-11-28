@@ -1,30 +1,35 @@
 @startuml j9-model-blocked
-!include style.iuml
+!include c4-sequence.iuml
 title J9 The run with the model blocked
-actor Patient
-participant "Patient chat\n(index.html, chat.js)" as Chat
-participant "Rules engine\n(core.js)" as Core
-database "Browser storage" as LS
-participant "api/chat.js" as Api
-participant "OpenRouter" as OR
-autonumber
+actor "Patient" as Patient <<person>>
+box "In the patient's browser"
+participant "Patient chat\n(chat.js)" as Chat <<container>>
+participant "Rules engine\n(core.js)" as Core <<component>>
+database "Browser storage\n(localStorage)" as LS <<store>>
+end box
+box "Vercel functions"
+participant "api/chat.js" as Api <<container>>
+end box
+participant "OpenRouter" as OR <<external>>
 
 Patient -> Chat : taps "Timings"
-Chat -> Core : FD.answer(question, clinic file, language)
-Core --> Chat : the draft answer and the facts it holds
-Chat -> Api : POST /api/chat (the draft, its facts, the language, the clinic file)
+Chat -> Core : FD.answer(question,\nclinic file, language)
+Core --> Chat : the draft answer and\nthe facts it holds
+note over Core, Api : The rules engine always answers first;\nthe model may only reword the draft.
+Chat -> Api : POST /api/chat (the draft,\nits facts, the language,\nthe clinic file)
 alt the request is blocked, or no reply within 9 seconds
   Chat -> Chat : gives up waiting
 else no model key on the server
   Api --> Chat : 503 "no key"
 else the model fails or is slow
-  Api -> OR : reword the draft (one try, 8 seconds)
+  Api -> OR : reword the draft\n(one try, 8 seconds)
   Api --> Chat : 502 or 504
 else the reworded text breaks a rule of the guard
   Api -> Api : FD.guard rejects the text
   Api --> Chat : 422 "failed the check"
 end
-Chat -> Core : FD.addTicket (question, the draft as the reply)
-Core -> LS : the ticket joins this browser's tickets
-Chat --> Patient : the draft, with "Answered from the clinic file" under it
+Chat -> Core : FD.addTicket (question,\nthe draft as the reply)
+Core -> LS : the ticket joins\nthis browser's tickets
+Chat --> Patient : the draft, with "Answered\nfrom the clinic file" under it
+note right of Patient : the patient always gets\nan answer from the file
 @enduml

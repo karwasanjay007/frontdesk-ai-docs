@@ -1,29 +1,48 @@
 @startuml j6-shared-tickets
-!include style.iuml
+!include c4-sequence.iuml
 title J6 Shared tickets and the desk code
-actor Staff
-participant "Staff page\n(staff/index.html,\nstaff/staff.js, sync.js)" as SP
-participant "api/health.js" as Health
-participant "api/tickets.js" as Tix
-database "Store (Postgres)\nthrough api/_store.js" as Store
-participant "Patient chat on another device\n(chat.js, sync.js)" as Chat
-actor Patient
-autonumber
+actor "Staff" as Staff <<person>>
+box "In the staff browser"
+participant "Staff page\n(staff/staff.js,\nsync.js)" as SP <<container>>
+end box
+box "Vercel functions"
+participant "api/health.js" as Health <<container>>
+participant "api/tickets.js" as Tix <<container>>
+end box
+database "Postgres\n(Neon)" as Store <<store>>
+box "In the patient's browser"
+participant "Patient chat on\nanother device\n(chat.js, sync.js)" as Chat <<container>>
+end box
+actor "Patient" as Patient <<person>>
 
+== Opening the staff page ==
 Staff -> SP : opens /staff
-SP -> Health : sync.js: GET /api/health (no desk code typed yet)
-Health --> SP : the store is "postgres"
-SP --> Staff : this browser's tickets, and "Enter the desk code to see tickets from every device."
-Staff -> SP : types the desk code and presses "Use code"
-SP -> Tix : sync.js: GET /api/tickets (with the desk code)
-Tix -> Tix : compares it with FRONTDESK_DESK_CODE
-Tix -> Store : read the newest tickets of every device
-Tix --> SP : the list
-SP --> Staff : "<n> from other devices"; the queue shows them, urgent first
-Patient -> Chat : asks a question on a phone
-Chat -> Tix : sync.js: POST /api/tickets (the ticket, with that browser's key)
-Tix -> Store : a row in the table tickets, owned by the hash of the key
-SP -> Tix : sync.js: GET /api/tickets again, about every five seconds
-Tix --> SP : the list, now with the new ticket
-SP --> Staff : the new ticket appears in the queue
+SP -> Health : sync.js: GET /api/health\n(no desk code typed yet)
+alt the store is reachable
+  Health --> SP : the store is "postgres"
+else the store cannot be reached
+  note over SP, Health : the page says so and shows\nthe tickets kept in this browser
+end
+SP --> Staff : this browser's tickets, and\n"Enter the desk code to see\ntickets from every device."
+note over SP, Staff : without the desk code the staff page\nshows this browser's tickets only
+== The desk code ==
+Staff -> SP : types the desk code\nand presses "Use code"
+SP -> Tix : sync.js: GET /api/tickets\n(with the desk code)
+Tix -> Tix : compares it with\nFRONTDESK_DESK_CODE
+alt the code matches
+  Tix -> Store : read the newest tickets\nof every device
+  Tix --> SP : the list
+  SP --> Staff : "<n> from other devices";\nthe queue shows them,\nurgent first
+else wrong code (401), or none set on the server (403)
+  note over SP, Tix : the page asks for the code again,\nor says the clinic has not set one
+end
+== A new ticket from a phone ==
+Patient -> Chat : asks a question\non a phone
+Chat -> Tix : sync.js: POST /api/tickets\n(the ticket, with\nthat browser's key)
+Tix -> Store : a row in the table tickets,\nowned by the hash of the key
+loop every 5 s while the page is open
+  SP -> Tix : sync.js: GET /api/tickets again,\nabout every five seconds
+  Tix --> SP : the list, now with\nthe new ticket
+end
+SP --> Staff : the new ticket\nappears in the queue
 @enduml

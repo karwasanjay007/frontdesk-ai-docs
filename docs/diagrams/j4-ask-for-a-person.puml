@@ -1,25 +1,33 @@
 @startuml j4-ask-for-a-person
-!include style.iuml
+!include c4-sequence.iuml
 title J4 Asking for a person
-actor Patient
-participant "Patient chat\n(index.html, chat.js, sync.js)" as Chat
-participant "Rules engine\n(core.js)" as Core
-database "Browser storage" as LS
-participant "api/tickets.js" as Tix
-database "Store (Postgres)\nthrough api/_store.js" as Store
-participant "Staff page\n(staff/staff.js, staff/tools.js)" as SP
-actor Staff
-autonumber
+actor "Patient" as Patient <<person>>
+box "In the patient's browser"
+participant "Patient chat\n(chat.js, sync.js)" as Chat <<container>>
+participant "Rules engine\n(core.js)" as Core <<component>>
+database "Browser storage\n(localStorage)" as LS <<store>>
+end box
+box "Vercel functions"
+participant "api/tickets.js" as Tix <<container>>
+end box
+database "Postgres\n(Neon)" as Store <<store>>
+box "In the staff browser"
+participant "Staff page\n(staff/staff.js,\nstaff/tools.js)" as SP <<container>>
+end box
+actor "Staff" as Staff <<person>>
 
-Patient -> Chat : taps "Talk to a person", or types "Can I speak to a human?"
-Chat -> Core : FD.answer(message, clinic file, language)
-Core -> Core : looks in the clinic file first; it has no answer,\nor only the contact line
-Core --> Chat : the person reply, status "needs human"
-Chat -> Core : FD.addTicket (question, reply, call back)
-Core -> LS : the ticket joins this browser's tickets
-Chat --> Patient : "I am not sure I can settle this myself, so I have passed your request to our team ...";\nbelow it the call-back form
-Chat -> Tix : sync.js: POST /api/tickets (the ticket, with this browser's key)
-Tix -> Store : a row in the table tickets
-Staff -> SP : on /staff chooses the type "Asked for a person"
-SP --> Staff : the ticket, marked "Needs human" and listed under "To call back"
+== The request ==
+Patient -> Chat : taps "Talk to a person",\nor types "Can I speak\nto a human?"
+Chat -> Core : FD.answer(message,\nclinic file, language)
+Core -> Core : looks in the clinic\nfile first; it has no\nanswer, or only the\ncontact line
+note right of Core : A question the file answers\nis answered, not passed on.
+Core --> Chat : the person reply,\nstatus "needs human"
+Chat -> Core : FD.addTicket (question,\nreply, call back)
+Core -> LS : the ticket joins\nthis browser's tickets
+Chat --> Patient : "I am not sure I can\nsettle this myself, so\nI have passed your\nrequest to our team ...";\nbelow it the\ncall-back form
+Chat -> Tix : sync.js: POST /api/tickets\n(the ticket, with\nthis browser's key)
+Tix -> Store : a row in the\ntable tickets
+== At the desk ==
+Staff -> SP : on /staff chooses the\ntype "Asked for a person"
+SP --> Staff : the ticket, marked\n"Needs human" and listed\nunder "To call back"
 @enduml

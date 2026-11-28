@@ -1,27 +1,37 @@
 @startuml j5-staff-reply
-!include style.iuml
+!include c4-sequence.iuml
 title J5 A staff reply reaches the chat
-actor Staff
-participant "Staff page\n(staff/index.html,\nstaff/staff.js, sync.js)" as SP
-participant "Rules engine\n(core.js)" as Core
-participant "api/tickets.js" as Tix
-database "Store (Postgres)\nthrough api/_store.js" as Store
-participant "api/messages.js" as Msg
-participant "Patient chat\n(chat.js, sync.js, shared.js)" as Chat
-actor Patient
-autonumber
+actor "Staff" as Staff <<person>>
+box "In the staff browser"
+participant "Staff page\n(staff/staff.js,\nsync.js)" as SP <<container>>
+participant "Rules engine\n(core.js)" as Core <<component>>
+end box
+box "Vercel functions"
+participant "api/tickets.js" as Tix <<container>>
+participant "api/messages.js" as Msg <<container>>
+end box
+database "Postgres\n(Neon)" as Store <<store>>
+box "In the patient's browser"
+participant "Patient chat\n(chat.js, sync.js,\nshared.js)" as Chat <<container>>
+end box
+actor "Patient" as Patient <<person>>
 
-Staff -> SP : opens a ticket, types in the reply box and presses "Send reply"
-SP -> Core : FD.replyToTicket (ticket, text)
-Core --> SP : the reply is on the ticket in the staff browser;\n"Needs human" or "Urgent" becomes "Answered"
-SP --> Staff : "Sent. The patient sees it in their chat."
-SP -> Tix : sync.js: POST /api/tickets (the ticket, with the desk code)
-Tix -> Store : merged into the row in the table tickets:\nevery staff reply kept, the status further along wins
-Chat -> Tix : sync.js: GET /api/tickets?patient=<id> (with this browser's key)
-Tix -> Store : read this patient's tickets
-Tix --> Chat : the ticket with the staff reply
-Chat -> Chat : sync.js merges it into this browser's tickets; chat.js redraws
-Chat --> Patient : the reply, headed "From the clinic team"
-Chat -> Msg : shared.js: POST /api/messages (the staff reply, once)
-Msg -> Store : a row in the table messages
+== At the desk ==
+Staff -> SP : opens a ticket,\ntypes in the reply\nbox and presses\n"Send reply"
+SP -> Core : FD.replyToTicket\n(ticket, text)
+Core --> SP : the reply is on the ticket\nin the staff browser;\n"Needs human" or "Urgent"\nbecomes "Answered"
+SP --> Staff : "Sent. The patient sees\nit in their chat."
+SP -> Tix : sync.js: POST /api/tickets\n(the ticket, with\nthe desk code)
+Tix -> Store : merged into the row\nin the table tickets
+note left of Store : every staff reply is kept;\nthe status further along wins
+== In the patient's chat ==
+loop every 10 s while the chat is open
+  Chat -> Tix : sync.js: GET /api/tickets\n?patient=<id> (with\nthis browser's key)
+  Tix -> Store : read this patient's tickets
+  Tix --> Chat : the ticket with\nthe staff reply
+end
+Chat -> Chat : sync.js merges it into\nthis browser's tickets;\nchat.js redraws
+Chat --> Patient : the reply, headed\n"From the clinic team"
+Chat -> Msg : shared.js: POST /api/messages\n(the staff reply, once)
+Msg -> Store : a row in the\ntable messages
 @enduml

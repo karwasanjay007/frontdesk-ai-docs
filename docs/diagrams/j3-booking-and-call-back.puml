@@ -1,30 +1,39 @@
 @startuml j3-booking-and-call-back
-!include style.iuml
+!include c4-sequence.iuml
 title J3 Booking and call-back
-actor Patient
-participant "Patient chat\n(index.html, chat.js,\ncallback-ask.js, sync.js)" as Chat
-participant "Rules engine\n(core.js)" as Core
-database "Browser storage" as LS
-participant "api/tickets.js" as Tix
-database "Store (Postgres)\nthrough api/_store.js" as Store
-participant "Staff page\n(staff/index.html,\nstaff/staff.js, sync.js)" as SP
-actor Staff
-autonumber
+actor "Patient" as Patient <<person>>
+box "In the patient's browser"
+participant "Patient chat\n(chat.js,\ncallback-ask.js,\nsync.js)" as Chat <<container>>
+participant "Rules engine\n(core.js)" as Core <<component>>
+database "Browser storage\n(localStorage)" as LS <<store>>
+end box
+box "Vercel functions"
+participant "api/tickets.js" as Tix <<container>>
+end box
+database "Postgres\n(Neon)" as Store <<store>>
+participant "Staff page\n(staff/staff.js,\nsync.js)" as SP <<container>>
+actor "Staff" as Staff <<person>>
 
-Patient -> Chat : types "I want to book a check-up tomorrow at 5 pm" and presses Send
-Chat -> Core : FD.answer(message, clinic file, language)
-Core --> Chat : the booking reply with the time asked for, status "needs human"
-Chat -> Core : FD.addTicket (question, reply, requested time, call back)
-Core -> LS : the ticket joins this browser's tickets
-Chat --> Patient : "Thank you. I have passed your request for ... to our team";\nbelow it the form "So we can call you back (optional)"
-Patient -> Chat : fills "Your name" and "Phone number" and presses Save
-Chat -> Core : FD.updateTicket (name, phone with its country code)
-Core -> LS : the ticket now holds the name and the number
-Chat --> Patient : "Thank you, <name>. We will call <phone>."
-Chat -> Tix : sync.js: POST /api/tickets (the ticket, with this browser's key)
-Tix -> Store : the row in the table tickets is added, then updated
-Staff -> SP : opens /staff and enters the desk code
-SP -> Tix : sync.js: GET /api/tickets (with the desk code)
-Tix --> SP : the tickets of every device
-SP --> Staff : the ticket under "To call back" with the name, the phone and "requested <time>"
+== The request ==
+Patient -> Chat : types "I want to\nbook a check-up\ntomorrow at 5 pm"\nand presses Send
+Chat -> Core : FD.answer(message,\nclinic file, language)
+Core --> Chat : the booking reply\nwith the time asked\nfor, status\n"needs human"
+note over Core, LS : The chat never books a slot;\nit passes the request to the team.
+Chat -> Core : FD.addTicket\n(question, reply,\nrequested time,\ncall back)
+Core -> LS : the ticket joins\nthis browser's tickets
+Chat --> Patient : "Thank you. I have\npassed your request\nfor ... to our team";\nbelow it the form\n"So we can call you\nback (optional)"
+opt the patient fills the call-back form
+  Patient -> Chat : fills "Your name" and\n"Phone number"\nand presses Save
+  Chat -> Core : FD.updateTicket\n(name, phone with\nits country code)
+  Core -> LS : the ticket now holds\nthe name and the number
+  Chat --> Patient : "Thank you, <name>.\nWe will call <phone>."
+end
+Chat -> Tix : sync.js: POST /api/tickets\n(the ticket, with\nthis browser's key)
+Tix -> Store : the row in the table\ntickets is added,\nthen updated
+== At the desk ==
+Staff -> SP : opens /staff\nand enters\nthe desk code
+SP -> Tix : sync.js: GET /api/tickets\n(with the desk code)
+Tix --> SP : the tickets of\nevery device
+SP --> Staff : the ticket under\n"To call back"\nwith the name,\nthe phone and\n"requested <time>"
+note left of SP : without the desk code\nthe staff page shows this\nbrowser's tickets only
 @enduml
