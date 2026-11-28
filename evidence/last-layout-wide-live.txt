@@ -1,4 +1,4 @@
-PASS 1280 light the clinic panel is shown on load, with its details, without a click | text 811
+PASS 1280 light the clinic panel is shown on load, with its details, without a click | text 745
 PASS 1280 light the panel is not marked hidden for assistive technology | hidden false
 PASS 1280 light the panel is to the right of the chat and does not overlap it | chat ends 922, panel starts 922
 PASS 1280 light the panel is 300 px or wider and the chat keeps 600 px or more | 358 / 922
@@ -16,7 +16,7 @@ PASS 1280 light #staff-link-top has the accessible name "Staff page" | staff-lin
 PASS 1280 light #staff-link-top has the address and target of #staff-link
 PASS 1280 light #staff-link is still in the drawer, worded as before
 PASS 1280 light no page error | 
-PASS 1440 light the clinic panel is shown on load, with its details, without a click | text 811
+PASS 1440 light the clinic panel is shown on load, with its details, without a click | text 745
 PASS 1440 light the panel is not marked hidden for assistive technology | hidden false
 PASS 1440 light the panel is to the right of the chat and does not overlap it | chat ends 1040, panel starts 1040
 PASS 1440 light the panel is 300 px or wider and the chat keeps 600 px or more | 400 / 1040
@@ -34,7 +34,7 @@ PASS 1440 light #staff-link-top has the accessible name "Staff page" | staff-lin
 PASS 1440 light #staff-link-top has the address and target of #staff-link
 PASS 1440 light #staff-link is still in the drawer, worded as before
 PASS 1440 light no page error | 
-PASS 1280 dark the clinic panel is shown on load, with its details, without a click | text 811
+PASS 1280 dark the clinic panel is shown on load, with its details, without a click | text 745
 PASS 1280 dark the panel is not marked hidden for assistive technology | hidden false
 PASS 1280 dark the panel is to the right of the chat and does not overlap it | chat ends 922, panel starts 922
 PASS 1280 dark the panel is 300 px or wider and the chat keeps 600 px or more | 358 / 922
@@ -52,7 +52,7 @@ PASS 1280 dark #staff-link-top has the accessible name "Staff page" | staff-link
 PASS 1280 dark #staff-link-top has the address and target of #staff-link
 PASS 1280 dark #staff-link is still in the drawer, worded as before
 PASS 1280 dark no page error | 
-PASS 1440 dark the clinic panel is shown on load, with its details, without a click | text 811
+PASS 1440 dark the clinic panel is shown on load, with its details, without a click | text 745
 PASS 1440 dark the panel is not marked hidden for assistive technology | hidden false
 PASS 1440 dark the panel is to the right of the chat and does not overlap it | chat ends 1040, panel starts 1040
 PASS 1440 dark the panel is 300 px or wider and the chat keeps 600 px or more | 400 / 1040

@@ -1,16 +1,16 @@
-PASS bonus 1 Hindi question gets a Hindi reply with the timing: शनिवार को हम 9:00 am to 8:00 pm खुले रहते हैं।Answered from the clinic file · क्
-PASS bonus 1 Telugu question gets a Telugu reply with the price: Root canal treatment ధర: Rs 6,500 to Rs 9,000. Usually two visits.Answered from 
-PASS bonus 1 Hindi emergency: number first, Hindi text
-PASS bonus 2 booking reply says the team will confirm: Thank you. I have passed your request for tomorrow, Thu 26 Nov 2026, 5:00 pm to 
-PASS bonus 2 booking ticket has the requested time: Needs human T-001 I want to book a teeth cleaning tomorrow at 5 pm just now · requested to
-PASS bonus 3 priority order: urgent, needs human, needs human, answered
-PASS bonus 3 every ticket shows its age
-PASS bonus 3 call-back list shows the waiting tickets
-PASS bonus 5 quick-reply button asks and gets an answer
-PASS bonus 5 at least five quick-reply buttons
-PASS bonus 4 staff saved an edited clinic file
-PASS bonus 6 timing follows the edit: On Saturday we are open 9:00 am to 6:30 pm.Answered from the clinic file
-PASS bonus 6 price follows the edit: Root canal treatment: Rs 7,000 to Rs 9,500. Usually two visits.Answered from the
-PASS bonus 4 reset brings the original file back
+PASS optional 1 Hindi question gets a Hindi reply with the timing: शनिवार को हम 9:00 am to 8:00 pm खुले रहते हैं।Answered from the clinic file · क्
+PASS optional 1 Telugu question gets a Telugu reply with the price: Root canal treatment ధర: Rs 6,500 to Rs 9,000. Usually two visits.Answered from 
+PASS optional 1 Hindi emergency: number first, Hindi text
+PASS optional 2 booking reply says the team will confirm: Thank you. I have passed your request for tomorrow, Thu 26 Nov 2026, 5:00 pm to 
+PASS optional 2 booking ticket has the requested time: Needs human T-001 I want to book a teeth cleaning tomorrow at 5 pm just now · requested to
+PASS optional 3 priority order: urgent, needs human, needs human, answered
+PASS optional 3 every ticket shows its age
+PASS optional 3 call-back list shows the waiting tickets
+PASS optional 5 quick-reply button asks and gets an answer
+PASS optional 5 at least five quick-reply buttons
+PASS optional 4 staff saved an edited clinic file
+PASS optional 6 timing follows the edit: On Saturday we are open 9:00 am to 6:30 pm.Answered from the clinic file
+PASS optional 6 price follows the edit: Root canal treatment: Rs 7,000 to Rs 9,500. Usually two visits.Answered from the
+PASS optional 4 reset brings the original file back
 PASS no page errors 
 ALL PASS (15 checks)

@@ -1,6 +1,6 @@
-PASS 360x640 light empty: the messages area is 81% of the screen (at least 70%)
+PASS 360x640 light empty: the messages area is 73% of the screen (at least 70%)
 PASS 360x640 light the top bar is at most 56 px | 56
-PASS 360x640 light the composer with the chips row is at most 120 px | 66
+PASS 360x640 light the composer with the chips row is at most 120 px | 116
 PASS 360x640 light empty: at least five quick questions | 7
 PASS 360x640 light #chat-input is an input with 16 px text or more | 16
 PASS 360x640 light the "+" button is shown, 44 px, closed | {"shown":true,"w":44,"h":44,"expanded":"false","controls":"compose-menu"}
@@ -22,9 +22,9 @@ PASS 360x640 light after the answers the quick questions are one row that scroll
 PASS 360x640 light New chat from the menu starts a new chat | replies 0
 PASS 360x640 light a quick question chip still sends and is answered
 PASS 360x640 light no page error | 
-PASS 375x667 light empty: the messages area is 82% of the screen (at least 72%)
+PASS 375x667 light empty: the messages area is 74% of the screen (at least 72%)
 PASS 375x667 light the top bar is at most 56 px | 56
-PASS 375x667 light the composer with the chips row is at most 120 px | 66
+PASS 375x667 light the composer with the chips row is at most 120 px | 116
 PASS 375x667 light empty: at least five quick questions | 7
 PASS 375x667 light #chat-input is an input with 16 px text or more | 16
 PASS 375x667 light the "+" button is shown, 44 px, closed | {"shown":true,"w":44,"h":44,"expanded":"false","controls":"compose-menu"}
@@ -46,9 +46,9 @@ PASS 375x667 light after the answers the quick questions are one row that scroll
 PASS 375x667 light New chat from the menu starts a new chat | replies 0
 PASS 375x667 light a quick question chip still sends and is answered
 PASS 375x667 light no page error | 
-PASS 390x844 light empty: the messages area is 86% of the screen (at least 75%)
+PASS 390x844 light empty: the messages area is 80% of the screen (at least 75%)
 PASS 390x844 light the top bar is at most 56 px | 56
-PASS 390x844 light the composer with the chips row is at most 120 px | 66
+PASS 390x844 light the composer with the chips row is at most 120 px | 116
 PASS 390x844 light empty: at least five quick questions | 7
 PASS 390x844 light #chat-input is an input with 16 px text or more | 16
 PASS 390x844 light the "+" button is shown, 44 px, closed | {"shown":true,"w":44,"h":44,"expanded":"false","controls":"compose-menu"}
@@ -70,9 +70,9 @@ PASS 390x844 light after the answers the quick questions are one row that scroll
 PASS 390x844 light New chat from the menu starts a new chat | replies 0
 PASS 390x844 light a quick question chip still sends and is answered
 PASS 390x844 light no page error | 
-PASS 412x915 light empty: the messages area is 87% of the screen (at least 70%)
+PASS 412x915 light empty: the messages area is 81% of the screen (at least 70%)
 PASS 412x915 light the top bar is at most 56 px | 56
-PASS 412x915 light the composer with the chips row is at most 120 px | 66
+PASS 412x915 light the composer with the chips row is at most 120 px | 116
 PASS 412x915 light empty: at least five quick questions | 7
 PASS 412x915 light #chat-input is an input with 16 px text or more | 16
 PASS 412x915 light the "+" button is shown, 44 px, closed | {"shown":true,"w":44,"h":44,"expanded":"false","controls":"compose-menu"}
@@ -94,9 +94,9 @@ PASS 412x915 light after the answers the quick questions are one row that scroll
 PASS 412x915 light New chat from the menu starts a new chat | replies 0
 PASS 412x915 light a quick question chip still sends and is answered
 PASS 412x915 light no page error | 
-PASS 360x640 dark empty: the messages area is 81% of the screen (at least 70%)
+PASS 360x640 dark empty: the messages area is 73% of the screen (at least 70%)
 PASS 360x640 dark the top bar is at most 56 px | 56
-PASS 360x640 dark the composer with the chips row is at most 120 px | 66
+PASS 360x640 dark the composer with the chips row is at most 120 px | 116
 PASS 360x640 dark empty: at least five quick questions | 7
 PASS 360x640 dark #chat-input is an input with 16 px text or more | 16
 PASS 360x640 dark the "+" button is shown, 44 px, closed | {"shown":true,"w":44,"h":44,"expanded":"false","controls":"compose-menu"}
@@ -118,9 +118,9 @@ PASS 360x640 dark after the answers the quick questions are one row that scrolls
 PASS 360x640 dark New chat from the menu starts a new chat | replies 0
 PASS 360x640 dark a quick question chip still sends and is answered
 PASS 360x640 dark no page error | 
-PASS 375x667 dark empty: the messages area is 82% of the screen (at least 72%)
+PASS 375x667 dark empty: the messages area is 74% of the screen (at least 72%)
 PASS 375x667 dark the top bar is at most 56 px | 56
-PASS 375x667 dark the composer with the chips row is at most 120 px | 66
+PASS 375x667 dark the composer with the chips row is at most 120 px | 116
 PASS 375x667 dark empty: at least five quick questions | 7
 PASS 375x667 dark #chat-input is an input with 16 px text or more | 16
 PASS 375x667 dark the "+" button is shown, 44 px, closed | {"shown":true,"w":44,"h":44,"expanded":"false","controls":"compose-menu"}
@@ -142,9 +142,9 @@ PASS 375x667 dark after the answers the quick questions are one row that scrolls
 PASS 375x667 dark New chat from the menu starts a new chat | replies 0
 PASS 375x667 dark a quick question chip still sends and is answered
 PASS 375x667 dark no page error | 
-PASS 390x844 dark empty: the messages area is 86% of the screen (at least 75%)
+PASS 390x844 dark empty: the messages area is 80% of the screen (at least 75%)
 PASS 390x844 dark the top bar is at most 56 px | 56
-PASS 390x844 dark the composer with the chips row is at most 120 px | 66
+PASS 390x844 dark the composer with the chips row is at most 120 px | 116
 PASS 390x844 dark empty: at least five quick questions | 7
 PASS 390x844 dark #chat-input is an input with 16 px text or more | 16
 PASS 390x844 dark the "+" button is shown, 44 px, closed | {"shown":true,"w":44,"h":44,"expanded":"false","controls":"compose-menu"}
@@ -166,9 +166,9 @@ PASS 390x844 dark after the answers the quick questions are one row that scrolls
 PASS 390x844 dark New chat from the menu starts a new chat | replies 0
 PASS 390x844 dark a quick question chip still sends and is answered
 PASS 390x844 dark no page error | 
-PASS 412x915 dark empty: the messages area is 87% of the screen (at least 70%)
+PASS 412x915 dark empty: the messages area is 81% of the screen (at least 70%)
 PASS 412x915 dark the top bar is at most 56 px | 56
-PASS 412x915 dark the composer with the chips row is at most 120 px | 66
+PASS 412x915 dark the composer with the chips row is at most 120 px | 116
 PASS 412x915 dark empty: at least five quick questions | 7
 PASS 412x915 dark #chat-input is an input with 16 px text or more | 16
 PASS 412x915 dark the "+" button is shown, 44 px, closed | {"shown":true,"w":44,"h":44,"expanded":"false","controls":"compose-menu"}

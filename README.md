@@ -1,6 +1,6 @@
 # FrontDesk AI
 
-This page describes version 1.7.2, the version on the live link.
+This page describes version 1.7.3, the version on the live link.
 
 FrontDesk AI is the front desk chat of a dental clinic: patients get answers from the clinic's own file at any hour, and anything the file cannot answer goes to a person as a ticket.
 
@@ -12,7 +12,7 @@ FrontDesk AI is the front desk chat of a dental clinic: patients get answers fro
 | Built by | Sanjay Karwa, Smart AI for Business |
 | Made with | A rules engine in the browser (plain HTML, CSS and JavaScript), Vercel functions, Postgres on Neon for messages, tickets and the clinic file, and the model `deepseek/deepseek-v4.1-flash` through OpenRouter, used only to reword an answer the rules already found |
 | Status | Live. The health route answers ok with the Postgres store and a model key, and every "Done when" of the specification passes on the live link with the model and with it blocked ([latest results](REPORT.md#latest-results-on-the-live-link)) |
-| Versions | 1.7.2.0 is live; the first release is kept for comparison. See [what changed in each version](CHANGELOG.md) |
+| Versions | 1.7.3.0 is live; the first release is kept for comparison. See [what changed in each version](CHANGELOG.md) |
 
 ## Try it in two minutes
 
@@ -93,7 +93,7 @@ One row per requirement of the specification and per feature beyond it. "Require
 | N/A | Clinic info: today's hours with Call, WhatsApp and Directions, the week's timings, the doctors and the address, with an Open now or Closed now sign | Yes |
 | N/A | A note after hours saying when the clinic opens next | Yes |
 | N/A | New chat | Yes |
-| N/A | Phone layout: starter cards on an empty chat, a "+" menu as a bottom sheet, a slim message box | Yes, up to 767 px |
+| N/A | Phone layout: the quick replies as one row above the message box from the first visit, a "+" menu as a bottom sheet, a slim message box | Yes, up to 767 px |
 | N/A | Desktop layout: answers in a column, the clinic information pinned on the right | Yes, from 768 px; the panel from 1024 px |
 | N/A | Every tap target at least 44 px; a skip link to the message box | Yes |
 

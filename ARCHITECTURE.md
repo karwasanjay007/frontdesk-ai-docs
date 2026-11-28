@@ -1,6 +1,6 @@
 # FrontDesk AI: architecture
 
-This page describes version 1.7.2, the version on the live link.
+This page describes version 1.7.3, the version on the live link.
 
 FrontDesk AI is a front desk for a clinic: a patient chat at `/` and a staff page at `/staff`. It is a static
 site with seven small server functions and no build step. A rules engine in the browser answers each question

@@ -1,5 +1,5 @@
 PASS 1024x768 light the clinic panel is pinned on the right and does not overlap the chat
-PASS 1024x768 light empty chat: starter cards in a grid | 7 cards, 3 columns, 3 rows
+PASS 1024x768 light empty chat: the quick questions are one row above the pill | 7 chips, 1 row
 PASS 1024x768 light the composer pill is at most 72 px tall | 54
 PASS 1024x768 light #chat-input text is 16 px | 16
 PASS 1024x768 light Send is a round 44 px button | 44x44
@@ -31,11 +31,11 @@ PASS 1024x768 light after three answers the pill, #chat-input and Send are in vi
 PASS 1024x768 light after the first answer the quick questions are one row above the pill | 1 row
 PASS 1024x768 light the conversation stays left of the clinic panel
 PASS 1024x768 light no sideways scroll after three answers | 0
-PASS 1024x768 light New chat from the "+" menu starts a new chat and the starter cards come back | replies 0
+PASS 1024x768 light New chat from the "+" menu starts a new chat and the row of quick questions stays above the pill | replies 0
 PASS 1024x768 light the menu closes after New chat
 PASS 1024x768 light no page error | 
 PASS 1280x800 light the clinic panel is pinned on the right and does not overlap the chat
-PASS 1280x800 light empty chat: starter cards in a grid | 7 cards, 3 columns, 3 rows
+PASS 1280x800 light empty chat: the quick questions are one row above the pill | 7 chips, 1 row
 PASS 1280x800 light the composer pill is at most 72 px tall | 54
 PASS 1280x800 light #chat-input text is 16 px | 16
 PASS 1280x800 light Send is a round 44 px button | 44x44
@@ -67,7 +67,7 @@ PASS 1280x800 light after three answers the pill, #chat-input and Send are in vi
 PASS 1280x800 light after the first answer the quick questions are one row above the pill | 1 row
 PASS 1280x800 light the conversation stays left of the clinic panel
 PASS 1280x800 light no sideways scroll after three answers | 0
-PASS 1280x800 light New chat from the "+" menu starts a new chat and the starter cards come back | replies 0
+PASS 1280x800 light New chat from the "+" menu starts a new chat and the row of quick questions stays above the pill | replies 0
 PASS 1280x800 light the menu closes after New chat
 PASS 1280x800 light English: #staff-link-top reads "Staff page" | {"text":"Staff page","title":"Staff page","name":"Staff page","drawer":"Staff page"}
 PASS 1280x800 light hi: #staff-link-top text, title and name follow the language, as #staff-link | {"text":"स्टाफ पेज","title":"स्टाफ पेज","name":"स्टाफ पेज","drawer":"स्टाफ पेज"}
@@ -75,7 +75,7 @@ PASS 1280x800 light te: #staff-link-top text, title and name follow the language
 PASS 1280x800 light back to English: "Staff page" again | {"text":"Staff page","title":"Staff page","name":"Staff page","drawer":"Staff page"}
 PASS 1280x800 light no page error | 
 PASS 1440x900 light the clinic panel is pinned on the right and does not overlap the chat
-PASS 1440x900 light empty chat: starter cards in a grid | 7 cards, 3 columns, 3 rows
+PASS 1440x900 light empty chat: the quick questions are one row above the pill | 7 chips, 1 row
 PASS 1440x900 light the composer pill is at most 72 px tall | 54
 PASS 1440x900 light #chat-input text is 16 px | 16
 PASS 1440x900 light Send is a round 44 px button | 44x44
@@ -107,11 +107,11 @@ PASS 1440x900 light after three answers the pill, #chat-input and Send are in vi
 PASS 1440x900 light after the first answer the quick questions are one row above the pill | 1 row
 PASS 1440x900 light the conversation stays left of the clinic panel
 PASS 1440x900 light no sideways scroll after three answers | 0
-PASS 1440x900 light New chat from the "+" menu starts a new chat and the starter cards come back | replies 0
+PASS 1440x900 light New chat from the "+" menu starts a new chat and the row of quick questions stays above the pill | replies 0
 PASS 1440x900 light the menu closes after New chat
 PASS 1440x900 light no page error | 
 PASS 1024x768 dark the clinic panel is pinned on the right and does not overlap the chat
-PASS 1024x768 dark empty chat: starter cards in a grid | 7 cards, 3 columns, 3 rows
+PASS 1024x768 dark empty chat: the quick questions are one row above the pill | 7 chips, 1 row
 PASS 1024x768 dark the composer pill is at most 72 px tall | 54
 PASS 1024x768 dark #chat-input text is 16 px | 16
 PASS 1024x768 dark Send is a round 44 px button | 44x44
@@ -143,11 +143,11 @@ PASS 1024x768 dark after three answers the pill, #chat-input and Send are in vie
 PASS 1024x768 dark after the first answer the quick questions are one row above the pill | 1 row
 PASS 1024x768 dark the conversation stays left of the clinic panel
 PASS 1024x768 dark no sideways scroll after three answers | 0
-PASS 1024x768 dark New chat from the "+" menu starts a new chat and the starter cards come back | replies 0
+PASS 1024x768 dark New chat from the "+" menu starts a new chat and the row of quick questions stays above the pill | replies 0
 PASS 1024x768 dark the menu closes after New chat
 PASS 1024x768 dark no page error | 
 PASS 1280x800 dark the clinic panel is pinned on the right and does not overlap the chat
-PASS 1280x800 dark empty chat: starter cards in a grid | 7 cards, 3 columns, 3 rows
+PASS 1280x800 dark empty chat: the quick questions are one row above the pill | 7 chips, 1 row
 PASS 1280x800 dark the composer pill is at most 72 px tall | 54
 PASS 1280x800 dark #chat-input text is 16 px | 16
 PASS 1280x800 dark Send is a round 44 px button | 44x44
@@ -179,11 +179,11 @@ PASS 1280x800 dark after three answers the pill, #chat-input and Send are in vie
 PASS 1280x800 dark after the first answer the quick questions are one row above the pill | 1 row
 PASS 1280x800 dark the conversation stays left of the clinic panel
 PASS 1280x800 dark no sideways scroll after three answers | 0
-PASS 1280x800 dark New chat from the "+" menu starts a new chat and the starter cards come back | replies 0
+PASS 1280x800 dark New chat from the "+" menu starts a new chat and the row of quick questions stays above the pill | replies 0
 PASS 1280x800 dark the menu closes after New chat
 PASS 1280x800 dark no page error | 
 PASS 1440x900 dark the clinic panel is pinned on the right and does not overlap the chat
-PASS 1440x900 dark empty chat: starter cards in a grid | 7 cards, 3 columns, 3 rows
+PASS 1440x900 dark empty chat: the quick questions are one row above the pill | 7 chips, 1 row
 PASS 1440x900 dark the composer pill is at most 72 px tall | 54
 PASS 1440x900 dark #chat-input text is 16 px | 16
 PASS 1440x900 dark Send is a round 44 px button | 44x44
@@ -215,7 +215,7 @@ PASS 1440x900 dark after three answers the pill, #chat-input and Send are in vie
 PASS 1440x900 dark after the first answer the quick questions are one row above the pill | 1 row
 PASS 1440x900 dark the conversation stays left of the clinic panel
 PASS 1440x900 dark no sideways scroll after three answers | 0
-PASS 1440x900 dark New chat from the "+" menu starts a new chat and the starter cards come back | replies 0
+PASS 1440x900 dark New chat from the "+" menu starts a new chat and the row of quick questions stays above the pill | replies 0
 PASS 1440x900 dark the menu closes after New chat
 PASS 1440x900 dark no page error | 
 ALL PASS (220 checks)

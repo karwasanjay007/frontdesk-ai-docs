@@ -1,6 +1,6 @@
 # FrontDesk AI: specification check
 
-This page describes version 1.7.2, the version on the live link.
+This page describes version 1.7.3, the version on the live link.
 
 The specification is the list of requirements FrontDesk AI was built against. Each table below takes one part of it, line by line, in its own words. "Met" means a test passes on the live link https://frontdesk-ai-xi-gray.vercel.app; the saved output of each test is in [evidence/](evidence/) and the results are summed up in [the report](REPORT.md#latest-results-on-the-live-link).
 

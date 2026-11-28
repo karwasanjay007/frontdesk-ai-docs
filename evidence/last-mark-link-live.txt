@@ -1,0 +1,15 @@
+PASS 1280px /: the mark is in the top bar | 38 px
+PASS 1280px /: a click on the mark opens sai4b.com in a new tab | https://sai4b.com/
+PASS 1280px /: the page itself stays where it was | https://frontdesk-ai-xi-gray.vercel.app/
+PASS 1280px /: a click on the product name opens no new tab (it still goes home)
+PASS 1280px /staff: the mark is in the top bar | 38 px
+PASS 1280px /staff: a click on the mark opens sai4b.com in a new tab | https://sai4b.com/
+PASS 1280px /staff: the page itself stays where it was | https://frontdesk-ai-xi-gray.vercel.app/staff
+PASS 1280px /staff: a click on the product name opens no new tab (it still goes home)
+PASS 375px /: the mark is in the top bar | 32 px
+PASS 375px /: a click on the mark opens sai4b.com in a new tab | https://sai4b.com/
+PASS 375px /: the page itself stays where it was | https://frontdesk-ai-xi-gray.vercel.app/
+PASS 375px /staff: the mark is in the top bar | 32 px
+PASS 375px /staff: a click on the mark opens sai4b.com in a new tab | https://sai4b.com/
+PASS 375px /staff: the page itself stays where it was | https://frontdesk-ai-xi-gray.vercel.app/staff
+ALL PASS (14 checks)

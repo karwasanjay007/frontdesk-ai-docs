@@ -1,6 +1,6 @@
 # FrontDesk AI: tech stack
 
-This page describes version 1.7.2, the version on the live link.
+This page describes version 1.7.3, the version on the live link.
 
 The rule behind every choice: the cheapest ready-made part that meets [the requirements](PRD.md#requirements),
 and nothing that can stop an answer. The answer is worked out in the browser from the clinic file. Every

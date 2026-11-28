@@ -1,6 +1,6 @@
 # FrontDesk AI: user journeys
 
-This page describes version 1.7.2, the version on the live link.
+This page describes version 1.7.3, the version on the live link.
 
 Nine journeys a patient and the clinic's staff take, each one written so that you can follow it yourself.
 Open the patient chat at https://frontdesk-ai-xi-gray.vercel.app in one tab and the staff page at

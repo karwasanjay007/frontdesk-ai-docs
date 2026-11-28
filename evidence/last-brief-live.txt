@@ -3,7 +3,7 @@ PASS first visit: chat input and send button exist | #chat-input 1, #chat-send 1
 PASS first visit: no .bot-msg before the first question | 0 .bot-msg on load
 PASS item 1 Saturday: reply says "9:00 am to 8:00 pm" | "We're open on Saturday from 9:00 am to 8:00 pm."
 INFO item 1 case-insensitive "9:00 am to 8:00 pm": true
-PASS item 2 root canal: reply gives "Rs 6,500 to Rs 9,000" | "Root canal treatment is Rs 6,500 to Rs 9,000, and it usually takes two visits."
+PASS item 2 root canal: reply gives "Rs 6,500 to Rs 9,000" | "Root canal treatment: Rs 6,500 to Rs 9,000. Usually two visits. Answered from the clinic file"
 PASS item 2 root canal: every Rs amount in the reply is in the clinic file | all amounts found
 PASS item 3 Invisalign: reply says "not sure" | "I am not sure about that, and I will not guess. I have passed your question to our team, and someone will call"
 PASS item 3 Invisalign: reply says "2 working hours"
@@ -19,8 +19,8 @@ PASS item 6 discount: a polite no
 INFO item 6 ticket status (G11a expects answered): answered
 PASS item 7 staff reply: every ticket has its own #staff-reply and #staff-send ("on each ticket") | [[1,1],[1,1]]
 PASS item 7 staff reply: staff text typed on the needs-human ticket shows in a chat .bot-msg within 5 s
-PASS item 7 staff reply: that ticket's data-status changed | ticket "TMWZ3LAS5SW": needs human -> answered
-PASS item 7 staff reply: a ticket that is not open can be replied to without clicking it first | ticket TMWZ3LAKR4M: answered -> closed, in chat: true
+PASS item 7 staff reply: that ticket's data-status changed | ticket "TMX0PM5ALYV": needs human -> answered
+PASS item 7 staff reply: a ticket that is not open can be replied to without clicking it first | ticket TMX0PM541OB: answered -> closed, in chat: true
 INFO item 8 (key present, for information): label "Answered from the clinic file" shown: false
 PASS item 9 phone 375: chat page: no sideways scroll on load | scrollWidth 375
 PASS item 9 phone 375: chat page: no sideways scroll after three messages | scrollWidth 375
@@ -34,5 +34,5 @@ PASS every price in every reply is in the clinic file | 13 replies read
 PASS no dialogs
 PASS no page errors
 PASS no console errors
-INFO failed network requests logged by the browser: Failed to load resource: the server responded with a status of 401 () | Failed to load resource: the server responded with a status of 422 ()
+INFO failed network requests logged by the browser: Failed to load resource: the server responded with a status of 422 ()
 ALL PASS (29 checks)

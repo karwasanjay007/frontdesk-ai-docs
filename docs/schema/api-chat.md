@@ -1,6 +1,6 @@
 # The wording route: /api/chat
 
-This page describes version 1.7.2, the version on the live link.
+This page describes version 1.7.3, the version on the live link.
 
 `api/chat.js` asks a language model to reword an answer that the rules engine in the browser has already
 worked out from the clinic file. It never decides what the answer is, and it never receives the patient's

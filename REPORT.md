@@ -1,6 +1,6 @@
 # FrontDesk AI: report
 
-This page describes version 1.7.2, the version on the live link.
+This page describes version 1.7.3, the version on the live link.
 
 What was proven on the live link https://frontdesk-ai-xi-gray.vercel.app, what is known to be limited, and what was not tested. How each requirement of the specification is met is in [the specification check](SPEC-CHECK.md).
 
@@ -35,14 +35,15 @@ Each row is a saved record in [evidence/](evidence/), named `last-<test>-live.tx
 | controls | Theme button, skip link, the mixed question with the model blocked | ALL PASS, 20 checks |
 | widths | 375 to 2560 px: no sideways scroll, 44 px targets | ALL PASS, 25 checks |
 | phone-chat | The phone chat and its "+" menu | ALL PASS, 197 checks |
-| starter-cards | Starter cards on an empty phone chat | ALL PASS, 41 checks |
+| starter-cards | The quick-reply row on an empty phone chat | ALL PASS, 37 checks |
 | desk-chat | The desktop chat from 768 px | ALL PASS, 220 checks |
 | layout-wide | The pinned clinic panel and the staff link from 1024 px | ALL PASS, 107 checks |
 | brand | Colours, fonts and mark on both pages | ALL PASS, 92 checks |
 | contrast-true | Contrast against the background a person really sees, light and dark | ALL PASS, 10 checks |
 | contrast | An older contrast scan | Ends "5 PROBLEMS" |
 | contrast-measured | A list of measured contrast ratios | A list, no verdict line |
-| review | The record `last-review-live.txt` | ALL PASS (36) |
+| review | The record `last-review-live.txt` (the look of both pages to a first-time visitor) | ALL PASS (36) |
+| mark-link | The brand mark in the top bar opens sai4b.com, on both pages | ALL PASS, 14 checks |
 | staffclear | Clear all tickets and Undo; Listen with no Hindi voice | ALL PASS, 7 checks |
 | extras3 | Feedback on a reply, ticket numbers, the chat thread in a ticket | ALL PASS, 15 checks |
 | tools | Staff search, filters, sort, alerts | ALL PASS, 37 checks |
@@ -118,7 +119,7 @@ One row per requirement of the specification and per feature beyond it. R1 to R9
 | N/A | Mixed question answered in one reply | Pass | controls |
 | N/A | Replies in the order the questions were sent | Pass | order |
 | N/A | Every tap target at least 44 px | Pass | widths |
-| N/A | Phone chat with starter cards and a "+" menu | Pass | phone-chat |
+| N/A | Phone chat with the quick-reply row and a "+" menu | Pass | phone-chat |
 | N/A | Desktop chat with the clinic panel pinned | Pass | desk-chat |
 | N/A | Brand colours, fonts and mark | Pass | brand |
 | N/A | A doctor the clinic does not have is said so | Yes | None of its own |
@@ -148,4 +149,4 @@ The tests behind each "Pass" are named in [the epics](docs/epics.md).
 - A native speaker's read of the Hindi and Telugu text.
 - Clinic files other than the two tried, and wordings beyond those in the tests.
 - The contrast scan on today's brand colours. The saved scan record was made before the colours were changed.
-- There is no saved live record under their own names for the tests of the brand mark's link, the shared store in the browser, or the answers changed by the last five fixes. The engine and server tests run without a browser and have no live record.
+- There is no saved live record under their own names for the tests of the shared store in the browser, or the answers changed by the last five fixes. The engine and server tests run without a browser and have no live record.

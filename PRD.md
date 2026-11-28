@@ -1,6 +1,6 @@
 # FrontDesk AI: product requirements
 
-This page describes version 1.7.2, the version on the live link.
+This page describes version 1.7.3, the version on the live link.
 
 FrontDesk AI is the front desk of a dental clinic as a patient chat. A patient asks a question and gets an
 answer taken only from the clinic's own file. Anything the file cannot answer, and every emergency, goes to a
@@ -73,7 +73,7 @@ are.
 | When I name a doctor the clinic does not have I am told so and given the clinic's own doctors | Answers from the clinic file |
 | A reply the AI model reworded never carries a number, a name or a promise the clinic file does not hold | The model step and its guard |
 | The team's reply reaches my chat even when they answer from another device | Tickets and clinic file shared across devices |
-| On a phone the conversation takes most of the screen, with starter cards on an empty chat and a "+" menu for the rest | Layout, themes and accessibility |
+| On a phone the conversation takes most of the screen, with the quick replies as one row above the message box from the first visit and a "+" menu for the rest | Layout, themes and accessibility |
 | On a desktop the chat reads the same way, with the clinic information pinned on the right | Layout, themes and accessibility |
 | I can switch between light and dark, and the button says which theme is on | Layout, themes and accessibility |
 | I can skip straight to the message box with the keyboard | Layout, themes and accessibility |

@@ -1,6 +1,6 @@
 # FrontDesk AI: the data model
 
-This page describes version 1.7.2, the version on the live link.
+This page describes version 1.7.3, the version on the live link.
 
 The server keeps the shared copy of everything that must reach more than one device: chat messages, tickets
 and the edited clinic file, in three Postgres tables on Neon. Each browser also keeps its own copy of its

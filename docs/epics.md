@@ -1,6 +1,6 @@
 # FrontDesk AI: epics, features and acceptance criteria
 
-This page describes version 1.7.2, the version on the live link.
+This page describes version 1.7.3, the version on the live link.
 
 Everything FrontDesk AI does, as a reader can check it. An epic is one subject. Under it each feature has one
 story (who wants it and why) and a table of acceptance criteria: the starting point (Given), what the person
@@ -47,16 +47,16 @@ As a patient, I want the chat ready when it opens so that I can ask at once.
 | AC-E1.F1.3 | A window 768 px or wider | The chat page opens without a question in the address | The cursor is already in the message box | checked by hand |
 | AC-E1.F1.4 | A window wide enough to show the small print under the message box | The patient sends a first message and the server stores it | The first sentence changes from "Your messages reach only the clinic team. Please do not type medical records." to "Your messages go to the clinic's front desk and are kept on the clinic's server for 7 days. Please do not type medical records."; it is followed by "Answers come only from the clinic's own information. In an emergency call" and the emergency number | `tests/sync.mjs` |
 
-### E1.F2 Starter cards and quick replies
+### E1.F2 Quick replies
 
 As a patient, I want the common questions as buttons so that I can ask with one tap.
 
 | ID | Given | When | Then | Test |
 | --- | --- | --- | --- | --- |
 | AC-E1.F2.1 | The standard clinic file | The chat page opens | Seven quick replies show: Timings, Prices, Doctors, Insurance, Location, Book a visit, Talk to a person | `tests/person.mjs` |
-| AC-E1.F2.2 | A phone (up to 767 px) and an empty chat | The chat is shown | The quick replies are starter cards in two columns in the conversation area | `tests/starter-cards.mjs` |
-| AC-E1.F2.3 | Starter cards are showing | The first message is sent | The quick replies become one sideways row above the message box; New chat brings the cards back | `tests/starter-cards.mjs` |
-| AC-E1.F2.4 | A window 1024 px or wider and an empty chat | The chat is shown | The starter cards sit three to a row, and after the first answer they are one row above the message box | `tests/desk-chat.mjs` |
+| AC-E1.F2.2 | A phone (up to 767 px) and an empty chat | The chat is shown | The quick replies are one sideways row just above the message box, and the welcome has the conversation area | `tests/starter-cards.mjs` |
+| AC-E1.F2.3 | The row of quick replies is showing | The first message is sent, or New chat is chosen | The row stays where it is, above the message box | `tests/starter-cards.mjs` |
+| AC-E1.F2.4 | A window 1024 px or wider and an empty chat | The chat is shown | The quick replies are one row above the message box, the same as after the first answer | `tests/desk-chat.mjs` |
 | AC-E1.F2.5 | The chat page | The patient taps a quick reply | Its question is sent as if typed, a reply follows and one ticket opens | `tests/bonus.mjs` |
 | AC-E1.F2.6 | A clinic file with an `assistant` section that holds a name and its own quick replies | The chat page opens | The assistant carries that name and the chat shows the clinic's own quick replies; without the section the standard name and the seven standard ones show | `tests/person.mjs` |
 
@@ -363,7 +363,7 @@ As a patient on a wide screen, I want the same chat with the clinic's details be
 | ID | Given | When | Then | Test |
 | --- | --- | --- | --- | --- |
 | AC-E7.F2.1 | A window 768 px or wider | The patient opens "+" by click or by keyboard | A small menu opens above the message bar, not a full-width sheet, with New chat and the microphone in it; Escape or a click outside closes it | `tests/desk-chat.mjs` |
-| AC-E7.F2.2 | A window 768 px or wider, with answers | The chat is shown | Answers are plain text with the clinic mark; Listen, Helpful and Not helpful are 44 px icon buttons that keep their names | `tests/desk-chat.mjs` |
+| AC-E7.F2.2 | A window 768 px or wider, with answers | The chat is shown | Answers are plain text with the round brand mark on the header navy, so the whole logo shows in light and dark; Listen, Helpful and Not helpful are 44 px icon buttons that keep their names | `tests/desk-chat.mjs` |
 | AC-E7.F2.3 | A window 1024 px or wider | The chat page opens | The clinic information is a panel on the right, beside the chat and not over it; nothing is dimmed and Escape does not close it | `tests/layout-wide.mjs` |
 | AC-E7.F2.4 | Any width | The top bar is read | It carries a link to the staff page at least 44 px tall, in the chosen language | `tests/layout-wide.mjs` |
 | AC-E7.F2.5 | Both pages at 375, 768, 1366, 1920 and 2560 px | Each is measured | Nothing scrolls sideways, the content reaches the right edge and every tap target is 44 px or more | `tests/widths.mjs` |

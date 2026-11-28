@@ -1,6 +1,6 @@
 # FrontDesk AI: implementation plan
 
-This page describes version 1.7.2, the version on the live link.
+This page describes version 1.7.3, the version on the live link.
 
 How to run the product, test it and release it, and the order it was built in. The parts are described in
 [the architecture](ARCHITECTURE.md) and the reasons for each in [the tech stack](TECH-STACK.md#choices).
