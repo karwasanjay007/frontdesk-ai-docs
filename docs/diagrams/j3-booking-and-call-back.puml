@@ -11,7 +11,9 @@ box "Vercel functions"
 participant "api/tickets.js" as Tix <<container>>
 end box
 database "Postgres\n(Neon)" as Store <<store>>
+box "In the staff browser"
 participant "Staff page\n(staff/staff.js,\nsync.js)" as SP <<container>>
+end box
 actor "Staff" as Staff <<person>>
 
 == The request ==

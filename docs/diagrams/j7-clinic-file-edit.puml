@@ -2,13 +2,17 @@
 !include c4-sequence.iuml
 title J7 Editing the clinic file
 actor "Staff" as Staff <<person>>
+box "In the staff browser"
 participant "Staff page\n(staff/staff.js,\nstaff/form.js,\nshared.js)" as SP <<container>>
 participant "Rules engine\n(core.js, in\neach browser)" as Core <<component>>
+end box
 box "Vercel functions"
 participant "api/clinic.js" as Clinic <<container>>
 end box
 database "Postgres\n(Neon)" as Store <<store>>
+box "In the patient's browser"
 participant "Patient chat on\nany device\n(chat.js, shared.js)" as Chat <<container>>
+end box
 actor "Patient" as Patient <<person>>
 
 == Saving a change ==
