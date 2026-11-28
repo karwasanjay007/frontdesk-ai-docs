@@ -1,0 +1,39 @@
+@startuml c4-staff
+!include <C4/C4_Component>
+LAYOUT_TOP_DOWN()
+skinparam wrapWidth 170
+title FrontDesk AI: components of the staff page
+
+Person(staff, "Front desk staff", "Staff page /staff")
+
+Container_Boundary(staffpage, "Staff page scripts") {
+  Component(staffui, "staff/staff.js", "JavaScript", "Ticket queue, reply box, Clear all tickets, the clinic JSON editor")
+  Component(stafftools, "staff/tools.js", "JavaScript", "Search, filters, figures, Export CSV, notes, alerts")
+  Component(staffform, "staff/form.js", "JavaScript", "Edit with a form, written into the JSON box")
+}
+
+Container_Boundary(core, "core.js (window.FD)") {
+  Component(tickets, "Tickets", "JavaScript", "replyToTicket, updateTicket, setStatus")
+  Component(store, "Clinic file", "JavaScript", "loadClinic, saveClinic, resetClinic, validateClinic")
+}
+
+Component(sync, "sync.js, shared.js", "JavaScript, both pages", "Tickets, messages and the clinic file to and from the server; the Desk code box")
+
+ContainerDb(browser, "Browser storage", "localStorage, sessionStorage", "The frontdesk.* keys; the desk code for this tab only")
+System(api, "api/, server functions", "Shown in the server diagram")
+
+Rel_D(staff, staffui, "Reads, replies, closes, edits the file")
+Rel_R(stafftools, staffui, "Watches the queue")
+Rel_L(staffform, staffui, "Writes the JSON box")
+Rel_D(staffui, tickets, "Lists, replies, sets status")
+Rel_D(staffui, store, "Saves or resets the file")
+Rel_D(sync, tickets, "Merges server copies")
+Rel_D(tickets, browser, "frontdesk.tickets")
+Rel_D(store, browser, "frontdesk.clinic")
+Rel_D(sync, browser, "Sync key, desk code")
+Rel_D(sync, api, "tickets, messages, clinic, health", "HTTPS, JSON")
+Lay_R(tickets, store)
+Lay_D(store, sync)
+
+SHOW_LEGEND()
+@enduml

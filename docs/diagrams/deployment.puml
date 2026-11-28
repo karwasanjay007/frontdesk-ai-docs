@@ -1,18 +1,25 @@
 @startuml deployment
 !include <C4/C4_Deployment>
+LAYOUT_LEFT_RIGHT()
 title FrontDesk AI: deployment
 
 Deployment_Node(repo, "Code repository", "Git") {
-  Container(src, "frontdesk-ai", "Static files and api/", "No build step; .vercelignore keeps tests, brief, brand, .md files, .env files and tool folders off the site")
+  Container(src, "frontdesk-ai", "Static files and api/", "No build step; .vercelignore keeps tests and notes off the site")
+}
+
+Deployment_Node(device, "Patient's or staff's device", "Any modern browser") {
+  Container(pages, "Chat page and staff page", "HTML, CSS, JavaScript", "Rules engine, guard, tickets, sync.js and shared.js")
+  ContainerDb(ls, "localStorage", "Web Storage", "This browser's tickets, clinic file and settings")
+  ContainerDb(ss, "sessionStorage", "Web Storage", "frontdesk.deskcode, this tab only")
 }
 
 Deployment_Node(vercel, "Vercel", "Static hosting and server functions") {
   Deployment_Node(proj, "The live link", "HTTPS") {
-    Container(static, "Static files", "CDN", "index.html, staff/index.html, core.js, chat.js, layout.js, sync.js, shared.js, compact.js, callback-ask.js, mark-link.js, staff/staff.js, staff/tools.js, staff/form.js, the style sheets, clinic-data.json")
-    Container(chatfn, "api/chat", "Server function, Node.js 20 or later", "Rewords a draft; one attempt, 8 s limit, guard on the server")
-    Container(voicefn, "api/tts, api/transcribe", "Server functions, Node.js", "Reply text to WAV, 15 s; a recorded clip to text, 12 s")
-    Container(storefn, "api/tickets, api/messages, api/clinic, api/health", "Server functions, Node.js", "Tickets, chat messages, the clinic file and health, all through api/_store.js")
-    ContainerDb(env, "Environment variables", "Set on the host, never in the code", "DATABASE_URL, FRONTDESK_DESK_CODE, OPENROUTER_API_KEY; optional OPENROUTER_MODEL, OPENROUTER_AUDIO_MODEL, OPENROUTER_TTS_MODEL, FRONTDESK_CHAT_PER_MINUTE; fallback store: KV_REST_API_URL and KV_REST_API_TOKEN, or UPSTASH_REDIS_REST_URL and UPSTASH_REDIS_REST_TOKEN")
+    Container(static, "Static files", "CDN", "The pages, scripts, style sheets and clinic-data.json")
+    Container(chatfn, "api/chat", "Server function, Node.js 20 or later", "Rewords a draft; 8 s limit, guard on the server")
+    Container(voicefn, "api/tts, api/transcribe", "Server functions, Node.js", "Reply text to WAV, 15 s; a clip to text, 12 s")
+    Container(storefn, "api/tickets, api/messages, api/clinic, api/health", "Server functions, Node.js", "All through api/_store.js")
+    ContainerDb(env, "Environment variables", "Set on the host, never in the code", "DATABASE_URL, FRONTDESK_DESK_CODE, OPENROUTER_API_KEY and the optional ones")
   }
 }
 
@@ -20,26 +27,21 @@ Deployment_Node(neonnode, "Neon", "Managed Postgres") {
   ContainerDb(neon, "Shared store", "Postgres", "Tables messages, tickets, clinic_data")
 }
 
-Deployment_Node(device, "Patient's or staff's device", "Any modern browser") {
-  Container(pages, "Chat page and staff page", "HTML, CSS, JavaScript", "Rules engine, guard, tickets, sync.js and shared.js")
-  ContainerDb(ls, "localStorage", "Web Storage", "This browser's tickets and clinic file, language, theme, the browser key, staff notes")
-  ContainerDb(ss, "sessionStorage", "Web Storage", "frontdesk.deskcode on the staff page, this tab only")
-}
-
 System_Ext(openrouter, "OpenRouter", "openrouter.ai: wording, speech and transcription models")
 System_Ext(fonts, "Google Fonts", "fonts.googleapis.com, fonts.gstatic.com")
 
-Rel(src, proj, "vercel deploy --prod", "HTTPS")
+
+Rel(src, static, "vercel deploy --prod", "HTTPS")
 Rel(pages, static, "Loads", "HTTPS")
 Rel(pages, fonts, "Loads fonts", "HTTPS")
 Rel(pages, chatfn, "GET warm-up; POST draft", "HTTPS, JSON")
 Rel(pages, voicefn, "Reply text for Listen; a recorded clip", "HTTPS, JSON")
-Rel(pages, storefn, "Tickets with x-patient-key or x-desk-code; messages; the clinic file", "HTTPS, JSON")
+Rel(pages, storefn, "Tickets, messages, the clinic file", "HTTPS, JSON")
 Rel(pages, ls, "Reads and writes")
 Rel(pages, ss, "Keeps the desk code")
-Rel(chatfn, env, "Reads the key and model id")
-Rel(voicefn, env, "Reads the key and model ids")
-Rel(storefn, env, "Reads the store address and the desk code")
+Rel(chatfn, env, "The key and model id")
+Rel(voicefn, env, "The key and model ids")
+Rel(storefn, env, "The store address and the desk code")
 Rel(chatfn, openrouter, "Chat completions", "HTTPS")
 Rel(voicefn, openrouter, "Audio; audio to text", "HTTPS")
 Rel(storefn, neon, "SQL, 6 s per query", "HTTPS")

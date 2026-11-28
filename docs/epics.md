@@ -75,7 +75,7 @@ As a patient, I want to type a question and get a reply so that I do not have to
 
 ### E1.F4 New chat and a question in the address
 
-As a patient, I want to start again, and as a tester I want one page load to give one answer.
+As a patient, I want to start again, and I want a link that carries a question to give one answer.
 
 | ID | Given | When | Then | Test |
 | --- | --- | --- | --- | --- |
@@ -132,7 +132,7 @@ As a patient, I want to know who treats what and when, and never to be told abou
 | --- | --- | --- | --- | --- |
 | AC-E2.F2.1 | The standard clinic file | The patient asks "Which doctor sees children?" | The reply includes "Sneha Rao" and "Saturday" | `tests/questions.mjs` |
 | AC-E2.F2.2 | The file lists three doctors | The patient asks in English "Is Dr. Ramesh Gupta available on Monday?" | The reply says "We have no Dr. Ramesh Gupta" at the clinic and lists the clinic's own doctors; it never says yes | `tests/engine-doctor.cjs` |
-| AC-E2.F2.3 | The same question | The reply is made | It is not sent to the language model for rewording | `tests/engine-doctor.cjs` |
+| AC-E2.F2.3 | The same question | The reply is made | It does not go to the language model for rewording | `tests/engine-doctor.cjs` |
 | AC-E2.F2.4 | A doctor who is not in the file is named in Hindi or Telugu | The question is sent | The not-sure reply is given in that language | checked by hand |
 
 ### E2.F3 A question that mixes two subjects, and the phone number
@@ -203,8 +203,8 @@ As a patient, I want an answer even when the model is slow, busy or switched off
 | --- | --- | --- | --- | --- |
 | AC-E3.F3.1 | The model does not answer | 8 seconds pass on the server | The request is ended; the browser waits a little longer than the server and then shows the clinic's own text | `tests/model-step.cjs` |
 | AC-E3.F3.2 | More requests from one address than the limit in a minute | Another request arrives | The server answers 429 and the browser shows the clinic's own text | `tests/model-step.cjs` |
-| AC-E3.F3.3 | The key is removed, or every server call is blocked | Every "Done when" line of the brief is followed | Each passes, as in the run with the key | `tests/brief.mjs` |
-| AC-E3.F3.4 | Every server call is blocked | The grader-style questions are asked | Each reply carries the words of the clinic file and no amount that is not in it | `tests/audit.mjs` |
+| AC-E3.F3.3 | The key is removed, or every server call is blocked | Every "Done when" line of the specification is followed | Each passes, as in the run with the key | `tests/brief.mjs` |
+| AC-E3.F3.4 | Every server call is blocked | The questions of the audit test, each asked many ways, are asked | Each reply carries the words of the clinic file and no amount that is not in it | `tests/audit.mjs` |
 
 ## E4 Safety replies
 
@@ -558,7 +558,7 @@ As a clinic owner, I want the tickets as a file so that I can keep or count them
 
 ### E9.F10 Clear all with Undo
 
-As front-desk staff or a tester, I want to empty the queue in one press and take it back so that I can start a clean round.
+As front-desk staff, I want to empty the queue in one press and take it back so that I can start a clean round.
 
 | ID | Given | When | Then | Test |
 | --- | --- | --- | --- | --- |
@@ -643,13 +643,13 @@ As a business owner who is not a dentist, I want the same product to answer from
 
 Goal: a question asked on a patient's phone reaches the desk computer, the reply travels back, and a saved clinic file applies on every device. The exact tables and keys are in [where data is kept](data-model.md#where-data-is-kept).
 
-### E11.F1 What is sent to the server and when
+### E11.F1 What goes to the server and when
 
 As a patient, I want my question to reach the front desk wherever they sit so that the reply comes back to my phone.
 
 | ID | Given | When | Then | Test |
 | --- | --- | --- | --- | --- |
-| AC-E11.F1.1 | A fresh browser on the chat page | No question has been asked yet | Nothing is sent to the ticket store | `tests/sync.mjs` |
+| AC-E11.F1.1 | A fresh browser on the chat page | No question has been asked yet | Nothing goes to the ticket store | `tests/sync.mjs` |
 | AC-E11.F1.2 | The store is in place | The patient asks a question | Within a few seconds the ticket is stored with its status and question, without browser-only fields | `tests/sync.mjs` |
 | AC-E11.F1.3 | A stored ticket has not changed | The chat checks again | It is not sent again | `tests/sync.mjs` |
 | AC-E11.F1.4 | A chat is open | A patient message, a bot reply or a staff reply is shown | Each is also stored as a chat message on the server, once; the answer on screen never waits for this | `tests/shared.mjs` |
@@ -732,7 +732,7 @@ As a patient, I want to know my messages are not kept for ever.
 
 ### E11.F8 When the store cannot be reached or the tab is in the background
 
-As a tester or a patient, I want both pages to work from this browser when the store is away, and nothing lost when I switch tabs.
+As a patient, I want both pages to work from this browser when the store is away, and nothing lost when I switch tabs.
 
 | ID | Given | When | Then | Test |
 | --- | --- | --- | --- | --- |
@@ -788,7 +788,7 @@ As the clinic, I want the wording step unable to change a fact so that a polishe
 | --- | --- | --- | --- | --- |
 | AC-E12.F4.1 | A model key is set | An answer from the clinic file is sent to `/api/chat` | One call is made at temperature 0 with the draft and the clinic file, never the patient's message, and it is ended at 8 seconds | `tests/model-step.cjs` |
 | AC-E12.F4.2 | The model's text adds a number, a name or a promise the draft and file do not hold, or drops a fact | The server checks it | The text is not returned (422), and the browser shows the answer from the clinic file | `tests/model-step.cjs` |
-| AC-E12.F4.3 | An emergency, medical, refusal, booking or not-sure reply | It is sent to the route | It is refused as not to be reworded (422) | `tests/model-step.cjs` |
+| AC-E12.F4.3 | An emergency, medical, refusal, booking or not-sure reply | It goes to the route | It is refused as not to be reworded (422) | `tests/model-step.cjs` |
 | AC-E12.F4.4 | A draft over 1,500 characters or a question over 1,000 | It is sent | It is refused with 413; a missing draft or clinic file with 400 | `tests/model-step.cjs` |
 | AC-E12.F4.5 | One address | It sends more than 60 requests in a minute (or the number in `FRONTDESK_CHAT_PER_MINUTE`) | The next is refused with 429 | `tests/model-step.cjs` |
 | AC-E12.F4.6 | No model key, a malformed or empty model reply, or a timeout | The route answers | 503, 502 or 504; no text is returned | `tests/model-step.cjs` |
@@ -816,11 +816,11 @@ As the person who runs the site, I want one address that says whether the store 
 
 ## E13 Links and robustness
 
-Goal: everything a tester reads is exactly as the page names it, nothing stands in the way, and the pages work when the model cannot be reached.
+Goal: the ids kept stable for automated tests are exactly as named, nothing stands in the way, and the pages work when the model cannot be reached.
 
-### E13.F1 The ids and statuses a tester reads
+### E13.F1 Ids and statuses kept stable for automated tests
 
-As a tester, I want the exact names so that my script finds them.
+As someone who runs the automated tests, I want the exact names so that a script finds them.
 
 | ID | Given | When | Then | Test |
 | --- | --- | --- | --- | --- |
@@ -831,7 +831,7 @@ As a tester, I want the exact names so that my script finds them.
 
 ### E13.F2 Any input without an error, no pop-up dialogs
 
-As a tester, I want a fresh browser to reach every element so that no step is blocked.
+As a first-time visitor, I want to reach every element in a fresh browser so that no step is blocked.
 
 | ID | Given | When | Then | Test |
 | --- | --- | --- | --- | --- |
@@ -842,7 +842,7 @@ As a tester, I want a fresh browser to reach every element so that no step is bl
 
 ### E13.F3 The page with no network to the model
 
-As a tester, I want the same answers when the language model cannot be reached.
+As a patient, I want the same answers when the language model cannot be reached.
 
 | ID | Given | When | Then | Test |
 | --- | --- | --- | --- | --- |

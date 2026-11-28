@@ -1,0 +1,156 @@
+@startuml data-browser
+title FrontDesk AI data model: the browser's keys and the clinic file
+
+skinparam backgroundColor #FFFFFF
+skinparam shadowing false
+skinparam roundCorner 14
+skinparam defaultFontName "Segoe UI"
+skinparam defaultFontSize 13
+skinparam titleFontSize 18
+skinparam titleFontColor #0B5D63
+skinparam ArrowColor #0B5D63
+skinparam ArrowFontColor #2F4245
+skinparam ArrowThickness 1.4
+skinparam class {
+  BackgroundColor #FFFFFF
+  BorderColor #0B5D63
+  BorderThickness 1.6
+  HeaderBackgroundColor #E3F0F1
+  FontColor #132326
+  AttributeFontColor #2F4245
+  StereotypeFontColor #0B5D63
+}
+skinparam note {
+  BackgroundColor #F4F8F8
+  BorderColor #9BBFC2
+  FontColor #2F4245
+  FontSize 12
+}
+skinparam package {
+  BorderColor #9BBFC2
+  FontColor #0B5D63
+  BackgroundColor #FFFFFF
+}
+hide circle
+hide methods
+set separator none
+top to bottom direction
+
+package "Browser: storage keys" {
+  class LocalStorage <<per browser>> {
+    {field} frontdesk.tickets : Ticket[]  (JSON list)
+    {field} frontdesk.clinic : the clinic file in use on this device
+    {field} frontdesk.clinic.server : mark, the file came from the server
+    {field} frontdesk.clinic.own : mark, saved or reset on this device only
+    {field} frontdesk.patient : string  (P + 5 characters)
+    frontdesk.lang : en | hi | te
+    frontdesk.theme : light | dark
+    {field} frontdesk.synckey : string  (the private browser key)
+    {field} frontdesk.msgseen : list of ticket id:reply time  (last 300)
+    {field} frontdesk.alldevices : "1" | "0"
+    {field} frontdesk.notes : map of ticket id to note  (never sent)
+    {field} frontdesk.alerts : "1"
+  }
+  class SessionStorage <<per tab>> {
+    {field} frontdesk.deskcode : string  (sent as x-desk-code)
+  }
+  class Ticket {
+    {field} <b>id</b> : string  (T + time in base 36 + 2 characters)
+    {field} patient : string  (patient id)
+    q : string
+    reply : string
+    source : model | file
+    kind : emergency | refuse | medical | booking |\n  answer | notsure | human
+    status : urgent | needs human | answered | closed
+    lang : en | hi | te
+    {field} bookingTime : string  ("" when not a booking)
+    modelOk : boolean
+    afterHours : boolean
+    afterHoursNote : string
+    callBack : boolean
+    {field} contactName : string [optional]
+    {field} contactPhone : string [optional]  (with country code)
+    {field} feedback : "up" | "down" | ""
+    {field} created : number  (ms since 1970)
+    {field} updated : number
+    staffReplies : StaffReply[]
+    {field} remote : true  (staff browser only:\n  a ticket from another device)
+  }
+  class StaffReply {
+    text : string
+    {field} at : number  (ms since 1970)
+  }
+}
+
+package "Clinic file: clinic-data.json, or the edited copy" {
+  class ClinicFile <<root>> {
+    note : string [optional]
+    {field} <b>clinic</b> : Clinic
+    {field} <b>hours</b> : object of strings
+    doctors : Doctor[]
+    services : Service[]
+    policies : object of strings
+    emergency_rules : string
+    {field} bot_rules : string[]  (sent to the model only)
+    {field} assistant : Assistant [optional]
+  }
+  class Clinic {
+    name : string
+    address : string
+    landmark : string
+    phone : string
+    emergency_phone : string
+    whatsapp : string
+    languages : string[]
+    parking : string
+  }
+  class Doctor {
+    name : string
+    role : string
+    days : string
+  }
+  class Service {
+    name : string
+    price : string
+    duration : string [optional]
+    note : string [optional]
+  }
+  class Assistant {
+    {field} name : string  (at most 40 characters)
+    {field} quick_replies : QuickReply[]  (at most 8)
+  }
+  class QuickReply {
+    {field} label : string  (at most 24 characters)
+    {field} question : string  (at most 120 characters)
+  }
+}
+
+SessionStorage -[hidden]down- LocalStorage
+LocalStorage "1" *-down- "0..*" Ticket : frontdesk.tickets
+Ticket "1" *-down- "0..*" StaffReply : staffReplies
+LocalStorage "1" o--- "0..1" ClinicFile : frontdesk.clinic
+ClinicFile "1" *-down- "1" Clinic : clinic
+ClinicFile "1" *--- "0..*" Doctor : doctors
+ClinicFile "1" *--- "0..*" Service : services
+ClinicFile "1" *-down- "0..1" Assistant : assistant
+Assistant "1" *-down- "0..8" QuickReply : quick_replies
+
+note right of Ticket
+  <b>Status from the reply kind</b>
+  emergency : urgent
+  medical, booking, notsure, human :
+  needs human
+  answer, refuse : answered
+  <b>A staff reply moves it on</b>
+  urgent or needs human : answered
+  answered : closed
+  <b>Close ticket</b> : closed
+end note
+
+note bottom of StaffReply
+  <b>To the server</b>
+  sync.js posts each ticket to /api/tickets
+  (without remote); shared.js posts the
+  question and replies to /api/messages.
+end note
+@enduml

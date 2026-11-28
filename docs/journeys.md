@@ -15,7 +15,7 @@ Three things hold in every journey:
 
 - The rules engine in the browser writes every answer from the clinic file. The language model is only asked
   to reword an answer that came from the file, and the reworded text is checked before it is shown.
-- A question and its ticket are kept in the browser and also sent to the clinic's server, where the store is
+- A question and its ticket are kept in the browser and also go to the clinic's server, where the store is
   Postgres. The chat never waits for the server: if a route is slow or down, the answer still appears.
 - Some staff steps need the desk code. The code is the clinic's own and is not in these documents. Without it
   the staff page works, and shows only the tickets made in the same browser.
@@ -30,7 +30,7 @@ Three things hold in every journey:
 | J6 Shared tickets and the desk code | Staff | yes |
 | J7 Editing the clinic file | Staff, then patient | yes, to save for every device |
 | J8 Languages and voice | Patient | no |
-| J9 The run with the model blocked | Patient or a tester | no |
+| J9 The run with the model blocked | Patient | no |
 
 ## J1 First visit and ask
 
@@ -46,7 +46,7 @@ hour.
 5. You see the welcome line "Ask about timings, prices, doctors, insurance or how to reach us." and seven quick
    replies: Timings, Prices, Doctors, Insurance, Location, Book a visit, Talk to a person.
 6. Tap "Timings", or type a question and press Send.
-7. The question is sent to the server as a message (`POST /api/messages`) with this browser's private key. This
+7. The question goes to the server as a message (`POST /api/messages`) with this browser's private key. This
    runs in the background.
 8. The server saves it as a row in the table `messages`.
 9. The rules engine reads the question and the clinic file.
@@ -60,9 +60,9 @@ hour.
 17. The page makes one ticket for the question, with the status "Answered".
 18. The ticket is saved in this browser.
 19. You see the answer, with "Listen", "Helpful" and "Not helpful" under it.
-20. The reply is sent to the server as a message.
+20. The reply goes to the server as a message.
 21. The server saves it as a second row in `messages`.
-22. Within a few seconds the ticket is sent to the server (`POST /api/tickets`) with this browser's key.
+22. Within a few seconds the ticket goes to the server (`POST /api/tickets`) with this browser's key.
 23. The server saves it in the table `tickets`. It stores a hash of the key as the owner, never the key.
 
 A greeting or a thank-you is answered by the rules engine alone, so steps 11 to 16 do not run for it. What
@@ -99,9 +99,9 @@ to change its rules, a medical question, or something the clinic file does not h
 8. The page makes one ticket with that status.
 9. The ticket is saved in this browser.
 10. You see the fixed reply. The model is not asked for any of these four.
-11. The question and the reply are sent to the server as messages.
+11. The question and the reply go to the server as messages.
 12. The server saves them in the table `messages`.
-13. The ticket is sent to the server.
+13. The ticket goes to the server.
 14. The server saves it in the table `tickets`. An emergency is stored with the priority "urgent".
 
 **What to check**
@@ -131,7 +131,7 @@ and asks for a number to call.
 8. The page adds the name and the number, with its country code, to the ticket.
 9. The ticket is updated in this browser.
 10. The form is replaced by "Thank you, <name>. We will call <phone>."
-11. The ticket is sent to the server.
+11. The ticket goes to the server.
 12. The server adds the row in `tickets`, and updates it when the name and number arrive.
 13. Staff open the staff page. On another device they first enter the desk code.
 14. The staff page asks the server for the tickets (`GET /api/tickets`) with the desk code.
@@ -163,7 +163,7 @@ A patient wants a member of the team, not a fact from the clinic file.
 7. You see "I am not sure I can settle this myself, so I have passed your request to our team, and someone
    will call you back within 2 working hours.", then the clinic's phone, WhatsApp and emergency numbers. The
    call-back form is below it.
-8. The ticket is sent to the server.
+8. The ticket goes to the server.
 9. The server saves it in the table `tickets`.
 10. On the staff page, staff choose the type "Asked for a person". On another device they enter the desk code
     first.
@@ -347,7 +347,7 @@ tools, then ask.
    neither the draft nor the file, a promise the draft did not make, and a missing fact.
 10. A rejected text comes back as 422 "failed the check".
 11. In every one of these cases the page makes the ticket with the draft as the reply.
-12. The ticket is saved in this browser. It is sent to the server as in the first journey.
+12. The ticket is saved in this browser. It goes to the server as in the first journey.
 13. You see the draft, with "Answered from the clinic file" under it.
 
 **What to check**

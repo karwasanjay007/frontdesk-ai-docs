@@ -6,7 +6,7 @@ The server keeps the shared copy of everything that must reach more than one dev
 and the edited clinic file, in three Postgres tables on Neon. Each browser also keeps its own copy of its
 tickets and of the clinic file, so a page draws at once and still works when the server cannot be reached.
 
-![The data model: the server's tables, the browser's copy and the clinic file](diagrams/data-model.svg)
+![The data model: the server's tables](diagrams/data-model.svg)
 
 ## Where data is kept
 
@@ -88,6 +88,8 @@ older than 7 days are deleted after every write.
 A reset deletes the row, and the shipped file is used again.
 
 ## The browser's keys
+
+![The browser's keys and the clinic file](diagrams/data-browser.svg)
 
 | Key | Storage | Written by | Holds |
 | --- | --- | --- | --- |

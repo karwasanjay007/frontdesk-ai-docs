@@ -1,0 +1,48 @@
+@startuml c4-server
+!include <C4/C4_Component>
+LAYOUT_TOP_DOWN()
+title FrontDesk AI: components on the server
+
+Container(chatpage, "chat.js", "Browser", "The model step, voice and Listen")
+Container(addons, "sync.js, shared.js", "Browser, both pages", "Tickets, messages and the clinic file")
+
+Container_Boundary(api, "api/, server functions") {
+  Component(chatr, "api/chat.js", "Node.js", "Loads core.js; one model call, temperature 0, 8 s; runs the guard")
+  Component(ttsr, "api/tts.js", "Node.js", "Reply text to audio/wav")
+  Component(sttr, "api/transcribe.js", "Node.js", "A recorded WAV clip to text")
+  Component(ticketsr, "api/tickets.js core()", "Node.js", "Browser key, desk code, clean, merge, request limit")
+  Component(msgr, "api/messages.js core()", "Node.js", "POST and GET a chat's messages")
+  Component(clinicr, "api/clinic.js core()", "Node.js", "GET the file in use; save or reset with the desk code")
+  Component(healthr, "api/health.js", "Node.js", "{ ok, store, ai }")
+  Component(storemod, "api/_store.js", "Node.js", "mode(): postgres, redis or none; creates the tables; seven-day clean-up; hit()")
+}
+
+System_Ext(openrouter, "OpenRouter", "Wording, speech and transcription models")
+ContainerDb_Ext(neon, "Postgres on Neon", "SQL", "Tables messages, tickets, clinic_data")
+
+Lay_R(chatr, ttsr)
+Lay_R(ttsr, sttr)
+Lay_D(chatr, ticketsr)
+Lay_R(ticketsr, msgr)
+Lay_R(msgr, clinicr)
+Lay_D(ticketsr, healthr)
+Lay_D(msgr, storemod)
+
+Rel(chatpage, chatr, "GET warm-up; POST draft", "HTTPS, JSON")
+Rel(chatpage, ttsr, "Listen, when the browser has no voice", "HTTPS, JSON")
+Rel(chatpage, sttr, "A clip, when browser recognition fails", "HTTPS, JSON")
+Rel(addons, ticketsr, "x-patient-key or x-desk-code", "HTTPS, JSON")
+Rel(addons, healthr, "Is there a store?", "HTTPS, JSON")
+Rel(addons, clinicr, "GET and POST /api/clinic", "HTTPS, JSON")
+Rel(addons, msgr, "POST /api/messages", "HTTPS, JSON")
+Rel(chatr, openrouter, "Chat completions", "HTTPS, key on the server")
+Rel(ttsr, openrouter, "Audio", "HTTPS, key on the server")
+Rel(sttr, openrouter, "Audio to text", "HTTPS, key on the server")
+Rel(ticketsr, storemod, "tickets")
+Rel(msgr, storemod, "messages")
+Rel(clinicr, storemod, "clinic_data")
+Rel(healthr, storemod, "ping")
+Rel(storemod, neon, "SQL", "@neondatabase/serverless")
+
+SHOW_LEGEND()
+@enduml

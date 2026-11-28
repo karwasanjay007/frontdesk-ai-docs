@@ -2,18 +2,18 @@
 
 This page describes version 1.7.2, the version on the live link.
 
-What was proven on the live link https://frontdesk-ai-xi-gray.vercel.app, what is known to be limited, and what was not tested. How each line of the brief is met is in [the specification check](SPEC-CHECK.md).
+What was proven on the live link https://frontdesk-ai-xi-gray.vercel.app, what is known to be limited, and what was not tested. How each requirement of the specification is met is in [the specification check](SPEC-CHECK.md).
 
 ## Status
 
-| Part of the brief | Status |
+| Part of the specification | Status |
 | --- | --- |
-| Must do, nine items | Met, with the model and with it blocked |
-| How they check: the ids, the classes, `?q=`, the run without a key | Met |
-| Bonus menu, six items | Met, with the model and with it blocked |
+| Required, nine items | Met, with the model and with it blocked |
+| The ids kept stable for automated tests, `?q=`, the run with the model blocked | Met |
+| Optional features, six items | Met, with the model and with it blocked |
 | Phone at 375 px | Met |
 | Readable in light and dark | Met |
-| Hidden-data test | Cannot be measured by us: the judges' questions and data are unseen. Our own unseen questions and a second clinic file pass |
+| Another clinic's file | Met on a second clinic file and on questions the rules were not written for |
 
 ## Latest results on the live link
 
@@ -21,10 +21,10 @@ Each row is a saved record in [evidence/](evidence/), named `last-<test>-live.tx
 
 | Test | What it covers | Result |
 | --- | --- | --- |
-| brief | Every "Done when" of the brief, in order | ALL PASS, 29 checks, both ways |
-| questions | The brief's eight practice questions | ALL PASS, 16 checks, both ways |
-| bonus | The six bonus items | ALL PASS, 15 checks, both ways |
-| audit | Questions in the judges' style, three languages | 47 PASS lines both ways; the closing line reads "ALL PASS (0 checks)" |
+| brief | Every "Done when" of the specification, in order | ALL PASS, 29 checks, both ways |
+| questions | The specification's eight practice questions | ALL PASS, 16 checks, both ways |
+| `bonus.mjs` | The six optional features | ALL PASS, 15 checks, both ways |
+| audit | The same questions asked many ways, in three languages | 47 PASS lines both ways; the closing line reads "ALL PASS (0 checks)" |
 | wording | Timings and prices asked other ways in Hindi, Roman-script Hindi and Telugu | ALL PASS, 14 checks, both ways |
 | emergency | Bleeding said other ways: number first, one urgent ticket | ALL PASS, 12 checks |
 | i18n | The language box end to end, Listen, New chat | ALL PASS, 11 checks, both ways |
@@ -66,65 +66,65 @@ No record holds a failed check. On 28 November 2026 the health route on the live
 
 ## Requirement and feature map
 
-One row per requirement of the brief and per feature beyond it. R1 to R9 are the nine things the brief says the product must do, B1 to B6 its bonus menu, M its marks for light and dark, and N/A a feature the brief does not ask for. "Pass" means a saved record from the live link proves it; "Yes" means the feature is in place without a live record of its own. Three other builds of the same batch, called A, B and C, are beside it for the rows where they were read: only their chat and staff screens were looked at and nothing was typed or sent, so "Seen" means visible on those screens, "Seen in part" that part of it is visible, "Not tested" that it cannot be judged without using their app, "No" that it was not on the screens read, and "Not compared" that the row was not looked for.
+One row per requirement of the specification and per feature beyond it. R1 to R9 are the required items, B1 to B6 the optional ones, M the quality line for light and dark, and N/A a feature the specification does not ask for. "Pass" means a saved record from the live link proves it; "Yes" means the feature is in place without a live record of its own. The last column names the record in the table above.
 
-### Asked for by the brief
+### In the specification
 
-| Req | Feature | FrontDesk AI | Build A | Build B | Build C |
-| --- | --- | --- | --- | --- | --- |
-| R1 | Patient chat answers a typed question | Pass | Seen | Seen | Seen |
-| R2 | Answers only from the clinic file | Pass | Seen | Not tested | Not tested |
-| R3 | Not in the file: "not sure", needs-human ticket, 2 working hours | Pass | Not tested | Seen in part | Seen |
-| R4 | No medical advice or diagnosis | Pass | Not tested | Seen in part | Seen in part |
-| R5 | Emergency: number first, urgent ticket | Pass | Seen | Seen in part | Seen |
-| R6 | No discount, no obeying "ignore your rules" | Pass | Seen | Not tested | Not tested |
-| R7 | Staff page with statuses; a staff reply reaches the chat | Pass | Seen in part | Seen in part | Seen in part |
-| R8 | Still answers with no AI key, with the label | Pass | Seen in part | Not tested | Not tested |
-| R9 | Works at 375 px | Pass | Not tested | Not tested | Not tested |
-| B1 | Replies in Hindi or Telugu | Pass | Seen | Seen in part | Seen in part |
-| B2 | A booking becomes a ticket with a time | Pass | Seen | Not tested | Seen |
-| B3 | Ticket ageing and priority | Pass | Seen | Seen | Seen |
-| B4 | Clinic data editable by staff | Pass | Seen in part | Seen | Seen in part |
-| B5 | Quick-reply buttons | Pass | Seen | Seen | Seen |
-| B6 | Replies stay correct after a staff edit | Pass | Not tested | Not tested | Not tested |
-| M | Readable in light and dark | Pass | Seen in part | Seen in part | No |
+| Req | Feature | Result | Test record |
+| --- | --- | --- | --- |
+| R1 | Patient chat answers a typed question | Pass | brief |
+| R2 | Answers only from the clinic file | Pass | brief |
+| R3 | Not in the file: "not sure", needs-human ticket, 2 working hours | Pass | brief |
+| R4 | No medical advice or diagnosis | Pass | brief |
+| R5 | Emergency: number first, urgent ticket | Pass | brief |
+| R6 | No discount, no obeying "ignore your rules" | Pass | brief |
+| R7 | Staff page with statuses; a staff reply reaches the chat | Pass | brief |
+| R8 | Still answers with no AI key, with the label | Pass | brief |
+| R9 | Works at 375 px | Pass | brief |
+| B1 | Replies in Hindi or Telugu | Pass | `bonus.mjs` |
+| B2 | A booking becomes a ticket with a time | Pass | `bonus.mjs` |
+| B3 | Ticket ageing and priority | Pass | `bonus.mjs` |
+| B4 | Clinic data editable by staff | Pass | `bonus.mjs` |
+| B5 | Quick-reply buttons | Pass | `bonus.mjs` |
+| B6 | Replies stay correct after a staff edit | Pass | `bonus.mjs` |
+| M | Readable in light and dark | Pass | contrast-true |
 
-### Beyond the brief
+### Beyond the specification
 
-| Req | Feature | FrontDesk AI | Build A | Build B | Build C |
-| --- | --- | --- | --- | --- | --- |
-| N/A | Voice input | Pass | Yes | Yes | Yes |
-| N/A | Read aloud | Pass | No | No | Yes |
-| N/A | Named assistant | Pass | Yes | Yes | No |
-| N/A | Asking for a person gets its own reply and ticket | Pass | Not tested | Not tested | Not tested |
-| N/A | Booking reply states the day's hours | Yes | No | Not tested | Yes |
-| N/A | Patient can leave a name and phone for the call back | Pass | Yes | No | No |
-| N/A | Tickets shared across devices (kept on a server) | Pass, behind a desk code | Yes | Yes | Yes |
-| N/A | Status filter with counts | Pass | Yes | Yes | No |
-| N/A | Search, and filter by ticket type | Pass | Yes | No | No |
-| N/A | Sort | Pass | No | No | No |
-| N/A | Queue figures (open, urgent, overdue, answered, average wait) | Pass | Yes | Yes | No |
-| N/A | Urgent alerts for staff | Pass | Yes | Yes | No |
-| N/A | CSV export of tickets | Pass | Yes | No | No |
-| N/A | Ready-made staff replies | Pass | Yes | No | No |
-| N/A | Private staff note on a ticket | Yes | Yes | No | No |
-| N/A | Whole chat thread inside a ticket | Pass | Yes | Yes | No |
-| N/A | Form editor for the clinic file | Pass | Not tested | Yes | Not tested |
-| N/A | Clear all tickets | Pass | No | No | Yes |
-| N/A | "To call back" and "Passed to the team" lists | Pass | No | No | No |
-| N/A | Patient feedback on a reply | Pass | Yes | No | No |
-| N/A | Ticket numbers | Pass | No | Yes | No |
-| N/A | Language box for the whole page | Pass | Not compared | Not compared | Not compared |
-| N/A | Mixed question answered in one reply | Pass | Not compared | Not compared | Not compared |
-| N/A | Replies in the order the questions were sent | Pass | Not compared | Not compared | Not compared |
-| N/A | Every tap target at least 44 px | Pass | Not compared | Not compared | Not compared |
-| N/A | Phone chat with starter cards and a "+" menu | Pass | Not compared | Not compared | Not compared |
-| N/A | Desktop chat with the clinic panel pinned | Pass | Not compared | Not compared | Not compared |
-| N/A | Brand colours, fonts and mark | Pass | Not compared | Not compared | Not compared |
-| N/A | A doctor the clinic does not have is said so | Yes | Not compared | Not compared | Not compared |
-| N/A | Clinic file saved once for every device | Yes | Not compared | Not compared | Not compared |
-| N/A | Chat messages kept on the server for staff | Yes | Not compared | Not compared | Not compared |
-| N/A | Another clinic's file works | Yes | Not compared | Not compared | Not compared |
+| Req | Feature | Result | Test record |
+| --- | --- | --- | --- |
+| N/A | Voice input | Pass | voice |
+| N/A | Read aloud | Pass | i18n |
+| N/A | Named assistant | Pass | person |
+| N/A | Asking for a person gets its own reply and ticket | Pass | person |
+| N/A | Booking reply states the day's hours | Yes | None of its own |
+| N/A | Patient can leave a name and phone for the call back | Pass | callback |
+| N/A | Tickets shared across devices (kept on a server) | Pass, behind a desk code | sync |
+| N/A | Status filter with counts | Pass | tools |
+| N/A | Search, and filter by ticket type | Pass | tools |
+| N/A | Sort | Pass | tools |
+| N/A | Queue figures (open, urgent, overdue, answered, average wait) | Pass | tools2 |
+| N/A | Urgent alerts for staff | Pass | tools |
+| N/A | CSV export of tickets | Pass | tools2 |
+| N/A | Ready-made staff replies | Pass | tools2 |
+| N/A | Private staff note on a ticket | Yes | None of its own |
+| N/A | Whole chat thread inside a ticket | Pass | extras3 |
+| N/A | Form editor for the clinic file | Pass | form |
+| N/A | Clear all tickets | Pass | staffclear |
+| N/A | "To call back" and "Passed to the team" lists | Pass | `bonus.mjs` |
+| N/A | Patient feedback on a reply | Pass | extras3 |
+| N/A | Ticket numbers | Pass | extras3 |
+| N/A | Language box for the whole page | Pass | i18n |
+| N/A | Mixed question answered in one reply | Pass | controls |
+| N/A | Replies in the order the questions were sent | Pass | order |
+| N/A | Every tap target at least 44 px | Pass | widths |
+| N/A | Phone chat with starter cards and a "+" menu | Pass | phone-chat |
+| N/A | Desktop chat with the clinic panel pinned | Pass | desk-chat |
+| N/A | Brand colours, fonts and mark | Pass | brand |
+| N/A | A doctor the clinic does not have is said so | Yes | None of its own |
+| N/A | Clinic file saved once for every device | Yes | None of its own |
+| N/A | Chat messages kept on the server for staff | Yes | None of its own |
+| N/A | Another clinic's file works | Yes | None of its own |
 
 The tests behind each "Pass" are named in [the epics](docs/epics.md).
 
@@ -146,44 +146,6 @@ The tests behind each "Pass" are named in [the epics](docs/epics.md).
 - Saving the clinic file for every device with the real desk code on the live link.
 - A real phone in the hand. The phone checks run in a desktop browser set to phone widths.
 - A native speaker's read of the Hindi and Telugu text.
-- The judges' own hidden questions and data.
+- Clinic files other than the two tried, and wordings beyond those in the tests.
 - The contrast scan on today's brand colours. The saved scan record was made before the colours were changed.
 - There is no saved live record under their own names for the tests of the brand mark's link, the shared store in the browser, or the answers changed by the last five fixes. The engine and server tests run without a browser and have no live record.
-
-## The note sent to the judges
-
-Saved on the project dashboard on 21 November 2026 with the submitted version, and kept here as it was sent. It describes version 1.0.0.0, not today's.
-
-```text
-WHAT IT IS
-FrontDesk AI (Version 1.0.0.0) is the front desk of a dental clinic, open at any hour. Patients type or speak in English, Hindi or Telugu and get answers only from the clinic's own file, and can hear every reply read aloud. What it cannot answer becomes a ticket, and a staff reply on /staff appears in the patient's chat.
-
-TRY IT IN TWO MINUTES (no login; open both pages in the same browser)
-1. Ask: What time do you open on Saturday? Type it, tap a quick reply, or use the microphone.
-2. Ask: Do you do Invisalign? Not sure, a call back within 2 working hours, WhatsApp and a call-back form with any country code.
-3. Ask: My face is swelling and I cannot breathe. 98000 00123 comes first, with a Call button, and an urgent ticket opens.
-4. Open the Staff page (link below, or Clinic info): tickets in priority order, each with its own #staff-reply and #staff-send. Reply on any ticket: it appears in the chat and the status moves.
-5. Set the language menu (top right) to HI or TE: the whole page changes, replies follow, and Listen reads them aloud.
-
-DOCUMENTED FROM REQUIREMENTS TO PRODUCTION (public repo, link below)
-Written before any code and kept true to every release:
-- Requirements: the spec page word for word, a PRD with decisions, assumptions and success measures, and SPEC-CHECK.md mapping every must-do, tester hook and bonus item to a test.
-- Design: 9 epics, 30 features and 83 acceptance criteria (Given, When, Then), each traced to the spec and its check; 7 user journeys as sequence diagrams.
-- Architecture: C4 context, container and component views, runtime views, data model, JSON schemas, the API contracts (chat, transcription, voice) and deployment. 12 PlantUML diagrams, all SVG.
-- Build and test: tech stack, a stepped implementation plan, and live test results saved as evidence. Every "Done when" passes on the live link with the key and with the model blocked, plus 45 grader-style questions in three languages.
-- Production: independent reviews, each with its status after fixes, and a release baseline.
-
-WHY IT STANDS OUT
-- Same answers with or without the AI key: a rules engine answers from the file first; the model only rewords, never sees the patient's words, and a guard rejects any price, name or promise not in the file. Any reply the model did not word shows "Answered from the clinic file".
-- Honest when the file is silent: a female dentist, whitening for children, an aligner brand or laser gum surgery get "not sure" and a ticket, never a guess.
-- Safe: emergency number first, no medicine names or diagnoses, no discounts, "ignore your rules" refused.
-- Voice both ways in all three languages: if the browser cannot hear or speak a language (Chrome has no Telugu voice), the server transcribes or speaks it instead.
-- Made for a real clinic: Clinic info opens beside the chat, morning call-back list, bookings saved with the real date (honours ?today=), WhatsApp Web on a computer, a "Passed to the team" list, New chat, Clear all tickets with Undo, and any clinic can load its own file.
-
-BONUS ITEMS
-Hindi and Telugu: either script or the language menu. Booking with a time: "Book a check-up tomorrow at 5 pm". Ageing and priority: /staff. Clinic data editable and replies follow the edit: Clinic file on /staff. Quick replies: above the message box. Also light and dark, top right.
-
-Live chat: https://frontdesk-ai-xi-gray.vercel.app
-Staff page: https://frontdesk-ai-xi-gray.vercel.app/staff
-Documentation: https://github.com/karwasanjay007/frontdesk-ai-docs
-```

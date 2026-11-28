@@ -1,5 +1,5 @@
 @startuml data-model
-title FrontDesk AI data model: the server's tables, the browser's copy, the clinic file
+title FrontDesk AI data model: the server's tables
 
 skinparam backgroundColor #FFFFFF
 skinparam shadowing false
@@ -34,17 +34,9 @@ skinparam package {
 hide circle
 hide methods
 set separator none
+top to bottom direction
 
 package "Server: Postgres on Neon, through api/_store.js" {
-  entity messages {
-    {field} <b>id</b> : BIGSERIAL, primary key
-    {field} chat_id : TEXT
-    {field} role : TEXT  (patient | bot | staff)
-    {field} text : TEXT  (at most 6,000 characters)
-    {field} source : TEXT
-    {field} owner : TEXT  (hash of the browser key)
-    {field} created_at : BIGINT
-  }
   entity tickets {
     {field} <b>id</b> : TEXT, primary key
     {field} patient : TEXT
@@ -57,6 +49,15 @@ package "Server: Postgres on Neon, through api/_store.js" {
     {field} created_at : BIGINT
     {field} updated_at : BIGINT
   }
+  entity messages {
+    {field} <b>id</b> : BIGSERIAL, primary key
+    {field} chat_id : TEXT
+    {field} role : TEXT  (patient | bot | staff)
+    {field} text : TEXT  (at most 6,000 characters)
+    {field} source : TEXT
+    {field} owner : TEXT  (hash of the browser key)
+    {field} created_at : BIGINT
+  }
   entity clinic_data {
     {field} <b>id</b> : INTEGER  (always 1, the only row)
     {field} data : JSONB  (the edited clinic file)
@@ -64,137 +65,29 @@ package "Server: Postgres on Neon, through api/_store.js" {
   }
 }
 
-package "Browser: localStorage key frontdesk.tickets (JSON list)" {
-  class Ticket {
-    {field} <b>id</b> : string  (T + time in base 36 + 2 characters)
-    {field} patient : string  (patient id)
-    q : string
-    reply : string
-    source : model | file
-    kind : emergency | refuse | medical | booking | answer | notsure | human
-    status : urgent | needs human | answered | closed
-    lang : en | hi | te
-    {field} bookingTime : string  ("" when not a booking)
-    modelOk : boolean
-    afterHours : boolean
-    afterHoursNote : string
-    callBack : boolean
-    {field} contactName : string [optional]
-    {field} contactPhone : string [optional]  (with country code)
-    {field} feedback : "up" | "down" | ""
-    {field} created : number  (ms since 1970)
-    {field} updated : number
-    staffReplies : StaffReply[]
-    {field} remote : true  (staff browser only: a ticket from another device)
-  }
-  class StaffReply {
-    text : string
-    {field} at : number  (ms since 1970)
-  }
-}
+tickets "0..*" -down- "0..*" messages : tickets.patient = messages.chat_id\n(the patient id); the same owner
+messages -[hidden]down- clinic_data
 
-package "Browser: other keys" {
-  class LocalStorage <<per browser>> {
-    {field} frontdesk.clinic : the clinic file in use on this device
-    {field} frontdesk.clinic.server : mark, the file came from the server
-    {field} frontdesk.clinic.own : mark, saved or reset on this device only
-    {field} frontdesk.patient : string  (P + 5 characters)
-    frontdesk.lang : en | hi | te
-    frontdesk.theme : light | dark
-    {field} frontdesk.synckey : string  (the private browser key)
-    {field} frontdesk.msgseen : list of ticket id:reply time  (last 300)
-    {field} frontdesk.alldevices : "1" | "0"
-    {field} frontdesk.notes : map of ticket id to note  (never sent)
-    {field} frontdesk.alerts : "1"
-  }
-  class SessionStorage <<per tab>> {
-    {field} frontdesk.deskcode : string  (sent as x-desk-code)
-  }
-}
-
-package "Clinic file: clinic-data.json, or the edited copy" {
-  class ClinicFile <<root>> {
-    note : string [optional]
-    {field} <b>clinic</b> : Clinic
-    {field} <b>hours</b> : object of strings
-    doctors : Doctor[]
-    services : Service[]
-    policies : object of strings
-    emergency_rules : string
-    {field} bot_rules : string[]  (sent to the model only)
-    {field} assistant : Assistant [optional]
-  }
-  class Clinic {
-    name : string
-    address : string
-    landmark : string
-    phone : string
-    emergency_phone : string
-    whatsapp : string
-    languages : string[]
-    parking : string
-  }
-  class Doctor {
-    name : string
-    role : string
-    days : string
-  }
-  class Service {
-    name : string
-    price : string
-    duration : string [optional]
-    note : string [optional]
-  }
-  class Assistant {
-    {field} name : string  (at most 40 characters)
-    {field} quick_replies : QuickReply[]  (at most 8)
-  }
-  class QuickReply {
-    {field} label : string  (at most 24 characters)
-    {field} question : string  (at most 120 characters)
-  }
-}
-
-ClinicFile "1" *-- "1" Clinic : clinic
-ClinicFile "1" *-- "0..*" Doctor : doctors
-ClinicFile "1" *-- "0..*" Service : services
-ClinicFile "1" *-- "0..1" Assistant : assistant
-Assistant "1" *-- "0..8" QuickReply : quick_replies
-Ticket "1" *-- "0..*" StaffReply : staffReplies
-LocalStorage "1" -- "0..*" Ticket : frontdesk.patient
-ClinicFile ..> Ticket : the rules engine sets\nreply, kind, status
-Ticket "1" ..> "1" tickets : sync.js, POST /api/tickets\n(without remote)
-Ticket "1" ..> "1..*" messages : shared.js, POST /api/messages\n(question, bot reply, staff replies)
-ClinicFile "1" ..> "0..1" clinic_data : shared.js, POST /api/clinic\n(desk code)
-LocalStorage ..> tickets : owner = SHA-256 of frontdesk.synckey
-SessionStorage ..> tickets : the desk code reads every device's tickets
-
-note bottom of tickets
-  <b>On the server</b>
-  A ticket and a message are deleted
-  seven days after they were made.
-  The clinic file row has no expiry.
+note right of tickets
+  <b>Written by</b> sync.js, POST /api/tickets
   A merge keeps every staff reply; the
   status further along wins. Patient,
   question, bot reply, created and
   owner never change once stored.
+  Deleted seven days after it was made.
 end note
 
-note right of Ticket
-  <b>Status from the reply kind</b>
-  emergency : urgent
-  medical, booking, notsure, human : needs human
-  answer, refuse : answered
-  <b>A staff reply moves it on</b>
-  urgent or needs human : answered
-  answered : closed
-  <b>Close ticket</b> : closed
+note right of messages
+  <b>Written by</b> shared.js, POST /api/messages
+  The question, the bot reply and
+  each staff reply, one row each.
+  Deleted seven days after it was made.
 end note
 
-note left of ClinicFile
-  <b>Which file is used</b>
-  The row in clinic_data when there is one,
-  else the shipped clinic-data.json.
-  frontdesk.clinic is this device's copy.
+note right of clinic_data
+  <b>Written by</b> shared.js, POST /api/clinic
+  (desk code). No link to the other tables
+  and no expiry. When there is no row,
+  the shipped clinic-data.json is used.
 end note
 @enduml

@@ -35,6 +35,20 @@ watches the ticket queue, `staff/form.js` writes only to the JSON box, `compact.
 controls, and `sync.js` and `shared.js` leave at once on a page that has neither the message box nor the
 ticket queue.
 
+## Components of the staff page
+
+![Components of the staff page](docs/diagrams/c4-staff.svg)
+
+The staff page loads `core.js`, the three `staff/` scripts, `sync.js` and `shared.js`. The picture above shows
+the patient chat; this one shows the same shared parts as the staff page uses them.
+
+### Components on the server
+
+![Components on the server](docs/diagrams/c4-server.svg)
+
+The routes in `api/` are drawn on their own. Four of them reach the store through `api/_store.js`, and three
+reach OpenRouter.
+
 ## The files
 
 | File | Job |

@@ -11,7 +11,7 @@ parts fit together, with the diagrams, is in [the architecture](ARCHITECTURE.md)
 
 | Part | What is used | Why | What it costs |
 | --- | --- | --- | --- |
-| Pages | Plain HTML, CSS and JavaScript. No framework and no build step. The chat page is at `/`, the staff page at `/staff` | Two screens need nothing more, and the names the brief's tester reads stay under direct control | Nothing |
+| Pages | Plain HTML, CSS and JavaScript. No framework and no build step. The chat page is at `/`, the staff page at `/staff` | Two screens need nothing more, and the ids kept stable for automated tests stay under direct control | Nothing |
 | Answer rules and the guard | Plain JavaScript in `core.js`, run in the browser. The server loads the same file to check the model's text | The answer is ready at once and is the same with and without the AI model | Nothing |
 | Server | Seven small Node.js functions in `api/` (Node 20 or later), each a route | The only safe place for a key, and the only place rules about who may read a ticket can be enforced | Nothing on the host's free plan |
 | Store | Postgres on Neon, reached through the one package the product depends on, `@neondatabase/serverless`. Plain SQL as tagged templates, so a value always travels as a parameter. Used when `DATABASE_URL` is set | Tickets, messages and the clinic file are shared by every device, in three small tables | Nothing on the free plan |
@@ -23,7 +23,7 @@ parts fit together, with the diagrams, is in [the architecture](ARCHITECTURE.md)
 | WhatsApp, Call, Directions | Plain links built from the clinic file: `wa.me` on a phone, `web.whatsapp.com` on a computer, `www.google.com/maps/search/` for Directions | No account and no key | Nothing |
 | Fonts | Google Fonts, from `fonts.googleapis.com` and `fonts.gstatic.com`: Baloo 2, Noto Sans, Noto Sans Devanagari, Noto Sans Telugu, Fraunces, Inter | Hindi and Telugu replies render properly on every device | Nothing |
 | Hosting | Vercel: static files plus the functions in `api/`, one project | Free, HTTPS, and no settings file is needed | Nothing on the free plan |
-| Tests | Playwright scripts and plain Node.js scripts in `tests/` | They read the pages the way the brief's tester does | Nothing |
+| Tests | Playwright scripts and plain Node.js scripts in `tests/` | They drive the pages in a real browser, through the same ids | Nothing |
 
 The tables, the browser keys and how long each thing is kept are in
 [the data model](docs/data-model.md#where-data-is-kept). The files are in
@@ -67,8 +67,8 @@ What the product keeps about a patient, and for how long, is in [the README](REA
 
 - **A framework or a build step.** Nothing it adds is needed for two pages.
 - **An ORM.** Three small tables are read and written with a handful of plain SQL statements.
-- **Named accounts and a sign-in page.** A patient should be able to ask at once, and the brief's check opens
-  the staff page directly. One desk code guards the shared ticket list.
+- **Named accounts and a sign-in page.** A patient should be able to ask at once, and the specification has
+  the staff page open directly. One desk code guards the shared ticket list.
 - **A model that answers on its own.** The run with the key removed would fail, and a model can invent a
   price. The rules answer first and the model only rewords.
 - **Streaming the model's reply.** A reply filled in word by word could be read before it is complete.

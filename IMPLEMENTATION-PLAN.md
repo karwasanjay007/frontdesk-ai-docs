@@ -51,12 +51,12 @@ node tests/brief.mjs
 node tests/brief.mjs https://<the live link>/
 ```
 
-Two flags matter for the tests of the brief:
+Two flags matter for the tests of the specification:
 
 | Flag | What it does |
 | --- | --- |
 | `--block-api` | Stops every request to `/api/`, so the AI call fails even when a key is set. The run then shows the product answering from the clinic file alone |
-| `--nokey` | Says the site was started with its AI key removed, so the brief's no-key line is graded and not only reported |
+| `--nokey` | Says the site was started with its AI key removed, so the no-key requirement is checked and not only reported |
 
 `tests/desk-chat.mjs` also saves pictures of the page when `FD_SHOTS` is set.
 
@@ -82,34 +82,34 @@ The saved results are summarised in [the report](REPORT.md#latest-results-on-the
 2. Run every engine test and every browser test against the local site. Release only when each ends in a pass.
 3. Compare the build with what is live, feature by feature, using the table of what the product supports in
    [the README](README.md). A build that lacks anything the live link has is not released.
-4. Deploy with `vercel deploy --prod`. Tests, documents and the brief are kept out of the deploy by
+4. Deploy with `vercel deploy --prod`. Tests, documents and the specification are kept out of the deploy by
    `.vercelignore`.
 5. Call `GET /api/health` on the live link. It must answer `ok: true`, with the store named `postgres`.
 6. Open `/` and `/staff` on the live link, each loaded afresh, on a phone width and a desktop width, in light
    and dark.
-7. Run the browser tests against the live link, the tests of the brief both with and without `--block-api`,
+7. Run the browser tests against the live link, the tests of the specification both with and without `--block-api`,
    and save the results.
 8. Bring the documents in line with the code, add one entry to [the changelog](CHANGELOG.md), and write the
    results into [the report](REPORT.md#latest-results-on-the-live-link).
 
 Rules that hold for every release:
 
-- A new feature goes in its own file beside the existing ones, with a small hook, so the names and replies the
-  brief's tester reads stay as they are.
+- A new feature goes in its own file beside the existing ones, with a small hook, so the replies and the ids
+  kept stable for automated tests stay as they are.
 - A new feature gets a new test file. An earlier test is not edited to make a change pass.
 - Nothing that is live is removed, hidden or replaced by a smaller version.
 - No dialog, login or splash is put in front of the chat or the staff page.
 
 ## The order it was built in
 
-1. The brief captured word for word, and a test for each of its "Done when" lines, failing because nothing
+1. The specification captured word for word, and a test for each of its "Done when" lines, failing because nothing
    was built.
 2. The two pages, the clinic file loader and the rules that answer from the file.
 3. The safety rules in a fixed order: emergency, rule change or discount, medical, booking, answer, not sure.
 4. Tickets, the staff page and a staff reply that reaches the patient's chat.
 5. The question asked from the page address, and the label on answers that come from the file.
 6. The AI model's rewording step, with the guard that checks its text.
-7. The bonus items: Hindi and Telugu, booking tickets, ageing and priority, the clinic file editor, quick
+7. The optional features: Hindi and Telugu, booking tickets, ageing and priority, the clinic file editor, quick
    replies.
 8. Going further: after hours, the call-back list, WhatsApp, another kind of business, voice in and out.
 9. The phone layout, light and dark, and contrast.

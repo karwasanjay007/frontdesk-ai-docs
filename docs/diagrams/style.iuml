@@ -4,7 +4,7 @@ skinparam defaultFontName "Noto Sans"
 skinparam defaultFontSize 13
 skinparam roundCorner 12
 skinparam shadowing false
-skinparam maxMessageSize 280
+skinparam maxMessageSize 150
 skinparam titleFontSize 17
 skinparam titleFontColor #0B5D63
 skinparam sequenceMessageAlign left

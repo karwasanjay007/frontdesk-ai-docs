@@ -1,97 +1,47 @@
 @startuml c4-component
 !include <C4/C4_Component>
-title FrontDesk AI: components
+LAYOUT_TOP_DOWN()
+skinparam wrapWidth 170
+title FrontDesk AI: components of the patient chat
 
 Person(patient, "Patient", "Chat page /")
-Person(staff, "Front desk staff", "Staff page /staff")
-System_Ext(openrouter, "OpenRouter", "Wording, speech and transcription models")
-ContainerDb_Ext(neon, "Postgres on Neon", "SQL", "Tables messages, tickets, clinic_data")
-ContainerDb(ls, "localStorage", "Web Storage, JSON", "frontdesk.clinic, frontdesk.tickets, frontdesk.patient, frontdesk.lang, frontdesk.theme, frontdesk.synckey, frontdesk.alldevices, frontdesk.clinic.server, frontdesk.clinic.own, frontdesk.msgseen, frontdesk.notes, frontdesk.alerts")
-ContainerDb(ss, "sessionStorage", "Web Storage", "frontdesk.deskcode (this tab only)")
-Container(file, "clinic-data.json", "Static JSON", "The shipped clinic file")
-
-Container_Boundary(core, "core.js (window.FD), both pages and api/chat.js") {
-  Component(store, "Clinic file", "JavaScript", "loadClinic, clinic, originalClinic, saveClinic, resetClinic, validateClinic; reads other shapes of the same facts")
-  Component(engine, "Rules engine", "JavaScript", "answer() calls answerFile(), then adds the ask-for-a-person reply and the phone line; returns kind, status, text, lang, facts, bookingTime, modelOk")
-  Component(quick, "Quick replies and assistant name", "JavaScript", "quick, quickLabels, assistantName: the seven standard quick replies, or the clinic's own from the assistant section")
-  Component(guard, "Guard", "JavaScript", "guard(modelText, ruled, data): rejects a number, name, doctor, risky word or changed fact that is in neither the draft nor the file")
-  Component(tickets, "Tickets", "JavaScript", "patientId, newPatient, tickets, addTicket, replyToTicket, updateTicket, setStatus, byPriority")
-  Component(hours, "Opening hours", "JavaScript", "openNow, nextOpening: the open-now chip and the after-hours note")
-  Component(i18n, "Languages and theme", "JavaScript", "langOf, templates in en, hi, te; getLang, setLang, applyTheme, toggleTheme, waUrl")
-}
 
 Container_Boundary(chatpage, "Chat page scripts") {
-  Component(chatui, "chat.js: chat", "JavaScript", "Sends a question, draws replies in the order sent, quick replies, Helpful and Not helpful, call-back form, Clinic info panel, ?q= on load")
-  Component(client, "chat.js: model step", "JavaScript", "askModel: file answers only; posts the draft, facts, language and clinic file; waits 9 s; warm-up GET on load")
-  Component(voice, "chat.js: voice and Listen", "JavaScript", "Browser speech first; a recorded clip to api/transcribe and reply text to api/tts as backups")
-  Component(lookjs, "layout.js, compact.js", "JavaScript", "The pinned clinic panel from 1024 px; the + menu and the phone strip up to 767 px")
-  Component(callbackask, "callback-ask.js", "JavaScript", "One line above the call-back form while no phone number is known")
+  Component(chatui, "chat.js: chat", "JavaScript", "Questions, replies, quick replies, call-back form, Clinic info")
+  Component(client, "chat.js: model step", "JavaScript", "askModel: posts the draft, waits 9 s")
+  Component(voice, "chat.js: voice and Listen", "JavaScript", "Browser speech first, the server as backup")
+  Component(addons, "layout.js, compact.js, callback-ask.js, mark-link.js", "JavaScript", "Clinic panel, + menu, call-back line, brand mark link")
 }
 
-Container_Boundary(staffpage, "Staff page scripts") {
-  Component(staffui, "staff/staff.js", "JavaScript", "Ticket queue with numbers, the chat thread in the open ticket, reply box, Clear all tickets with Undo, To call back, Passed to the team, the clinic JSON editor")
-  Component(stafftools, "staff/tools.js", "JavaScript", "Search, status and type filters, sort, figures, Export CSV, ready-made replies, private note, urgent alerts; watches the queue, never calls staff.js")
-  Component(staffform, "staff/form.js", "JavaScript", "Edit with a form: fields generated from the JSON box; writes back into that box; the existing Save saves")
+Container_Boundary(core, "core.js (window.FD)") {
+  Component(engine, "Rules engine and guard", "JavaScript", "answer(), answerFile(), guard(); hours, languages, quick replies")
+  Component(tickets, "Tickets", "JavaScript", "addTicket, replyToTicket, setStatus")
+  Component(store, "Clinic file", "JavaScript", "loadClinic, saveClinic, validateClinic")
 }
 
-Container_Boundary(addons, "Scripts on both pages") {
-  Component(syncjs, "sync.js (window.FDSync)", "JavaScript", "Chat: sends this patient's tickets, fetches staff replies. Staff: Desk code box, Show tickets from all devices, sends replies and status changes")
-  Component(sharedjs, "shared.js (window.FDShared)", "JavaScript", "Clinic file from the server; each message to the server; staff Save and Reset to the server")
-  Component(marklink, "mark-link.js", "JavaScript", "A click on the brand mark opens sai4b.com in a new tab")
-}
+Component(sync, "sync.js, shared.js", "JavaScript, both pages", "Tickets, messages and the clinic file to and from the server")
 
-Container_Boundary(api, "api/, server functions") {
-  Component(chatr, "api/chat.js", "Node.js", "Loads core.js; one model call, temperature 0, 8 s; runs the guard; returns { text, model } or an error")
-  Component(ticketsr, "api/tickets.js core()", "Node.js", "Browser key (stored as a hash), desk code, clean, merge, request limit")
-  Component(msgr, "api/messages.js core()", "Node.js", "POST and GET a chat's messages; the first message fixes the owner")
-  Component(clinicr, "api/clinic.js core()", "Node.js", "GET the file in use; checkClinic, then save or reset with the desk code")
-  Component(healthr, "api/health.js", "Node.js", "{ ok, store, ai }")
-  Component(ttsr, "api/tts.js", "Node.js", "Reply text to audio/wav")
-  Component(sttr, "api/transcribe.js", "Node.js", "A recorded WAV clip to text")
-  Component(storemod, "api/_store.js", "Node.js", "mode(): postgres, redis or none; creates the tables on first use; seven-day clean-up after each write; hit() request counter")
-}
+ContainerDb(ls, "localStorage", "Web Storage, JSON", "The frontdesk.* keys")
+Container(file, "clinic-data.json", "Static JSON", "The shipped clinic file")
+System(api, "api/, server functions", "Shown in the server diagram")
 
-Rel(patient, chatui, "Types, taps or speaks")
-Rel(staff, staffui, "Reads, replies, closes, edits the file")
-Rel(staff, stafftools, "Searches, filters, exports, notes")
-Rel(staff, staffform, "Edits the clinic file as a form")
-Rel(store, file, "Fetches")
-Rel(store, ls, "Reads and writes frontdesk.clinic")
-Rel(chatui, engine, "Asks for the answer")
-Rel(engine, i18n, "Templates")
-Rel(chatui, quick, "Quick replies, assistant name")
-Rel(chatui, client, "Asks for a reworded draft")
-Rel(client, chatr, "GET warm-up; POST draft", "HTTPS, JSON")
-Rel(client, guard, "Checks the model's text again")
-Rel(chatr, guard, "Checks the model's text first")
-Rel(chatr, openrouter, "Chat completions", "HTTPS, key on the server")
-Rel(chatui, tickets, "Adds a ticket per question")
-Rel(chatui, hours, "After-hours note")
-Rel(voice, ttsr, "Listen, when the browser has no voice", "HTTPS, JSON")
-Rel(voice, sttr, "A recorded clip, when browser recognition fails", "HTTPS, JSON")
-Rel(ttsr, openrouter, "Audio", "HTTPS, key on the server")
-Rel(sttr, openrouter, "Audio to text", "HTTPS, key on the server")
-Rel(lookjs, chatui, "Drive the existing controls")
-Rel(callbackask, chatui, "Adds a line to the call-back form")
-Rel(staffui, tickets, "Lists, replies, sets status")
-Rel(staffui, store, "Saves or resets the file")
-Rel(tickets, ls, "Reads and writes frontdesk.tickets")
-Rel(stafftools, staffui, "Watches the ticket queue; fills the reply box")
-Rel(stafftools, ls, "Keeps frontdesk.notes and frontdesk.alerts")
-Rel(staffform, staffui, "Reads and writes the JSON box")
-Rel(syncjs, tickets, "Merges server copies into this browser's tickets")
-Rel(syncjs, ls, "Keeps frontdesk.synckey and frontdesk.alldevices")
-Rel(syncjs, ss, "Keeps frontdesk.deskcode")
-Rel(syncjs, ticketsr, "x-patient-key or x-desk-code", "HTTPS, JSON")
-Rel(syncjs, healthr, "With no desk code, asks whether there is a store", "HTTPS, JSON")
-Rel(sharedjs, clinicr, "GET and POST /api/clinic", "HTTPS, JSON")
-Rel(sharedjs, msgr, "POST /api/messages", "HTTPS, JSON")
-Rel(sharedjs, ls, "Keeps frontdesk.clinic.server, frontdesk.clinic.own, frontdesk.msgseen")
-Rel(ticketsr, storemod, "tickets")
-Rel(msgr, storemod, "messages")
-Rel(clinicr, storemod, "clinic_data")
-Rel(healthr, storemod, "ping")
-Rel(storemod, neon, "SQL", "@neondatabase/serverless")
+Rel_D(patient, chatui, "Types, taps or speaks")
+Rel_L(addons, chatui, "Add controls")
+Rel_D(chatui, engine, "Asks for the answer")
+Rel_D(chatui, tickets, "A ticket per question")
+Rel_R(chatui, client, "Asks for a reworded draft")
+Rel_R(client, voice, "")
+Rel_D(client, engine, "Checks the model's text again")
+Rel_D(sync, tickets, "Merges server copies")
+Rel_D(tickets, ls, "frontdesk.tickets")
+Rel_D(store, ls, "frontdesk.clinic")
+Rel_D(store, file, "Fetches")
+Rel_D(client, api, "api/chat", "HTTPS, JSON")
+Rel_D(voice, api, "api/tts, api/transcribe", "HTTPS, JSON")
+Rel_D(sync, api, "tickets, messages, clinic, health", "HTTPS, JSON")
+Lay_R(engine, tickets)
+Lay_R(tickets, store)
+Lay_D(tickets, sync)
 
 SHOW_LEGEND()
 @enduml

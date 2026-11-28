@@ -25,9 +25,9 @@ has written down, say so when it does not know, and pass the rest to a person.
 
 ## Requirements
 
-### From the brief
+### From the specification
 
-The ids are the brief's own: the nine things the product must do, then the six items of its bonus menu. Whether each is met, and the test that shows it, is in
+The ids are the specification's own: the nine things the product must do, then its six optional features. Whether each is met, and the test that shows it, is in
 [the specification check](SPEC-CHECK.md).
 
 | ID | Requirement |
@@ -41,18 +41,18 @@ The ids are the brief's own: the nine things the product must do, then the six i
 | 7 | A staff page at /staff lists all tickets with their status. A human types a reply and it appears in that patient's chat |
 | 8 | Must still answer when no AI key works: answer from the clinic file and show a small label, "Answered from the clinic file" |
 | 9 | Works well on a phone, 375 px wide |
-| Bonus 1 | Replies in Hindi or Telugu when the patient writes in them |
-| Bonus 2 | A booking request becomes a ticket with a time |
-| Bonus 3 | Ticket ageing and priority |
-| Bonus 4 | Clinic data editable by staff |
-| Bonus 5 | Quick-reply buttons |
-| Bonus 6 | Replies stay correct after a staff edit |
+| Optional 1 | Replies in Hindi or Telugu when the patient writes in them |
+| Optional 2 | A booking request becomes a ticket with a time |
+| Optional 3 | Ticket ageing and priority |
+| Optional 4 | Clinic data editable by staff |
+| Optional 5 | Quick-reply buttons |
+| Optional 6 | Replies stay correct after a staff edit |
 
-The brief also fixes how the product is checked: the names of the message box, the Send button, a bot reply,
-the ticket list and the staff reply box, a question asked from the page address, and a second run with the AI
-key removed. Those lines are in [the specification check](SPEC-CHECK.md).
+The specification also fixes the ids of the message box, the Send button, a bot reply, the ticket list and the
+staff reply box, which are kept stable for automated tests, a question asked from the page address, and a run
+with the AI key removed. Those lines are in [the specification check](SPEC-CHECK.md).
 
-### Beyond the brief: for the patient
+### Beyond the specification: for the patient
 
 Each line names the epic it belongs to in [the epics](docs/epics.md), where its acceptance criteria and tests
 are.
@@ -78,7 +78,7 @@ are.
 | I can switch between light and dark, and the button says which theme is on | Layout, themes and accessibility |
 | I can skip straight to the message box with the keyboard | Layout, themes and accessibility |
 
-### Beyond the brief: for front-desk staff
+### Beyond the specification: for front-desk staff
 
 | Requirement | Epic |
 | --- | --- |
@@ -92,7 +92,7 @@ are.
 | My reply or a patient's question is sent even when the tab goes to the background | Tickets and clinic file shared across devices |
 | I can clear all tickets with one press and undo it | Staff page and queue tools |
 
-### Beyond the brief: for the clinic owner
+### Beyond the specification: for the clinic owner
 
 | Requirement | Epic |
 | --- | --- |
@@ -111,8 +111,8 @@ are.
 | Booking into a diary, with a slot confirmed by the chat | The clinic file says booking is confirmed by the team. The chat passes the request on and never confirms a slot |
 | Patient accounts and logins | A patient should be able to ask at once. A browser is recognised by a private key it holds, not by a sign-in |
 | Named staff accounts | There is one shared desk code for the clinic |
-| A sign-in in front of the staff page | The brief's check opens /staff directly. Only the list from every device asks for the desk code |
-| Judging how serious a symptom is | The brief forbids medical advice. The fixed emergency and symptom rules stay; a dentist decides |
+| A sign-in in front of the staff page | The specification has /staff open directly. Only the list from every device asks for the desk code |
+| Deciding how serious a symptom is | The specification forbids medical advice. The fixed emergency and symptom rules stay; a dentist decides |
 | Messages sent to patients by text message or WhatsApp from the staff page | It needs a business account and the patient's consent |
 | Reports for the owner beyond the figures and the CSV export | Not asked for |
 | An offline install | A chat that cannot reach the clinic is of no use to the patient |
@@ -123,9 +123,9 @@ The results of the last run of each are in [the report](REPORT.md#latest-results
 
 | Measure | Target | How it is measured |
 | --- | --- | --- |
-| The brief's nine "Done when" lines on the live link | all met, with the AI model and with it blocked | `tests/brief.mjs` |
-| The brief's eight practice questions | each includes what it must and nothing it must not, in both runs | `tests/questions.mjs` |
-| Bonus items | six of six | `tests/bonus.mjs` |
+| The specification's nine "Done when" lines on the live link | all met, with the AI model and with it blocked | `tests/brief.mjs` |
+| The specification's eight practice questions | each includes what it must and nothing it must not, in both runs | `tests/questions.mjs` |
+| Optional features | six of six | `tests/bonus.mjs` |
 | A price, time, doctor or phone number in a reply that the clinic file does not hold | none | `tests/brief.mjs`, `tests/audit.mjs` |
 | Sideways scroll from 375 px to 2560 px | none | `tests/widths.mjs` |
 | Text contrast in light and dark | readable against the background a person really sees | `tests/contrast-true.mjs` |
@@ -133,12 +133,12 @@ The results of the last run of each are in [the report](REPORT.md#latest-results
 
 ## Assumptions
 
-- "That patient's chat" in the brief is the chat in the browser where the question was asked.
+- "That patient's chat" in the specification is the chat in the browser where the question was asked.
 - "Within 2 working hours" is said in those words. The chat does not work out a clock time.
 - An emergency is a message about the things the file's emergency rule names, or the common emergency words,
   in any of the three languages.
 - A reply to a discount or rule-change message opens an answered ticket. A medical reply opens a needs-human
-  ticket, so the team can call to book. The brief names no status for these.
+  ticket, so the team can call to book. The specification names no status for these.
 - A field missing from the clinic file leads to the not-sure reply for that question, never to a failure.
 - The AI model is optional. It may only reword an answer the rules already found, and it is never sent the
   patient's message.

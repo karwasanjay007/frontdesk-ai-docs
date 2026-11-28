@@ -1,10 +1,11 @@
 @startuml j1-first-visit-and-ask
 !include style.iuml
+skinparam maxMessageSize 120
 title J1 First visit and ask
 actor Patient
 participant "Patient chat\n(index.html, chat.js,\nsync.js, shared.js)" as Chat
 participant "Rules engine\n(core.js)" as Core
-database "Browser storage" as LS
+database "Browser\nstorage" as LS
 participant "api/clinic.js" as Clinic
 participant "api/messages.js" as Msg
 participant "api/chat.js" as Api

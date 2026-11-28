@@ -1,7 +1,32 @@
 # FrontDesk AI: what changed in each version
 
-Newest first. This is the only page that tells the history; every other page describes today's version.
-The documents as they were submitted are on the branch [`submitted-1.0.0.0`](../../tree/submitted-1.0.0.0).
+This is the only page that tells the history; every other page describes today's version.
+
+## Two versions
+
+| Version | Date | Where | What it is |
+| --- | --- | --- | --- |
+| 1.7.2.0 | 27 November 2026 | branch `main` | Today's version, the one on the live link |
+| 1.0.0.0 | 21 November 2026 | branch [`first-release-1.0.0.0`](../../tree/first-release-1.0.0.0) | The first release, with its documents as they stood then |
+
+What today's version has that the first release did not:
+
+| In the user's words | First release 1.0.0.0 | Today 1.7.2.0 |
+| --- | --- | --- |
+| Where tickets live | In one browser | In Postgres, shared across devices; staff see every device's tickets with a desk code |
+| The clinic file after a staff edit | Changed in that browser | Saved for every device with the desk code |
+| The chat's messages | In the browser only | Also kept on the server for 7 days, so staff see the whole chat in a ticket |
+| Asking for a person | The not-sure reply | Its own reply, ticket and quick reply |
+| Staff queue tools | A list in priority order | Search, filters, sort, figures, ready-made replies, private notes, CSV export, urgent alerts |
+| Editing the clinic file | A JSON box | A form as well, with the assistant's name and quick replies |
+| Tickets | No numbers | Ticket numbers, the chat thread, Helpful and Not helpful |
+| Phone chat | Controls round the message box | Starter cards, a "+" menu, a slim message box |
+| Desktop chat | A clinic information drawer | Clinic information pinned on the right, answers in a column |
+| The model step | Called from the page's own function | Temperature 0, one attempt, 8 seconds, checked by the guard on the server as well, with a request limit |
+| A doctor the clinic does not have | Could be answered with another doctor | Said so, with the clinic's own doctors |
+| Mixed questions such as timings and prices | Not answered together | Both parts in one reply |
+
+The versions follow, newest first.
 
 ## Version 1.7.2.0 (27 November 2026)
 
@@ -98,7 +123,9 @@ The documents as they were submitted are on the branch [`submitted-1.0.0.0`](../
 - "Edit with a form" beside the JSON box of the clinic file.
 - The clinic file can set the assistant's name and the clinic's own quick replies.
 
-## Version 1.0.0.0 (21 November 2026), the submitted version
+## Version 1.0.0.0 (21 November 2026)
+
+The first release.
 
 - The patient chat: answers only from the clinic file, in English, Hindi or Telugu, typed or spoken, with Listen to hear a reply.
 - Emergency number first, no medical advice, no discounts; what the file cannot answer becomes a ticket with a promised call back.

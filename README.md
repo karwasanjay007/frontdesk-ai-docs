@@ -8,10 +8,11 @@ FrontDesk AI is the front desk chat of a dental clinic: patients get answers fro
 | --- | --- |
 | Live | Patient chat https://frontdesk-ai-xi-gray.vercel.app and staff page https://frontdesk-ai-xi-gray.vercel.app/staff |
 | Documents | This repository |
-| Code | private |
+| Code | Private |
 | Built by | Sanjay Karwa, Smart AI for Business |
 | Made with | A rules engine in the browser (plain HTML, CSS and JavaScript), Vercel functions, Postgres on Neon for messages, tickets and the clinic file, and the model `deepseek/deepseek-v4.1-flash` through OpenRouter, used only to reword an answer the rules already found |
-| Status | Live. The health route answers ok with the Postgres store and a model key, and every "Done when" of the brief passes on the live link with the model and with it blocked ([latest results](REPORT.md#latest-results-on-the-live-link)) |
+| Status | Live. The health route answers ok with the Postgres store and a model key, and every "Done when" of the specification passes on the live link with the model and with it blocked ([latest results](REPORT.md#latest-results-on-the-live-link)) |
+| Versions | 1.7.2.0 is live; the first release is kept for comparison. See [what changed in each version](CHANGELOG.md) |
 
 ## Try it in two minutes
 
@@ -25,7 +26,7 @@ No sign-in is needed. Open the live link in another tab.
 
 How the staff step works today: without the desk code the staff page shows the tickets of this browser only, which is why step 4 uses the same browser. Once the clinic's desk code is entered in the box "Desk code" at the top of the ticket list, the page shows the tickets of every device.
 
-### The rubric's own questions, with the expected reply
+### Seven questions to try, with the reply to expect
 
 Type each one as written, or open its link: `?q=` asks the question when the page opens.
 
@@ -52,30 +53,30 @@ Type each one as written, or open its link: `?q=` asks the question when the pag
 
 ## What FrontDesk AI supports
 
-One row per requirement of the brief and per feature beyond it. "Must" rows are the nine things the brief says the product must do, "Bonus" rows its bonus menu, "Scoring" its marks for phone and light and dark. N/A means the brief does not ask for it.
+One row per requirement of the specification and per feature beyond it. "Required" rows are the nine things the product must do, "Optional" rows its six optional features, and "Quality" its reading in light and dark. N/A means the specification does not ask for it.
 
-### Asked for by the brief
+### In the specification
 
 | Requirement | Feature | Supported |
 | --- | --- | --- |
-| Must 1 | A patient types a question in the chat and gets a reply | Yes |
-| Must 2 | Answers come only from the clinic file: timings, doctors, prices, policies, insurance, location | Yes |
-| Must 3 | When the file has no answer the chat says it is not sure, opens a Needs human ticket and promises a call back within 2 working hours | Yes |
-| Must 4 | No medical advice and no medicine names: a dentist must see the patient, with an offer to book | Yes |
-| Must 5 | An emergency gets the emergency number first and an Urgent ticket | Yes |
-| Must 6 | No discount, and "ignore your rules" is refused | Yes |
-| Must 7 | A staff page lists every ticket with its status; a reply typed there appears in the patient's chat | Yes |
-| Must 8 | The chat still answers when the model cannot be reached, with the label "Answered from the clinic file" | Yes |
-| Must 9 | Works on a phone 375 px wide | Yes |
-| Bonus 1 | Replies in Hindi or Telugu when the patient writes in them | Yes |
-| Bonus 2 | A booking request becomes a ticket with the requested time | Yes |
-| Bonus 3 | Tickets show their age and are listed by priority | Yes |
-| Bonus 4 | Staff can edit the clinic file | Yes |
-| Bonus 5 | Quick-reply buttons | Yes, seven |
-| Bonus 6 | Replies follow a staff edit of the clinic file | Yes, on every device from the next question |
-| Scoring | Readable in light and in dark | Yes |
+| Required 1 | A patient types a question in the chat and gets a reply | Yes |
+| Required 2 | Answers come only from the clinic file: timings, doctors, prices, policies, insurance, location | Yes |
+| Required 3 | When the file has no answer the chat says it is not sure, opens a Needs human ticket and promises a call back within 2 working hours | Yes |
+| Required 4 | No medical advice and no medicine names: a dentist must see the patient, with an offer to book | Yes |
+| Required 5 | An emergency gets the emergency number first and an Urgent ticket | Yes |
+| Required 6 | No discount, and "ignore your rules" is refused | Yes |
+| Required 7 | A staff page lists every ticket with its status; a reply typed there appears in the patient's chat | Yes |
+| Required 8 | The chat still answers when the model cannot be reached, with the label "Answered from the clinic file" | Yes |
+| Required 9 | Works on a phone 375 px wide | Yes |
+| Optional 1 | Replies in Hindi or Telugu when the patient writes in them | Yes |
+| Optional 2 | A booking request becomes a ticket with the requested time | Yes |
+| Optional 3 | Tickets show their age and are listed by priority | Yes |
+| Optional 4 | Staff can edit the clinic file | Yes |
+| Optional 5 | Quick-reply buttons | Yes, seven |
+| Optional 6 | Replies follow a staff edit of the clinic file | Yes, on every device from the next question |
+| Quality | Readable in light and in dark | Yes |
 
-### Beyond the brief: for the patient
+### Beyond the specification: for the patient
 
 | Requirement | Feature | Supported |
 | --- | --- | --- |
@@ -96,7 +97,7 @@ One row per requirement of the brief and per feature beyond it. "Must" rows are 
 | N/A | Desktop layout: answers in a column, the clinic information pinned on the right | Yes, from 768 px; the panel from 1024 px |
 | N/A | Every tap target at least 44 px; a skip link to the message box | Yes |
 
-### Beyond the brief: for staff and the clinic
+### Beyond the specification: for staff and the clinic
 
 | Requirement | Feature | Supported |
 | --- | --- | --- |
@@ -117,39 +118,13 @@ One row per requirement of the brief and per feature beyond it. "Must" rows are 
 
 The acceptance criteria and the test behind each row are in [the epics](docs/epics.md).
 
-## Two versions
-
-| Version | Date | Where | What it is |
-| --- | --- | --- | --- |
-| 1.7.2.0 | 27 November 2026 | this branch, `main` | Today's version, the one on the live link |
-| 1.0.0.0 | 21 November 2026 | branch [`submitted-1.0.0.0`](../../tree/submitted-1.0.0.0) | The submitted version, with its documents as they were sent |
-
-What today's version has that the submitted one did not:
-
-| In the user's words | Submitted 1.0.0.0 | Today 1.7.2.0 |
-| --- | --- | --- |
-| Where tickets live | In one browser | In Postgres, shared across devices; staff see every device's tickets with a desk code |
-| The clinic file after a staff edit | Changed in that browser | Saved for every device with the desk code |
-| The chat's messages | In the browser only | Also kept on the server for 7 days, so staff see the whole chat in a ticket |
-| Asking for a person | The not-sure reply | Its own reply, ticket and quick reply |
-| Staff queue tools | A list in priority order | Search, filters, sort, figures, ready-made replies, private notes, CSV export, urgent alerts |
-| Editing the clinic file | A JSON box | A form as well, with the assistant's name and quick replies |
-| Tickets | No numbers | Ticket numbers, the chat thread, Helpful and Not helpful |
-| Phone chat | Controls round the message box | Starter cards, a "+" menu, a slim message box |
-| Desktop chat | A clinic information drawer | Clinic information pinned on the right, answers in a column |
-| The model step | Called from the page's own function | Temperature 0, one attempt, 8 seconds, checked by the guard on the server as well, with a request limit |
-| A doctor the clinic does not have | Could be answered with another doctor | Said so, with the clinic's own doctors |
-| Mixed questions such as timings and prices | Not answered together | Both parts in one reply |
-
-Every version in between is in [CHANGELOG.md](CHANGELOG.md).
-
 ## Documents
 
 | Document | Read it for |
 | --- | --- |
 | [PRD.md](PRD.md) | Who it is for, the problem, the requirements, what is out of scope |
-| [SPEC-CHECK.md](SPEC-CHECK.md) | Each line of the brief, whether it is met and the test that shows it |
-| [REPORT.md](REPORT.md) | The latest test results on the live link, known limits, what was not tested, the note sent to the judges |
+| [SPEC-CHECK.md](SPEC-CHECK.md) | Each requirement of the specification, whether it is met and the test that shows it |
+| [REPORT.md](REPORT.md) | The latest test results on the live link, known limits, what was not tested |
 | [ARCHITECTURE.md](ARCHITECTURE.md) | The parts, the files, the routes, how an answer is made, hosting |
 | [TECH-STACK.md](TECH-STACK.md) | Each technology chosen, why, and what it costs |
 | [IMPLEMENTATION-PLAN.md](IMPLEMENTATION-PLAN.md) | How to run it, test it and release it |
@@ -159,7 +134,7 @@ Every version in between is in [CHANGELOG.md](CHANGELOG.md).
 | [docs/diagrams/](docs/diagrams/) | The PlantUML source and the SVG of every diagram |
 | [docs/schema/](docs/schema/) | JSON Schemas of the clinic file and the ticket; the request and reply of the chat route |
 | [evidence/](evidence/) | The saved output of each test run |
-| [CHANGELOG.md](CHANGELOG.md) | What changed in each version, newest first |
+| [CHANGELOG.md](CHANGELOG.md) | The two versions kept, what differs, and what changed in each version |
 
 ## Privacy
 
@@ -168,4 +143,4 @@ Every version in between is in [CHANGELOG.md](CHANGELOG.md).
 - **Who can read it.** A patient's tickets and chat can be read only from the browser that made them, which holds a private key the server stores only as a hash, or by staff who enter the clinic's desk code. A ticket number or a patient id alone opens nothing. Until the clinic sets a desk code, nobody can list every device's tickets.
 - **How long.** Tickets and messages are deleted from the server after 7 days. The clinic file saved by staff stays until staff change it or put the original back.
 - **What the model sees.** Only the answer the rules drafted and the clinic file, never the patient's message. The model key stays on the server.
-- **Voice.** Speaking uses the browser's own speech service. Only if that fails is a short clip, about 30 seconds at most, sent to the server to be turned into text. Listen sends the reply's text to a server voice only when the browser has no voice for the language.
+- **Voice.** Speaking uses the browser's own speech service. Only if that fails does a short clip, about 30 seconds at most, go to the server to be turned into text. Listen sends the reply's text to a server voice only when the browser has no voice for the language.
