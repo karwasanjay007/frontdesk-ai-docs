@@ -114,7 +114,7 @@ PASS item 7 staff reply: every ticket has its own #staff-reply and #staff-send (
 PASS item 7 staff reply: staff text typed on the needs-human ticket shows in a chat .bot-msg within 5 s
 PASS item 7 staff reply: that ticket's data-status changed | ticket "TMWZCFVN9YR": needs human -> answered
 PASS item 7 staff reply: a ticket that is not open can be replied to without clicking it first | ticket TMWZCFVHR5G: answered -> closed, in chat: true
-INFO item 8 (key present, not graded): label "Answered from the clinic file" shown: false
+INFO item 8 (key present, for information): label "Answered from the clinic file" shown: false
 PASS item 9 phone 375: chat page: no sideways scroll on load | scrollWidth 375
 PASS item 9 phone 375: chat page: no sideways scroll after three messages | scrollWidth 375
 PASS item 9 phone 375: #chat-input and #chat-send inside the viewport after three messages | both in view
@@ -645,7 +645,7 @@ PASS F2 guard refuses a model rewrite that drops the phone
 PASS F2 guard passes a reply that keeps the address and the phone
 PASS F3 notice shown beside a needs-human reply with no phone left
 PASS F3 notice names the clinic number with a call link: We do not have a phone number for you yet, so the team cannot call you back. Please leave your number here, or call the clinic on 040 5550 0
-PASS F3 graded reply text unchanged and the notice is outside it
+PASS F3 tested reply text unchanged and the notice is outside it
 PASS F3 still one call-back form, not a second one
 PASS F3 notice in Hindi: हमारे पास अभी आपका फोन नंबर नहीं है, इसलिए टीम आपको कॉल नहीं कर पाएगी। कृपया अपना नंबर यहाँ लिखें, या क्लिनिक को इस नंबर पर कॉल करें: 040 55
 PASS F3 notice in Telugu: మీ ఫోన్ నంబర్ ఇంకా మా దగ్గర లేదు, కాబట్టి మా టీమ్ మీకు కాల్ చేయలేదు. దయచేసి మీ నంబర్ ఇక్కడ ఇవ్వండి, లేదా క్లినిక్‌కు ఈ నంబర్‌లో కాల్ చేయండి:
