@@ -1,93 +1,157 @@
 @startuml data-model
-title FrontDesk AI data model: the server's tables
-
-skinparam backgroundColor #FFFFFF
-skinparam shadowing false
-skinparam roundCorner 14
-skinparam defaultFontName "Segoe UI"
-skinparam defaultFontSize 13
-skinparam titleFontSize 18
-skinparam titleFontColor #0B5D63
-skinparam ArrowColor #0B5D63
-skinparam ArrowFontColor #2F4245
-skinparam ArrowThickness 1.4
-skinparam class {
-  BackgroundColor #FFFFFF
-  BorderColor #0B5D63
-  BorderThickness 1.6
-  HeaderBackgroundColor #E3F0F1
-  FontColor #132326
-  AttributeFontColor #2F4245
-  StereotypeFontColor #0B5D63
-}
-skinparam note {
-  BackgroundColor #F4F8F8
-  BorderColor #9BBFC2
-  FontColor #2F4245
-  FontSize 12
-}
-skinparam package {
-  BorderColor #9BBFC2
-  FontColor #0B5D63
-  BackgroundColor #FFFFFF
-}
-hide circle
-hide methods
-set separator none
+!include c4-erd.iuml
+title FrontDesk AI data model: the server
 top to bottom direction
 
-package "Server: Postgres on Neon, through api/_store.js" {
-  entity tickets {
-    {field} <b>id</b> : TEXT, primary key
-    {field} patient : TEXT
-    {field} owner : TEXT  (hash of the browser key)
-    {field} status : TEXT
-    {field} priority : TEXT  (urgent | normal)
-    {field} text : TEXT  (the question)
-    {field} reply : TEXT
-    {field} data : JSONB  (the whole ticket)
-    {field} created_at : BIGINT
-    {field} updated_at : BIGINT
+package "Postgres on Neon (server)" <<store>> {
+  entity "tickets" as tickets <<table>> {
+    * id : TEXT <<PK>>
+    --
+    * patient : TEXT DEFAULT ''
+    * owner : TEXT DEFAULT ''
+    * status : TEXT
+    * priority : TEXT DEFAULT 'normal'
+    * text : TEXT DEFAULT ''
+    * reply : TEXT DEFAULT ''
+    * data : JSONB
+    * created_at : BIGINT
+    * updated_at : BIGINT
+    ..
+    index tickets_owner (owner)
   }
-  entity messages {
-    {field} <b>id</b> : BIGSERIAL, primary key
-    {field} chat_id : TEXT
-    {field} role : TEXT  (patient | bot | staff)
-    {field} text : TEXT  (at most 6,000 characters)
-    {field} source : TEXT
-    {field} owner : TEXT  (hash of the browser key)
-    {field} created_at : BIGINT
+  entity "messages" as messages <<table>> {
+    * id : BIGSERIAL <<PK>>
+    --
+    * chat_id : TEXT
+    * role : TEXT
+    * text : TEXT
+    * source : TEXT DEFAULT ''
+    * owner : TEXT DEFAULT ''
+    * created_at : BIGINT
+    ..
+    index messages_chat (chat_id, id)
   }
-  entity clinic_data {
-    {field} <b>id</b> : INTEGER  (always 1, the only row)
-    {field} data : JSONB  (the edited clinic file)
-    {field} updated_at : BIGINT
+  entity "clinic_data" as clinic <<table>> {
+    * id : INTEGER <<PK>> CHECK (id = 1)
+    --
+    * data : JSONB
+    * updated_at : BIGINT
   }
 }
 
-tickets "0..*" -down- "0..*" messages : tickets.patient = messages.chat_id\n(the patient id); the same owner
-messages -[hidden]down- clinic_data
+package "Redis over REST (fallback when DATABASE_URL is not set)" <<store>> {
+  entity "fd:idx" as ridx <<key>> {
+    * key : fd:idx <<PK>>
+    --
+    * type : SORTED SET
+    * member : ticket id
+    * score : created (ms)
+  }
+  entity "fd:t:<U+003C>id>" as rt <<key>> {
+    * key : fd:t:<id> <<PK>>
+    --
+    * type : STRING
+    * value : the whole ticket, JSON
+    * expiry : 7 days
+  }
+  entity "fd:o:<U+003C>owner>" as ro <<key>> {
+    * key : fd:o:<owner hash> <<PK>>
+    --
+    * type : SET
+    * member : ticket id
+    * expiry : 7 days
+  }
+  entity "fdb:mo:<U+003C>chat>" as rmo <<key>> {
+    * key : fdb:mo:<chat id> <<PK>>
+    --
+    * type : STRING
+    * value : owner hash (set once, NX)
+    * expiry : 7 days
+  }
+  entity "fdb:m:<U+003C>chat>" as rm <<key>> {
+    * key : fdb:m:<chat id> <<PK>>
+    --
+    * type : LIST
+    * item : message JSON {id, chat_id,
+      role, text, source, created_at}
+    * expiry : 7 days, last 400 kept
+  }
+  entity "fdb:clinic" as rc <<key>> {
+    * key : fdb:clinic <<PK>>
+    --
+    * type : STRING
+    * value : the edited clinic file, JSON
+  }
+  entity "fd:rl:<U+003C>key>:<U+003C>minute>" as rl <<key>> {
+    * key : fd:rl:<key>:<minute> <<PK>>
+    --
+    * type : STRING (INCR counter)
+    * expiry : 70 seconds
+  }
+}
+
+tickets }o..o{ messages : "tickets.patient = messages.chat_id\n(the patient id); same owner hash"
+messages -[hidden]down- clinic
+clinic -[hidden]down- ridx
+
+ridx ||..o{ rt : "lists by id,\nnewest 300"
+ro ||..o{ rt : "a browser's\ntickets by id"
+rt -[hidden]down- rmo
+rmo ||..|| rm : "same chat id:\nwho owns the chat"
+rm -[hidden]down- rc
+rc -[hidden]right- rl
 
 note right of tickets
-  <b>Written by</b> sync.js, POST /api/tickets
-  A merge keeps every staff reply; the
-  status further along wins. Patient,
-  question, bot reply, created and
-  owner never change once stored.
-  Deleted seven days after it was made.
+  <b>data</b> holds the whole ticket as JSON;
+  the other columns are copies for
+  queries. priority is urgent when the
+  status is urgent, else normal.
+  <b>Who can read:</b> a patient's browser
+  reads rows whose owner is the SHA-256
+  hash of its key and whose patient is its
+  patient id; staff read every row with
+  the desk code. owner never leaves.
+  <b>Retention:</b> rows older than 7 days
+  are deleted after every write.
 end note
 
 note right of messages
-  <b>Written by</b> shared.js, POST /api/messages
-  The question, the bot reply and
-  each staff reply, one row each.
-  Deleted seven days after it was made.
+  role is patient, bot or staff; text
+  at most 6,000 characters.
+  <b>Who can read:</b> the browser whose key
+  hash is the owner of the chat's first
+  row. A read returns 400 at most,
+  oldest first.
+  <b>Retention:</b> rows older than 7 days
+  are deleted after every insert.
 end note
 
-note right of clinic_data
-  <b>Written by</b> shared.js, POST /api/clinic
-  (desk code). No link to the other tables
-  and no expiry. When there is no row,
+note right of clinic
+  One row at most. <b>data</b> is the edited
+  clinic file, under 100,000 characters,
+  checked before it is saved. Anyone may
+  read it; only the desk code saves or
+  resets it. A reset deletes the row and
   the shipped clinic-data.json is used.
+  No expiry.
 end note
+
+note right of rm
+  Used only when no DATABASE_URL is set
+  and the Redis REST address and token
+  are. Same rules and limits as the
+  tables above. The request counter
+  fd:rl uses Redis whenever it is set,
+  in either mode.
+end note
+
+legend right
+  <b>Key</b>
+  PK primary key
+  * mandatory (NOT NULL), NULL optional
+  solid line: enforced by the database
+  dotted line: linked by value only
+  ||..o{ one to zero or many
+  }o..o{ many to many, by value
+endlegend
 @enduml

@@ -50,12 +50,12 @@ Created with `CREATE TABLE IF NOT EXISTS` on first use. Every query has a 6 seco
 | Column | Type | Holds |
 | --- | --- | --- |
 | `id` | `BIGSERIAL PRIMARY KEY` | The order within a chat |
-| `chat_id` | `TEXT` | The chat's id, 3 to 40 letters, digits, `_` or `-` |
-| `role` | `TEXT` | `patient`, `bot` or `staff` |
-| `text` | `TEXT` | The message, at most 6,000 characters |
-| `source` | `TEXT DEFAULT ''` | Where the reply came from |
-| `owner` | `TEXT DEFAULT ''` | Hash of the key of the browser that sent it; the first row's owner owns the chat |
-| `created_at` | `BIGINT` | Milliseconds since 1970 |
+| `chat_id` | `TEXT NOT NULL` | The chat's id, 3 to 40 letters, digits, `_` or `-` |
+| `role` | `TEXT NOT NULL` | `patient`, `bot` or `staff` |
+| `text` | `TEXT NOT NULL` | The message, at most 6,000 characters |
+| `source` | `TEXT NOT NULL DEFAULT ''` | Where the reply came from |
+| `owner` | `TEXT NOT NULL DEFAULT ''` | Hash of the key of the browser that sent it; the first row's owner owns the chat |
+| `created_at` | `BIGINT NOT NULL` | Milliseconds since 1970 |
 
 Index `messages_chat (chat_id, id)`. A read returns up to 400 messages, oldest first. Rows older than 7 days
 are deleted after every insert.
@@ -65,14 +65,14 @@ are deleted after every insert.
 | Column | Type | Holds |
 | --- | --- | --- |
 | `id` | `TEXT PRIMARY KEY` | The ticket id |
-| `patient` | `TEXT` | The patient id |
-| `owner` | `TEXT` | Hash of the key of the browser that created it |
-| `status` | `TEXT` | The ticket's status |
-| `priority` | `TEXT DEFAULT 'normal'` | `urgent` when the status is urgent, else `normal` |
-| `text` | `TEXT` | The question |
-| `reply` | `TEXT` | The bot's reply |
-| `data` | `JSONB` | The whole ticket |
-| `created_at`, `updated_at` | `BIGINT` | Milliseconds since 1970 |
+| `patient` | `TEXT NOT NULL DEFAULT ''` | The patient id |
+| `owner` | `TEXT NOT NULL DEFAULT ''` | Hash of the key of the browser that created it |
+| `status` | `TEXT NOT NULL` | The ticket's status |
+| `priority` | `TEXT NOT NULL DEFAULT 'normal'` | `urgent` when the status is urgent, else `normal` |
+| `text` | `TEXT NOT NULL DEFAULT ''` | The question |
+| `reply` | `TEXT NOT NULL DEFAULT ''` | The bot's reply |
+| `data` | `JSONB NOT NULL` | The whole ticket |
+| `created_at`, `updated_at` | `BIGINT NOT NULL` | Milliseconds since 1970 |
 
 Index `tickets_owner (owner)`. The staff list returns the newest 300; a patient's own list the newest 60. Rows
 older than 7 days are deleted after every write.
@@ -82,8 +82,8 @@ older than 7 days are deleted after every write.
 | Column | Type | Holds |
 | --- | --- | --- |
 | `id` | `INTEGER PRIMARY KEY CHECK (id = 1)` | Always 1: there is one row |
-| `data` | `JSONB` | The edited clinic file, under 100,000 characters |
-| `updated_at` | `BIGINT` | Milliseconds since 1970 |
+| `data` | `JSONB NOT NULL` | The edited clinic file, under 100,000 characters |
+| `updated_at` | `BIGINT NOT NULL` | Milliseconds since 1970 |
 
 A reset deletes the row, and the shipped file is used again.
 

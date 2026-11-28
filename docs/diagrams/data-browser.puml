@@ -1,156 +1,230 @@
 @startuml data-browser
-title FrontDesk AI data model: the browser's keys and the clinic file
-
-skinparam backgroundColor #FFFFFF
-skinparam shadowing false
-skinparam roundCorner 14
-skinparam defaultFontName "Segoe UI"
-skinparam defaultFontSize 13
-skinparam titleFontSize 18
-skinparam titleFontColor #0B5D63
-skinparam ArrowColor #0B5D63
-skinparam ArrowFontColor #2F4245
-skinparam ArrowThickness 1.4
-skinparam class {
-  BackgroundColor #FFFFFF
-  BorderColor #0B5D63
-  BorderThickness 1.6
-  HeaderBackgroundColor #E3F0F1
-  FontColor #132326
-  AttributeFontColor #2F4245
-  StereotypeFontColor #0B5D63
-}
-skinparam note {
-  BackgroundColor #F4F8F8
-  BorderColor #9BBFC2
-  FontColor #2F4245
-  FontSize 12
-}
-skinparam package {
-  BorderColor #9BBFC2
-  FontColor #0B5D63
-  BackgroundColor #FFFFFF
-}
-hide circle
-hide methods
-set separator none
+!include c4-erd.iuml
+title FrontDesk AI data model: the browser and the clinic file
 top to bottom direction
 
-package "Browser: storage keys" {
-  class LocalStorage <<per browser>> {
-    {field} frontdesk.tickets : Ticket[]  (JSON list)
-    {field} frontdesk.clinic : the clinic file in use on this device
-    {field} frontdesk.clinic.server : mark, the file came from the server
-    {field} frontdesk.clinic.own : mark, saved or reset on this device only
-    {field} frontdesk.patient : string  (P + 5 characters)
-    frontdesk.lang : en | hi | te
-    frontdesk.theme : light | dark
-    {field} frontdesk.synckey : string  (the private browser key)
-    {field} frontdesk.msgseen : list of ticket id:reply time  (last 300)
-    {field} frontdesk.alldevices : "1" | "0"
-    {field} frontdesk.notes : map of ticket id to note  (never sent)
-    {field} frontdesk.alerts : "1"
+package "Browser storage: localStorage (each device)" <<browser>> {
+  entity "frontdesk.tickets" as ktickets <<key>> {
+    * value : array of Ticket, JSON
+    --
+    written by core.js, sync.js, staff.js
   }
-  class SessionStorage <<per tab>> {
-    {field} frontdesk.deskcode : string  (sent as x-desk-code)
+  entity "Ticket" as ticket <<record>> {
+    * id : string <<PK>>
+    --
+    * patient : string
+    * q : string
+    * reply : string
+    * source : string
+    * kind : string
+    * status : string
+    * lang : string
+    * bookingTime : string
+    * modelOk : boolean
+    * afterHours : boolean
+    * afterHoursNote : string
+    * callBack : boolean
+      contactName : string <<NULL>>
+      contactPhone : string <<NULL>>
+      feedback : string <<NULL>>
+    * created : number
+      updated : number <<NULL>>
+    * staffReplies : array
+      saved : boolean <<NULL>>
+      remote : boolean <<NULL>>
   }
-  class Ticket {
-    {field} <b>id</b> : string  (T + time in base 36 + 2 characters)
-    {field} patient : string  (patient id)
-    q : string
-    reply : string
-    source : model | file
-    kind : emergency | refuse | medical | booking |\n  answer | notsure | human
-    status : urgent | needs human | answered | closed
-    lang : en | hi | te
-    {field} bookingTime : string  ("" when not a booking)
-    modelOk : boolean
-    afterHours : boolean
-    afterHoursNote : string
-    callBack : boolean
-    {field} contactName : string [optional]
-    {field} contactPhone : string [optional]  (with country code)
-    {field} feedback : "up" | "down" | ""
-    {field} created : number  (ms since 1970)
-    {field} updated : number
-    staffReplies : StaffReply[]
-    {field} remote : true  (staff browser only:\n  a ticket from another device)
+  entity "StaffReply" as sreply <<record>> {
+    * at : number <<PK>>
+    --
+    * text : string
   }
-  class StaffReply {
-    text : string
-    {field} at : number  (ms since 1970)
+  entity "frontdesk.clinic" as kclinic <<key>> {
+    * value : ClinicFile, JSON
+    --
+    the file in use on this device
+  }
+  entity "frontdesk.clinic.server" as kcs <<key>> {
+    * value : string (a mark)
+    --
+    the file came from the server
+  }
+  entity "frontdesk.clinic.own" as kco <<key>> {
+    * value : string (a mark)
+    --
+    saved or reset on this device only
+  }
+  entity "frontdesk.patient" as kpatient <<key>> {
+    * value : string, P + 5 characters
+    --
+    removed by New chat
+  }
+  entity "frontdesk.synckey" as ksync <<key>> {
+    * value : string, 48 hex characters
+    --
+    sent as x-patient-key, never shown
+  }
+  entity "frontdesk.msgseen" as kseen <<key>> {
+    * value : array of string, JSON
+    --
+    "<ticket id>:<reply time>", last 300
+  }
+  entity "frontdesk.notes" as knotes <<key>> {
+    * value : object, ticket id to note
+    --
+    staff notes, never sent
+  }
+  entity "frontdesk.lang" as klang <<key>> {
+    * value : string, en | hi | te
+  }
+  entity "frontdesk.theme" as ktheme <<key>> {
+    * value : string, light | dark
+  }
+  entity "frontdesk.alldevices" as kall <<key>> {
+    * value : string, "1" | "0"
+    --
+    staff: tickets from all devices
+  }
+  entity "frontdesk.alerts" as kalerts <<key>> {
+    * value : string, "1"
+    --
+    staff: urgent alerts on
   }
 }
 
-package "Clinic file: clinic-data.json, or the edited copy" {
-  class ClinicFile <<root>> {
-    note : string [optional]
-    {field} <b>clinic</b> : Clinic
-    {field} <b>hours</b> : object of strings
-    doctors : Doctor[]
-    services : Service[]
-    policies : object of strings
-    emergency_rules : string
-    {field} bot_rules : string[]  (sent to the model only)
-    {field} assistant : Assistant [optional]
-  }
-  class Clinic {
-    name : string
-    address : string
-    landmark : string
-    phone : string
-    emergency_phone : string
-    whatsapp : string
-    languages : string[]
-    parking : string
-  }
-  class Doctor {
-    name : string
-    role : string
-    days : string
-  }
-  class Service {
-    name : string
-    price : string
-    duration : string [optional]
-    note : string [optional]
-  }
-  class Assistant {
-    {field} name : string  (at most 40 characters)
-    {field} quick_replies : QuickReply[]  (at most 8)
-  }
-  class QuickReply {
-    {field} label : string  (at most 24 characters)
-    {field} question : string  (at most 120 characters)
+package "sessionStorage (this tab)" <<browser>> {
+  entity "frontdesk.deskcode" as kdesk <<key>> {
+    * value : string
+    --
+    sent as x-desk-code, this tab only
   }
 }
 
-SessionStorage -[hidden]down- LocalStorage
-LocalStorage "1" *-down- "0..*" Ticket : frontdesk.tickets
-Ticket "1" *-down- "0..*" StaffReply : staffReplies
-LocalStorage "1" o--- "0..1" ClinicFile : frontdesk.clinic
-ClinicFile "1" *-down- "1" Clinic : clinic
-ClinicFile "1" *--- "0..*" Doctor : doctors
-ClinicFile "1" *--- "0..*" Service : services
-ClinicFile "1" *-down- "0..1" Assistant : assistant
-Assistant "1" *-down- "0..8" QuickReply : quick_replies
+package "Files shipped with the site" <<file>> {
+  entity "clinic-data.json" as cf <<file>> {
+      note : string <<NULL>>
+    * clinic : object
+    * hours : object
+    * doctors : array
+    * services : array
+    * policies : object
+    * emergency_rules : string
+    * bot_rules : array of string
+      assistant : object <<NULL>>
+  }
+  entity "clinic" as cclinic <<record>> {
+    * name : string
+    * address : string
+    * phone : string
+    * emergency_phone : string
+    --
+      landmark : string <<NULL>>
+      whatsapp : string <<NULL>>
+      languages : array of string <<NULL>>
+      parking : string <<NULL>>
+  }
+  entity "hours" as chours <<record>> {
+      monday_to_saturday : string <<NULL>>
+      sunday : string <<NULL>>
+      lunch_break : string <<NULL>>
+      public_holidays : string <<NULL>>
+    --
+    any name to a string; one line at least
+  }
+  entity "policies" as cpol <<record>> {
+    appointments, walk_ins, payment,
+    emi, insurance, children,
+    first_visit, sterilisation : string
+  }
+  entity "doctor" as cdoc <<record>> {
+    * name : string
+    --
+      role : string <<NULL>>
+      days : string <<NULL>>
+  }
+  entity "service" as csvc <<record>> {
+    * name : string
+    * price : string | number
+    --
+      duration : string <<NULL>>
+      note : string <<NULL>>
+  }
+  entity "assistant" as cast <<record>> {
+      name : string <<NULL>>
+      quick_replies : array <<NULL>>
+  }
+  entity "quick reply" as cqr <<record>> {
+    * label : string
+    * question : string
+  }
+}
 
-note right of Ticket
-  <b>Status from the reply kind</b>
-  emergency : urgent
-  medical, booking, notsure, human :
-  needs human
-  answer, refuse : answered
-  <b>A staff reply moves it on</b>
-  urgent or needs human : answered
-  answered : closed
-  <b>Close ticket</b> : closed
+' row 1: ktickets, kpatient, kclinic
+ktickets -[hidden]right- kpatient
+kpatient -[hidden]right- kclinic
+' row 2: ticket, ksync, kcs
+ktickets ||--o{ ticket : "holds"
+kpatient ||..o{ ticket : "patient = this id"
+kpatient -[hidden]down- ksync
+kclinic -[hidden]down- kcs
+' row 3: sreply, kseen, kco
+ticket ||--o{ sreply : "staffReplies"
+ksync -[hidden]down- kseen
+kcs -[hidden]down- kco
+kseen }o..o{ sreply : "one entry per\nreply sent on"
+' row 4: knotes, klang, ktheme
+sreply -[hidden]down- knotes
+kseen -[hidden]down- klang
+kco -[hidden]down- ktheme
+ticket |o..o{ knotes : "by ticket id"
+' row 5: kall, kalerts, kdesk
+knotes -[hidden]down- kall
+klang -[hidden]down- kalerts
+ktheme -[hidden]down- kdesk
+
+' the clinic file: three per row
+kall -[hidden]down- cf
+kdesk -[hidden]down- cf
+kclinic |o..|| cf : "a copy of the file\nor of an edit"
+cf ||--|| cclinic : "clinic"
+cf ||--|| chours : "hours"
+cf ||--|| cpol : "policies"
+cf ||---|{ cdoc : "doctors"
+cf ||---|{ csvc : "services"
+cf ||---o| cast : "assistant"
+cclinic -[hidden]down- cdoc
+chours -[hidden]down- csvc
+cpol -[hidden]down- cast
+cast ||--o{ cqr : "quick_replies,\n8 at most"
+
+note bottom of ticket
+  <b>To the server:</b> sync.js posts each
+  ticket to /api/tickets without saved
+  and remote; it becomes one row of
+  <b>tickets</b> (same id; the JSON in data).
+  The server adds owner, the hash of
+  frontdesk.synckey, and never sends it.
+  shared.js posts question and replies
+  to /api/messages (chat_id = patient).
+  status: urgent | needs human |
+  answered | closed. remote marks, on a
+  staff browser, a ticket from another
+  device.
 end note
 
-note bottom of StaffReply
-  <b>To the server</b>
-  sync.js posts each ticket to /api/tickets
-  (without remote); shared.js posts the
-  question and replies to /api/messages.
+note bottom of kclinic
+  Replaced by the server's copy
+  (clinic_data) unless
+  frontdesk.clinic.own is set.
 end note
+
+legend bottom right
+  <b>Key</b>
+  PK identifier of a record
+  * always present, NULL optional
+  solid line: held inside the parent
+  dotted line: linked by value only
+  ||--|{ one to one or many
+  ||--o{ one to zero or many
+  ||--o| one to zero or one
+endlegend
 @enduml
